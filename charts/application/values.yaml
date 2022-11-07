@@ -719,6 +719,9 @@ externalServices:
   enabled: false
   services:
     # serviceNameExample:
+    #   additionalLabels:
+    #     # expose: "true"
+    #   annotations: {}
     #   type: ExternalName
     #   externalName: application.clustername.cluster.svc.local
     #   ports:

@@ -6,12 +6,16 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-{{ include "application.labels.application" . | indent 4 }}
-{{ include "application.labels.chart" . | indent 4 }}
-{{- if .Values.service.additionalLabels }}
-{{ toYaml .Values.service.additionalLabels | indent 4 }}
+{{ include "application.labels.application" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+{{- if $service.additionalLabels }}
+{{ toYaml $service.additionalLabels | indent 4 }}
 {{- end }}
-  name: {{ template "application.name" . }}
+{{- if $service.annotations }}
+  annotations:
+{{ include "application.tplvalues.render" ( dict "value" $service.annotations  "context" $ ) | indent 4 }}
+{{- end }}
+  name: {{ $name }}
   namespace: {{ template "application.namespace" $ }}
 spec:
   type: {{ $service.type }}
