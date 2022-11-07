@@ -1,0 +1,12 @@
+apiVersion: v1
+entries:
+  application:
+  - apiVersion: v1
+    created: "2022-11-07T17:28:09.974559138Z"
+    description: Generic application helm chart
+    digest: 7b626df16513e4b0af527f4135ca6b2ea050b6eb2d8767366f3bf0137046a8fa
+    name: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/application-1.0.2/application-1.0.2.tgz
+    version: 1.0.2
+generated: "2022-11-07T17:28:09.974779645Z"
