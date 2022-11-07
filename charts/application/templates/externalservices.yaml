@@ -1,0 +1,26 @@
+{{- if .Values.externalServices }}
+{{- if .Values.externalServices.enabled }}
+{{- range $name, $service := .Values.externalServices.services }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+{{ include "application.labels.application" . | indent 4 }}
+{{ include "application.labels.chart" . | indent 4 }}
+{{- if .Values.service.additionalLabels }}
+{{ toYaml .Values.service.additionalLabels | indent 4 }}
+{{- end }}
+  name: {{ template "application.name" . }}
+  namespace: {{ template "application.namespace" $ }}
+spec:
+  type: {{ $service.type }}
+  externalName: {{ $service.externalName }}
+  ports:
+  {{- range $service.ports }}
+    - name: {{ .name }}
+      port: {{ .port }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
