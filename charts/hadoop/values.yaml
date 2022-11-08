@@ -1,0 +1,248 @@
+# The base hadoop image to use for all components.
+# See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
+image:
+  repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/yarn-node-manager
+  tag: yarn-node-manager-27
+  historyrepo: bde2020/hadoop
+  historytag: 2.0.0-hadoop2.7.4-java8
+  pullPolicy: IfNotPresent
+
+# The version of the hadoop libraries being used in the image.
+hadoopVersion: 2.7.5
+
+# Select antiAffinity as either hard or soft, default is soft
+antiAffinity: "hard"
+
+hdfs:
+  nameNode:
+    #only 1 replica is supported
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "4096Mi"
+        cpu: "1000m"
+
+  dataNode:
+    replicas: 3 # 1 or more
+
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "4096Mi"
+        cpu: "1000m"
+
+  historyServer:
+    replicas: 1
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+
+  webhdfs:
+    enabled: true
+
+yarn:
+  resourceManager:
+    #only 1 replica is supported
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "2000m"
+
+  nodeManager:
+    # The number of YARN NodeManager instances.
+    replicas: 3 #one or more
+    pdbMinAvailable: 1
+
+
+    # Create statefulsets in parallel (K8S 1.7+)
+    parallelCreate: false
+
+    # CPU and memory resources allocated to each node manager pod.
+    # This should be tuned to fit your workload.
+    resources:
+      requests:
+        memory: "16Gi"
+        cpu: "8"
+      limits:
+        memory: "16Gi"
+        #cpu: "4000m"
+
+persistence:
+  nameNode:
+    enabled: true
+    storageClass: "gp2"
+    accessMode: ReadWriteOnce
+    size: 300Gi
+
+  dataNode:
+    enabled: true
+    storageClass: "gp2"
+    accessMode: ReadWriteOnce
+    size: 1800Gi
+
+  historyServer:
+    enabled: true
+    storageClass: "gp2"
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+# env:
+# - name: CORE_CONF_fs_defaultFS
+#   valueFrom:
+#     configMapKeyRef:
+#       key: CORE_CONF_fs_defaultFS
+#       name: hadoop-env
+# - name: CORE_CONF_hadoop_http_staticuser_user
+#   valueFrom:
+#     configMapKeyRef:
+#       key: CORE_CONF_hadoop_http_staticuser_user
+#       name: hadoop-env
+# - name: CORE_CONF_hadoop_proxyuser_C4_groups
+#   valueFrom:
+#     configMapKeyRef:
+#       key: CORE_CONF_hadoop_proxyuser_C4_groups
+#       name: hadoop-env
+# - name: CORE_CONF_hadoop_proxyuser_C4_hosts
+#   valueFrom:
+#     configMapKeyRef:
+#       key: CORE_CONF_hadoop_proxyuser_C4_hosts
+#       name: hadoop-env
+# - name: CORE_CONF_hadoop_proxyuser_hue_groups
+#   valueFrom:
+#     configMapKeyRef:
+#       key: CORE_CONF_hadoop_proxyuser_hue_groups
+#       name: hadoop-env
+# - name: CORE_CONF_hadoop_proxyuser_hue_hosts
+#   valueFrom:
+#     configMapKeyRef:
+#       key: CORE_CONF_hadoop_proxyuser_hue_hosts
+#       name: hadoop-env
+# - name: HDFS_CONF_dfs_namenode_accesstime_precision
+#   valueFrom:
+#     configMapKeyRef:
+#       key: HDFS_CONF_dfs_namenode_accesstime_precision
+#       name: hadoop-env
+# - name: HDFS_CONF_dfs_permissions_enabled
+#   valueFrom:
+#     configMapKeyRef:
+#       key: HDFS_CONF_dfs_permissions_enabled
+#       name: hadoop-env
+# - name: HDFS_CONF_dfs_webhdfs_enabled
+#   valueFrom:
+#     configMapKeyRef:
+#       key: HDFS_CONF_dfs_webhdfs_enabled
+#       name: hadoop-env
+# - name: MAPRED_CONF_mapreduce_framework_name
+#   valueFrom:
+#     configMapKeyRef:
+#       key: MAPRED_CONF_mapreduce_framework_name
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_log___aggregation___enable
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_log___aggregation___enable
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_log_server_url
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_log_server_url
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_nodemanager_aux___services
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_nodemanager_aux___services
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_nodemanager_disk___health___checker_max___disk___utilization___per___disk___percentage
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_nodemanager_disk___health___checker_max___disk___utilization___per___disk___percentage
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_nodemanager_remote___app___log___dir
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_nodemanager_remote___app___log___dir
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_resourcemanager_address
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_resourcemanager_address
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_resourcemanager_fs_state___store_uri
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_resourcemanager_fs_state___store_uri
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_resourcemanager_hostname
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_resourcemanager_hostname
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_resourcemanager_recovery_enabled
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_resourcemanager_recovery_enabled
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_resourcemanager_resource__tracker_address
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_resourcemanager_resource__tracker_address
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_resourcemanager_scheduler_address
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_resourcemanager_scheduler_address
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_resourcemanager_store_class
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_resourcemanager_store_class
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_resourcemanager_system___metrics___publisher_enabled
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_resourcemanager_system___metrics___publisher_enabled
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_timeline___service_enabled
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_timeline___service_enabled
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_timeline___service_generic___application___history_enabled
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_timeline___service_generic___application___history_enabled
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_timeline___service_hostname
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_timeline___service_hostname
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_nodemanager_resource_memory___mb
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_nodemanager_resource_memory___mb
+#       name: hadoop-env
+# - name: YARN_CONF_yarn_nodemanager_resource_cpu___vcores
+#   valueFrom:
+#     configMapKeyRef:
+#       key: YARN_CONF_yarn_nodemanager_resource_cpu___vcores
+#       name: hadoop-env

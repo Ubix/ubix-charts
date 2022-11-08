@@ -1,0 +1,37 @@
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: resourcemanager
+  labels:
+    app: {{ include "hadoop.name" . }}
+    chart: {{ include "hadoop.chart" . }}
+    release: {{ .Release.Name }}
+    component: yarn-rm
+spec:
+  ports:
+    - name: web
+      port: 8088
+      targetPort: 8088
+      protocol: TCP
+    - name: api0
+      port: 8030
+      targetPort: 8030
+      protocol: TCP
+    - name: api1
+      port: 8031
+      targetPort: 8031
+      protocol: TCP
+    - name: api2
+      port: 8032
+      targetPort: 8032
+      protocol: TCP
+    - name: api3
+      port: 8033
+      targetPort: 8033
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: {{ include "hadoop.name" . }}
+    release: {{ .Release.Name }}
+    component: yarn-rm

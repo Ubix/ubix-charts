@@ -1,0 +1,24 @@
+{{- if .Values.persistence.historyServer.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "hadoop.fullname" . }}-historyserver
+  labels:
+    app: {{ include "hadoop.name" . }}
+    chart: {{ include "hadoop.chart" . }}
+    release: {{ .Release.Name }}
+    component: historyserver
+spec:
+  accessModes:
+  - {{ .Values.persistence.historyServer.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.historyServer.size | quote }}
+{{- if .Values.persistence.historyServer.storageClass }}
+{{- if (eq "-" .Values.persistence.historyServer.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.historyServer.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}
