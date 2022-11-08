@@ -17,4 +17,21 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/application-1.0.2/application-1.0.2.tgz
     version: 1.0.2
-generated: "2022-11-07T19:27:04.507672187Z"
+  hadoop:
+  - apiVersion: v1
+    appVersion: 2.9.0
+    created: "2022-11-08T12:43:00.872754641Z"
+    deprecated: true
+    description: DEPRECATED - The Apache Hadoop software library is a framework that
+      allows for the distributed processing of large data sets across clusters of
+      computers using simple programming models.
+    digest: 8a6dc7593ec6d94ad0f9b4bdae154f66131d8c093ad2097a180fd295b6c5b6df
+    home: https://hadoop.apache.org/
+    icon: http://hadoop.apache.org/images/hadoop-logo.jpg
+    name: hadoop
+    sources:
+    - https://github.com/apache/hadoop
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/hadoop-1.1.4/hadoop-1.1.4.tgz
+    version: 1.1.4
+generated: "2022-11-08T12:43:00.87276724Z"
