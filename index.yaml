@@ -17,6 +17,30 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/application-1.0.2/application-1.0.2.tgz
     version: 1.0.2
+  eventstore:
+  - apiVersion: v1
+    appVersion: 4.1.1-hotfix1
+    created: "2022-11-08T18:59:53.003933437Z"
+    description: A Helm chart for Kubernetes EventStore.
+    digest: 6c182c65b4c377eca082a3b74e77c4c83b365a9964959f2963521b8bf157d08a
+    home: https://eventstore.org/
+    icon: https://eventstore.org/images/ouro-full.svg
+    keywords:
+    - eventstore
+    maintainers:
+    - email: ameier38@gmail.com
+      name: ameier38
+    - email: jhinds2010@gmail.com
+      name: jhinds
+    - email: riccardo@dinuzzo.it
+      name: riccardone
+    name: eventstore
+    sources:
+    - https://github.com/EventStore/eventstore-docker
+    - https://github.com/EventStore/EventStore
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/eventstore-0.2.5/eventstore-0.2.5.tgz
+    version: 0.2.5
   hadoop:
   - apiVersion: v1
     appVersion: 2.9.0
@@ -34,4 +58,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/hadoop-1.1.4/hadoop-1.1.4.tgz
     version: 1.1.4
-generated: "2022-11-08T12:43:00.87276724Z"
+generated: "2022-11-08T18:59:53.003940737Z"
