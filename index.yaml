@@ -58,4 +58,15 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/hadoop-1.1.4/hadoop-1.1.4.tgz
     version: 1.1.4
-generated: "2022-11-08T18:59:53.003940737Z"
+  master_account:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-12-02T12:59:20.95523215Z"
+    description: Provisions accounts in the Ubix AWS organization
+    digest: 22716205342859b038d43252104e87d0f46a9c90222bb4aa0c33ef5cb3cc73e2
+    name: master_account
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/master_account-0.1.0/master_account-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-12-02T12:59:20.95523955Z"
