@@ -1,0 +1,67 @@
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: NATGateway
+metadata:
+  name: "{{ include "cloudspace.name" .}}ngw1"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    connectivityType: {{ .Values.natGateway.connectivityType }} 
+    allocationIdSelector:
+      matchLabels:
+        name: "{{ include "cloudspace.name" .}}-eip1"
+    subnetIdRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-subnet1"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: NATGateway
+metadata:
+  name: "{{ include "cloudspace.name" .}}ngw2"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    region: 
+    connectivityType: {{ .Values.natGateway.connectivityType }} 
+    allocationIdSelector:
+      matchLabels:
+        name: "{{ include "cloudspace.name" .}}-eip2"
+    subnetIdRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-subnet2"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: Address
+metadata:
+  name: "{{ include "cloudspace.name" .}}-eip1"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: Address
+metadata:
+  name: "{{ include "cloudspace.name" .}}-eip2"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
