@@ -1,0 +1,48 @@
+# Default values for cloudspace.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Default values for cloudspace.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+customerName: crossplanecreated
+parentId: ou-8jat-sv0412tm
+
+region: us-east-1
+providerConfigRef:
+  name: aws-jet
+
+
+#Resources of the Backoffice account like S3 Central and ECR Central
+ecr:
+  repositoryName: "cloudspace"
+  policy:
+    statements:
+        action: 
+        - "ecr:DescribeRepositories"
+        - "ecr:BatchCheckLayerAvailability"
+        - "ecr:BatchDeleteImage"
+        - "ecr:BatchGetImage"
+        - "ecr:CompleteLayerUpload"
+        - "ecr:DeleteRepository"
+        - "ecr:DeleteRepositoryPolicy"
+        - "ecr:DescribeRepositories"
+        - "ecr:GetDownloadUrlForLayer"
+        - "ecr:GetRepositoryPolicy"
+        - "ecr:InitiateLayerUpload"
+        - "ecr:ListImages"
+        - "ecr:PutImage"
+        - "ecr:SetRepositoryPolicy"
+        - "ecr:UploadLayerPart"
+        effect: Allow
+        principal:
+          awsPrincipals: |-
+            - iamRoleArn: "arn:aws:iam::801337478761:role/ubix-noderole"
+            - iamRoleArn: "arn:aws:iam::882490700787:role/cloudspace-ghactionsopenid"
+            - awsAccountId: "882490700787"
+
+providerConfigRefB:
+  name: aws-creds-backoffice
+  policy:
+    resolve: Always

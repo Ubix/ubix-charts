@@ -1,0 +1,21 @@
+apiVersion: ecr.aws.crossplane.io/v1beta1
+kind: RepositoryPolicy
+metadata:
+  name: {{ .Values.ecr.repositoryName }}
+  labels:
+    region: {{ .Values.region }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    repositoryName: "{{ .Values.ecr.repositoryName }}"
+    policy:
+      statements:
+        - action: {{ .Values.ecr.policy.statements.action }}
+          effect: {{ .Values.ecr.policy.statements.effect }}
+          principal:
+            awsPrincipals: {{ .Values.ecr.policy.statements.principal.awsPrincipals | nindent 12 }}
+      version: '2012-10-17'
+  providerConfigRef:
+    name: {{ .Values.providerConfigRefB.name }}
+    policy:
+      resolve: {{ .Values.providerConfigRefB.policy.resolve }}

@@ -1,0 +1,16 @@
+apiVersion: organizations.aws.jet.crossplane.io/v1alpha1
+kind: Account
+metadata:
+  name: awsaccount-crossplane-{{ .Values.customerName }}
+  namespace: default
+spec:
+  forProvider:
+    email: awsaccountadmin+crossplane.{{ .Values.customerName }}@ubixlabs.com
+    name: crossplanecreated.{{ .Values.customerName }}
+    parentId: {{ .Values.parentId }}
+    region: {{ .Values.region }}
+  providerConfigRef:
+    name: {{ .Values.providerConfigRef.name }}
+  writeConnectionSecretToRef:
+    name: {{ .Values.customerName }}
+    namespace: {{ .Values.customerName }}
