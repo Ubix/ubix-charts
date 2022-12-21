@@ -1,0 +1,18 @@
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: VPC
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-vpc"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+  namespace: {{ .Values.customerName }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    cidrBlock: {{ .Values.vpc.cidrBlock }}
+    enableDnsSupport: {{ .Values.vpc.enableDnsSupport }}
+    enableDnsHostNames: {{ .Values.vpc.enableDnsHostNames }}
+    instanceTenancy: {{ .Values.vpc.instanceTenancy }}
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
