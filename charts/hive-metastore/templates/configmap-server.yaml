@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hiveMetastore.fullname" . }}-server
+  labels:
+    app.kubernetes.io/name: {{ include "hiveMetastore.name" . }}
+    {{- include "hiveMetastore.labels" . | nindent 4 }}
+data:
+  startup.sh: |-
+{{ tpl (.Files.Get "resources/startup.sh") . | indent 4 }}
+  hive-site.xml: |
+{{ tpl (.Files.Get "resources/config/hive-site.xml") . | indent 4 }}
