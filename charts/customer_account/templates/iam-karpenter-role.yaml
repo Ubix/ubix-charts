@@ -119,21 +119,3 @@ spec:
   forProvider:
     policyArnRef:
       name: "karpentercontrollerpolicy-eks"
----
-apiVersion: helm.crossplane.io/v1beta1
-kind: Release
-spec:
-  rollbackLimit: 3
-  forProvider:
-    namespace: karpenter
-    chart:
-      name: karpenter
-      repository: https://charts.karpenter.sh/
-      version: "0.6.4"
-    set:
-    - name: clusterName
-      value: {{ include "cloudspace.name" .}}
-    - name: clusterEndpoint
-      value: http://kubernetes.svc/
-    - name: "aws.defaultInstanceProfile"
-      value: "KarpenterNodeInstanceProfile"
