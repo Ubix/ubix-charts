@@ -6,7 +6,7 @@ metadata:
     {{- include "cloudspace.labels" . | nindent 4 }}
 spec:
   forProvider:
-    assumeRolePolicyDocument: {{ .Values.iam.eksRolePolicy }}
+    assumeRolePolicyDocument: {{ .Values.iam.eksRolePolicy | toJson | quote }}
   providerConfigRef:
     name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
     policy:
@@ -20,7 +20,7 @@ metadata:
     {{- include "cloudspace.labels" . | nindent 4 }}
 spec:
   forProvider:
-    assumeRolePolicyDocument: {{ .Values.iam.eksNodeRolePolicy }}
+    assumeRolePolicyDocument: {{ .Values.iam.eksNodeRolePolicy | toJson | quote }}
   providerConfigRef:
     name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
     policy:
