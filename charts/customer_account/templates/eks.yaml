@@ -1,0 +1,29 @@
+apiVersion: eks.aws.crossplane.io/v1beta1
+kind: Cluster
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ekscluster"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    # Defined in examples/iam
+    roleArnRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-role"
+    resourcesVpcConfig:
+      endpointPrivateAccess: {{ .Values.eks.resourcesVpcConfig.endpointPrivateAccess }}
+      endpointPublicAccess: {{ .Values.eks.resourcesVpcConfig.endpointPublicAccess }}
+      # Defined in examples/ec2
+      subnetIdRefs:
+        - name: "{{ include "cloudspace.name" .}}-ubix-subnet1"
+        - name: "{{ include "cloudspace.name" .}}-ubix-subnet2"
+      securityGroupIdRefs:
+        - name: "{{ include "cloudspace.name" .}}-ubix-cluster-sg"
+    version: {{ .Values.eks.eksVersion }}
+  writeConnectionSecretToRef:
+    name: "{{ include "cloudspace.name" .}}-cluster-conn"
+    namespace: {{ .Values.customerName }}
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always

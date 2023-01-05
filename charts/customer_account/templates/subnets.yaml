@@ -1,0 +1,37 @@
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: Subnet
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-subnet1"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    availabilityZone: {{ .Values.region }}b
+    cidrBlock: {{ .Values.subnets.subnet1.cidrBlock }}
+    vpcIdRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-vpc"
+    mapPublicIPOnLaunch: {{ .Values.subnets.subnet1.mapPublicIPOnLaunch }}
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: Subnet
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-subnet2"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    availabilityZone: {{ .Values.region }}c
+    cidrBlock: {{ .Values.subnets.subnet2.cidrBlock }}
+    vpcIdRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-vpc"
+    mapPublicIPOnLaunch: {{ .Values.subnets.subnet2.mapPublicIPOnLaunch }}
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always

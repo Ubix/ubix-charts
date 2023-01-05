@@ -1,0 +1,29 @@
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: SecurityGroup
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-cluster-sg"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    vpcIdRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-vpc"  
+    groupName: "{{ include "cloudspace.name" .}}-ekscluster-sg"
+    description: Cluster communication with worker nodes
+    ingress:
+      - fromPort: {{ .Values.securityGroup.ingress.fromPort }}
+        toPort: {{ .Values.securityGroup.ingress.toPort }}
+        ipProtocol: {{ .Values.securityGroup.ingress.ipProtocol }}
+        ipRanges:
+          - cidrIp: {{ .Values.securityGroup.ingress.ipRanges.cidrIp }}
+    egress:
+      - fromPort: {{ .Values.securityGroup.egress.fromPort }}
+        toPort: {{ .Values.securityGroup.egress.toPort }}
+        ipProtocol: {{ .Values.securityGroup.egress.ipProtocol }}
+        ipRanges:
+          - cidrIp: {{ .Values.securityGroup.egress.ipRanges.cidrIp }}
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always

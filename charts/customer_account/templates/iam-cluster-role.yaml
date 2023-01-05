@@ -1,0 +1,139 @@
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-role"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    assumeRolePolicyDocument: {{ .Values.iam.eksRolePolicy }}
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-noderole"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    assumeRolePolicyDocument: {{ .Values.iam.eksNodeRolePolicy }}
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-noderolemanagedpolicyattachment1"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+    roleNameRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-noderole"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-noderolemanagedpolicyattachment2"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+    roleNameRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-noderole"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-noderolemanagedpolicyattachment3"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+    roleNameRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-noderole"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-noderolemanagedpolicyattachment4"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+    roleNameRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-role"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-noderolemanagedpolicyattachment5"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    policyArn: arn:aws:iam::aws:policy/AmazonEKSVPCResourceController
+    roleNameRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-role"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-noderolemanagedpolicyattachment6"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
+    roleNameRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-noderole"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ include "cloudspace.name" .}}-ubix-noderolemanagedpolicyattachment7"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
+spec:
+  forProvider:
+    policyArn: arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+    roleNameRef:
+      name: "{{ include "cloudspace.name" .}}-ubix-noderole"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
