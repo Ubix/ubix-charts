@@ -6,7 +6,23 @@ metadata:
     {{- include "cloudspace.labels" . | nindent 4 }}
 spec:
   forProvider:
-    assumeRolePolicyDocument: {{ .Values.iam.eksRolePolicy }}
+    assumeRolePolicyDocument: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": [
+                        "ec2.amazonaws.com"
+                    ]
+                },
+                "Action": [
+                    "sts:AssumeRole"
+                ]
+            }
+        ]
+      }
   providerConfigRef:
     name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
     policy:
@@ -78,6 +94,10 @@ spec:
 ---
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
+metadata:
+  name: "karpentercontrollerpolicy-eks"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
 spec:
   forProvider:
     name: "KarpenterControllerPolicy-eks"
@@ -112,10 +132,22 @@ spec:
             }
         ]
       }
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
 ---
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
+metadata:
+  name: "karpentercontrollerpolicy-eks"
+  labels:
+    {{- include "cloudspace.labels" . | nindent 4 }}
 spec:
   forProvider:
     policyArnRef:
       name: "karpentercontrollerpolicy-eks"
+  providerConfigRef:
+    name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
+    policy:
+      resolve: Always
