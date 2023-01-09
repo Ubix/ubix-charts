@@ -8,9 +8,8 @@ spec:
   forProvider:
     region: {{ .Values.region }}
     connectivityType: {{ .Values.natGateway.connectivityType }} 
-    allocationIdSelector:
-      matchLabels:
-        name: "{{ include "cloudspace.name" .}}-eip1"
+    allocationIdRef:
+      name: "{{ include "cloudspace.name" .}}-eip1"
     subnetIdRef:
       name: "{{ include "cloudspace.name" .}}-ubix-subnet1"
   providerConfigRef:
@@ -26,11 +25,10 @@ metadata:
     {{- include "cloudspace.labels" . | nindent 4 }}
 spec:
   forProvider:
-    region: 
+    region: {{ .Values.region }}
     connectivityType: {{ .Values.natGateway.connectivityType }} 
-    allocationIdSelector:
-      matchLabels:
-        name: "{{ include "cloudspace.name" .}}-eip2"
+    allocationIdRef:
+      name: "{{ include "cloudspace.name" .}}-eip2"
     subnetIdRef:
       name: "{{ include "cloudspace.name" .}}-ubix-subnet2"
   providerConfigRef:
@@ -41,7 +39,7 @@ spec:
 apiVersion: ec2.aws.crossplane.io/v1beta1
 kind: Address
 metadata:
-  name: "{{ include "cloudspace.name" .}}-eip1"
+  name: {{ include "cloudspace.name" .}}-eip1
   labels:
     {{- include "cloudspace.labels" . | nindent 4 }}
 spec:
@@ -55,7 +53,7 @@ spec:
 apiVersion: ec2.aws.crossplane.io/v1beta1
 kind: Address
 metadata:
-  name: "{{ include "cloudspace.name" .}}-eip2"
+  name: {{ include "cloudspace.name" .}}-eip2
   labels:
     {{- include "cloudspace.labels" . | nindent 4 }}
 spec:

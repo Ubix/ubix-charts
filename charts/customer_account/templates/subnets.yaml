@@ -1,7 +1,7 @@
 apiVersion: ec2.aws.crossplane.io/v1beta1
 kind: Subnet
 metadata:
-  name: "{{ include "cloudspace.name" .}}-ubix-subnet1"
+  name: {{ include "cloudspace.name" .}}-ubix-subnet1
   labels:
     {{- include "cloudspace.labels" . | nindent 4 }}
 spec:
@@ -20,7 +20,7 @@ spec:
 apiVersion: ec2.aws.crossplane.io/v1beta1
 kind: Subnet
 metadata:
-  name: "{{ include "cloudspace.name" .}}-ubix-subnet2"
+  name: {{ include "cloudspace.name" .}}-ubix-subnet2
   labels:
     {{- include "cloudspace.labels" . | nindent 4 }}
 spec:
