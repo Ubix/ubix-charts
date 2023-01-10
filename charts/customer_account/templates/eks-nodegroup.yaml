@@ -7,7 +7,7 @@ metadata:
 spec:
   forProvider:
     region: {{ .Values.region }}
-    version: {{ .Values.eks.eksVersion }}
+    version: "{{ .Values.eks.eksVersion }}"
     diskSize: {{ .Values.eks.eksDiskSize }}
     instanceTypes: 
       - {{ .Values.eks.nodeGroup.instanceTypes }}

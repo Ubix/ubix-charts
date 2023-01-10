@@ -19,11 +19,18 @@ spec:
         - name: "{{ include "cloudspace.name" .}}-ubix-subnet2"
       securityGroupIdRefs:
         - name: "{{ include "cloudspace.name" .}}-ubix-cluster-sg"
-    version: {{ .Values.eks.eksVersion }}
+    version: "{{ .Values.eks.eksVersion  }}"
   writeConnectionSecretToRef:
     name: "{{ include "cloudspace.name" .}}-cluster-conn"
-    namespace: {{ .Values.customerName }}
+    namespace: {{ include "cloudspace.name" .}}
   providerConfigRef:
     name: "{{ include "cloudspace.name" .}}-awsaccount-crossplane"
     policy:
       resolve: Always
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ include "cloudspace.name" .}}
+  labels:
+    name: {{ include "cloudspace.name" .}}

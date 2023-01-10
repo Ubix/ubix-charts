@@ -9,18 +9,18 @@ spec:
     region: {{ .Values.region }}
     vpcIdRef:
       name: "{{ include "cloudspace.name" .}}-ubix-vpc"  
-    groupName: "{{ include "cloudspace.name" .}}-ekscluster-sg"
+    groupName: "{{ include "cloudspace.name" .}}-ubix-cluster-sg"
     description: Cluster communication with worker nodes
     ingress:
       - fromPort: {{ .Values.securityGroup.ingress.fromPort }}
         toPort: {{ .Values.securityGroup.ingress.toPort }}
-        ipProtocol: {{ .Values.securityGroup.ingress.ipProtocol }}
+        ipProtocol: "{{ .Values.securityGroup.ingress.ipProtocol }}"
         ipRanges:
           - cidrIp: {{ .Values.securityGroup.ingress.ipRanges.cidrIp }}
     egress:
       - fromPort: {{ .Values.securityGroup.egress.fromPort }}
         toPort: {{ .Values.securityGroup.egress.toPort }}
-        ipProtocol: {{ .Values.securityGroup.egress.ipProtocol }}
+        ipProtocol: "{{ .Values.securityGroup.egress.ipProtocol }}"
         ipRanges:
           - cidrIp: {{ .Values.securityGroup.egress.ipRanges.cidrIp }}
   providerConfigRef:
