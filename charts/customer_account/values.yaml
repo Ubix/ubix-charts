@@ -31,7 +31,7 @@ eks:
       maxSize: 2
 
 iam:
-  eksRolePolicy: |-
+  eksRolePolicy:
     {
         "Version": "2012-10-17",
         "Statement": [
@@ -54,8 +54,7 @@ iam:
             }
         ]
       }
-      
-  eksNodeRolePolicy: |-
+  eksNodeRolePolicy:
     {
         "Version": "2012-10-17",
         "Statement": [
@@ -72,8 +71,6 @@ iam:
             }
         ]
       }
-
-
 providerConfig:
   secretRef:
     namespace: crossplane-system
