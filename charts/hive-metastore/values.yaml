@@ -13,163 +13,45 @@ image:
   tag: 2.3.2-postgresql-metastore
   pullPolicy: IfNotPresent
 
+metastoreEnv:
+  SERVICE_PRECONDITION: namenode:50070 datanode:50075 hive-metastore-postgresql:5432
+
+hiveServerEnv:
+  SERVICE_PRECONDITION: hive-metastore:9083
+  HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
 
 env:
-- name: CORE_CONF_fs_defaultFS
-  valueFrom:
-    configMapKeyRef:
-      key: CORE_CONF_fs_defaultFS
-      name: hive-env
-- name: CORE_CONF_hadoop_http_staticuser_user
-  valueFrom:
-    configMapKeyRef:
-      key: CORE_CONF_hadoop_http_staticuser_user
-      name: hive-env
-- name: CORE_CONF_hadoop_proxyuser_C4_groups
-  valueFrom:
-    configMapKeyRef:
-      key: CORE_CONF_hadoop_proxyuser_C4_groups
-      name: hive-env
-- name: CORE_CONF_hadoop_proxyuser_C4_hosts
-  valueFrom:
-    configMapKeyRef:
-      key: CORE_CONF_hadoop_proxyuser_C4_hosts
-      name: hive-env
-- name: CORE_CONF_hadoop_proxyuser_hue_groups
-  valueFrom:
-    configMapKeyRef:
-      key: CORE_CONF_hadoop_proxyuser_hue_groups
-      name: hive-env
-- name: CORE_CONF_hadoop_proxyuser_hue_hosts
-  valueFrom:
-    configMapKeyRef:
-      key: CORE_CONF_hadoop_proxyuser_hue_hosts
-      name: hive-env
-- name: HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check
-  valueFrom:
-    configMapKeyRef:
-      key: HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check
-      name: hive-env
-- name: HDFS_CONF_dfs_permissions_enabled
-  valueFrom:
-    configMapKeyRef:
-      key: HDFS_CONF_dfs_permissions_enabled
-      name: hive-env
-- name: HDFS_CONF_dfs_webhdfs_enabled
-  valueFrom:
-    configMapKeyRef:
-      key: HDFS_CONF_dfs_webhdfs_enabled
-      name: hive-env
-- name: HIVE_SITE_CONF_datanucleus_autoCreateSchema
-  valueFrom:
-    configMapKeyRef:
-      key: HIVE_SITE_CONF_datanucleus_autoCreateSchema
-      name: hive-env
-- name: HIVE_SITE_CONF_hive_metastore_uris
-  valueFrom:
-    configMapKeyRef:
-      key: HIVE_SITE_CONF_hive_metastore_uris
-      name: hive-env
-- name: HIVE_SITE_CONF_javax_jdo_option_ConnectionDriverName
-  valueFrom:
-    configMapKeyRef:
-      key: HIVE_SITE_CONF_javax_jdo_option_ConnectionDriverName
-      name: hive-env
-- name: HIVE_SITE_CONF_javax_jdo_option_ConnectionPassword
-  valueFrom:
-    configMapKeyRef:
-      key: HIVE_SITE_CONF_javax_jdo_option_ConnectionPassword
-      name: hive-env
-- name: HIVE_SITE_CONF_javax_jdo_option_ConnectionURL
-  valueFrom:
-    configMapKeyRef:
-      key: HIVE_SITE_CONF_javax_jdo_option_ConnectionURL
-      name: hive-env
-- name: HIVE_SITE_CONF_hive_server2_authentication
-  valueFrom:
-    configMapKeyRef:
-      key: HIVE_SITE_CONF_hive_server2_authentication
-      name: hive-env
-- name: HIVE_SITE_CONF_javax_jdo_option_ConnectionUserName
-  valueFrom:
-    configMapKeyRef:
-      key: HIVE_SITE_CONF_javax_jdo_option_ConnectionUserName
-      name: hive-env
-- name: HIVE_SITE_CONF_hive_insert_into_multilevel_dirs
-  valueFrom:
-    configMapKeyRef:
-      key: HIVE_SITE_CONF_hive_insert_into_multilevel_dirs
-      name: hive-env
-- name: YARN_CONF_yarn_log___aggregation___enable
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_log___aggregation___enable
-      name: hive-env
-- name: YARN_CONF_yarn_log_server_url
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_log_server_url
-      name: hive-env
-- name: YARN_CONF_yarn_nodemanager_remote___app___log___dir
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_nodemanager_remote___app___log___dir
-      name: hive-env
-- name: YARN_CONF_yarn_resourcemanager_address
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_resourcemanager_address
-      name: hive-env
-- name: YARN_CONF_yarn_resourcemanager_fs_state___store_uri
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_resourcemanager_fs_state___store_uri
-      name: hive-env
-- name: YARN_CONF_yarn_resourcemanager_hostname
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_resourcemanager_hostname
-      name: hive-env
-- name: YARN_CONF_yarn_resourcemanager_recovery_enabled
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_resourcemanager_recovery_enabled
-      name: hive-env
-- name: YARN_CONF_yarn_resourcemanager_resource__tracker_address
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_resourcemanager_resource__tracker_address
-      name: hive-env
-- name: YARN_CONF_yarn_resourcemanager_scheduler_address
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_resourcemanager_scheduler_address
-      name: hive-env
-- name: YARN_CONF_yarn_resourcemanager_store_class
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_resourcemanager_store_class
-      name: hive-env
-- name: YARN_CONF_yarn_resourcemanager_system___metrics___publisher_enabled
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_resourcemanager_system___metrics___publisher_enabled
-      name: hive-env
-- name: YARN_CONF_yarn_timeline___service_enabled
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_timeline___service_enabled
-      name: hive-env
-- name: YARN_CONF_yarn_timeline___service_generic___application___history_enabled
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_timeline___service_generic___application___history_enabled
-      name: hive-env
-- name: YARN_CONF_yarn_timeline___service_hostname
-  valueFrom:
-    configMapKeyRef:
-      key: YARN_CONF_yarn_timeline___service_hostname
-      name: hive-env
+  CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+  CORE_CONF_hadoop_http_staticuser_user: root
+  CORE_CONF_hadoop_proxyuser_C4_groups: '*'
+  CORE_CONF_hadoop_proxyuser_C4_hosts: '*'
+  CORE_CONF_hadoop_proxyuser_hue_groups: '*'
+  CORE_CONF_hadoop_proxyuser_hue_hosts: '*'
+  HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check: "false"
+  HDFS_CONF_dfs_permissions_enabled: "false"
+  HDFS_CONF_dfs_webhdfs_enabled: "true"
+  HIVE_SITE_CONF_datanucleus_autoCreateSchema: "false"
+  HIVE_SITE_CONF_hive_metastore_uris: thrift://hive-metastore:9083
+  HIVE_SITE_CONF_javax_jdo_option_ConnectionDriverName: org.postgresql.Driver
+  HIVE_SITE_CONF_javax_jdo_option_ConnectionPassword: hive
+  HIVE_SITE_CONF_javax_jdo_option_ConnectionURL: jdbc:postgresql://hive-metastore-postgresql/metastore
+  HIVE_SITE_CONF_javax_jdo_option_ConnectionUserName: hive
+  HIVE_SITE_CONF_hive_insert_into_multilevel_dirs: "true"
+  HIVE_SITE_CONF_hive_server2_authentication: "NOSASL"
+  YARN_CONF_yarn_log___aggregation___enable: "true"
+  YARN_CONF_yarn_log_server_url: http://historyserver:8188/applicationhistory/logs/
+  YARN_CONF_yarn_nodemanager_remote___app___log___dir: /app-logs
+  YARN_CONF_yarn_resourcemanager_address: resourcemanager:8032
+  YARN_CONF_yarn_resourcemanager_fs_state___store_uri: /rmstate
+  YARN_CONF_yarn_resourcemanager_hostname: resourcemanager
+  YARN_CONF_yarn_resourcemanager_recovery_enabled: "true"
+  YARN_CONF_yarn_resourcemanager_resource__tracker_address: resourcemanager:8031
+  YARN_CONF_yarn_resourcemanager_scheduler_address: resourcemanager:8030
+  YARN_CONF_yarn_resourcemanager_store_class: org.apache.hadoop.yarn.server.resourcemanager.recovery.FileSystemRMStateStore
+  YARN_CONF_yarn_resourcemanager_system___metrics___publisher_enabled: "true"
+  YARN_CONF_yarn_timeline___service_enabled: "true"
+  YARN_CONF_yarn_timeline___service_generic___application___history_enabled: "true"
+  YARN_CONF_yarn_timeline___service_hostname: historyserver
 
 conf:
   hiveSite:

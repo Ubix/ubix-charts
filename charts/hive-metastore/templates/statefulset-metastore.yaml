@@ -33,10 +33,11 @@ spec:
         ports:
         - name: metastore
           containerPort: 9083
-        env:
-          - name: SERVICE_PRECONDITION
-            value: namenode:50070 datanode:50075 hive-metastore-postgresql:5432
-{{ toYaml .Values.env | indent 10 }}
+        envFrom:
+          - configMapRef:
+              name: metastore-env
+          - configMapRef:
+              name: hive-env
         # readinessProbe:
         #   httpGet:
         #     path: /
