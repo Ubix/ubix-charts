@@ -18,4 +18,4 @@ compositioninstance:
       minNodeCount: 
       maxNodeCount: 
       desiredNodeCount: 
-      diskSize: 
+      diskSize:
