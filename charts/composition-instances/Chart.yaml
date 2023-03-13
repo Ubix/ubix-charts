@@ -1,6 +1,6 @@
 apiVersion: v2
 name: composition-instance
-description: A Helm chart for Kubernetes
+description: Child account CRD helm chart
 
 # Child account CRD helm chart
 # this chart will create a resource kind: ChildAccountClaim that will use the child-account-composition chart
