@@ -49,6 +49,17 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/cloudspace-0.1.0/cloudspace-0.1.0.tgz
     version: 0.1.0
+  composition-instance:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-03-13T23:39:56.046533858Z"
+    description: Child account CRD helm chart
+    digest: dfa1deff0398b5ca6df7e393075dc81e2e2be95c166fdb5a53c13411d595a342
+    name: composition-instance
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/composition-instance-0.1.0/composition-instance-0.1.0.tgz
+    version: 0.1.0
   eventstore:
   - apiVersion: v1
     appVersion: 4.1.1-hotfix1
@@ -144,4 +155,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/master_account-0.1.0/master_account-0.1.0.tgz
     version: 0.1.0
-generated: "2023-03-13T23:39:06.692089034Z"
+generated: "2023-03-13T23:39:56.046548158Z"
