@@ -1,0 +1,21 @@
+# Default values for compositioninstances.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#sample 
+compositioninstance:
+  metadata:
+    name: 
+  spec:
+    id: 
+    parameters:
+      name: 
+      parentId: ou-8jat-sv0412tm
+      region: us-east-1
+    eks:
+      version: "1.23"
+      nodeSize: # small - medium - large
+      minNodeCount: 
+      maxNodeCount: 
+      desiredNodeCount: 
+      diskSize: 

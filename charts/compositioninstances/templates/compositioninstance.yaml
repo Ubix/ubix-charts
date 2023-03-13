@@ -1,0 +1,25 @@
+apiVersion: cloudspace.resources/v1alpha1
+kind: ChildAccountClaim
+metadata:
+  name: {{ .Values.compositioninstance.metadata.name }}
+  labels:
+    provider: aws-jet
+    name: childaccount
+spec:
+  id: {{ .Values.compositioninstance.spec.id }}
+  compositionSelector:
+    matchLabels:
+      provider: aws-jet
+      name: childaccount
+  parameters:
+    email: awsaccountadmin+{{ .Values.compositioninstance.spec.parameters.name }}@ubixlabs.com
+    name: {{ .Values.compositioninstance.spec.parameters.name }}
+    parentId: {{ .Values.compositioninstance.spec.parameters.parentId }}
+    region: {{ .Values.compositioninstance.spec.parameters.region }}
+  eks:
+    version: {{ .Values.compositioninstance.spec.eks.version }}
+    nodeSize: {{ .Values.compositioninstance.spec.eks.nodeSize }}
+    minNodeCount: {{ .Values.compositioninstance.spec.eks.nodeSize }}
+    maxNodeCount: {{ .Values.compositioninstance.spec.eks.maxNodeCount }}
+    desiredNodeCount: {{ .Values.compositioninstance.spec.eks.desiredNodeCount }}
+    diskSize: {{ .Values.compositioninstance.spec.eks.diskSize }}
