@@ -3,6 +3,7 @@ The present helm chart renders only the composition and defintion resources that
 
 Once this composition has been deployed in the Cluster, you can create child accounts by applying the folowing yaml.
 
+````
 apiVersion: cloudspace.resources/v1alpha1
 kind: ChildAccountClaim
 metadata:
@@ -28,3 +29,4 @@ spec:
     maxNodeCount: 3
     desiredNodeCount: 3
     diskSize: 20
+````
