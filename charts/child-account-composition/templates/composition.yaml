@@ -3,7 +3,7 @@ kind: Composition
 metadata:
   name: childaccount
   labels:
-      provider: aws-jet
+      provider: provider-aws
       name: childaccount
 spec:
   compositeTypeRef:
@@ -25,7 +25,7 @@ spec:
           name: crossplanecreated
           parentId: ou-8jat-sv0412tm
         providerConfigRef:
-          name: aws-jet
+          name: root
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -69,16 +69,12 @@ spec:
       metadata:
         #name: crossplane-test-pconfig
         labels:
-          provider: aws-jet
+          provider: provider-aws
           name: childaccount
       spec:
         #assumeRoleARN: "arn:aws:iam::798374069605:role/OrganizationAccountAccessRole"
         credentials:
-          source: Secret
-          secretRef:
-            namespace: crossplane-system
-            name: aws-creds
-            key: creds
+          source: IRSA
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -87,7 +83,7 @@ spec:
       toFieldPath: metadata.labels
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
-      toFieldPath: spec.assumeRoleChain.roleARN
+      toFieldPath: spec.assumeRoleChain[0].roleARN
       transforms:
         - type: string
           string:
@@ -170,7 +166,7 @@ spec:
           toPort: 0
           type: egress
     patches:
-    - fromFieldPath: spec.region
+    - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.securityGroupIdSelector.matchLabels[securitygroup]
@@ -201,8 +197,7 @@ spec:
             matchControllerRef: true
           mapPublicIPOnLaunch: true
           tags:
-          - key: kubernetes.io/role/elb
-            value: "1"
+            kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
           resolve: "always"
@@ -235,8 +230,7 @@ spec:
             matchControllerRef: true
           mapPublicIPOnLaunch: true
           tags:
-          - key: kubernetes.io/role/elb
-            value: "1"
+            kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
           resolve: "always"
@@ -270,8 +264,7 @@ spec:
             matchControllerRef: true
           mapPublicIPOnLaunch: true
           tags:
-          - key: kubernetes.io/role/elb
-            value: "1"
+            kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
           resolve: "always"
