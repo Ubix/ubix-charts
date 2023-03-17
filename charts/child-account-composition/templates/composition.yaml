@@ -150,37 +150,6 @@ spec:
     readinessChecks:
     - type: None
 
-  - name: nodeSecurityGroupRuleEgress
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: SecurityGroupRule
-      spec:
-        forProvider:
-          cidrBlocks:
-          - 0.0.0.0/0
-          description: Allow egress from the nodes
-          fromPort: 0
-          protocol: "-1"
-          securityGroupIdSelector:
-            matchControllerRef: true
-          toPort: 0
-          type: egress
-    patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.securityGroupIdSelector.matchLabels[securitygroup]
-      transforms:
-      - string:
-          fmt: '%s-node-sg'
-        type: string
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-sg-rule-node-egress'
-        type: string
-
   - name: subnet-nodepool-1a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -323,100 +292,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-
-  - name: routetableassociation-1a
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: RouteTableAssociation
-      spec:
-        forProvider:
-          routeTableIdSelector:
-            matchControllerRef: true
-          subnetIdSelector:
-            matchControllerRef: true
-            matchLabels:
-              zone: us-east-1a
-              access: public
-          gatewayIdSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
-    patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-1a'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
-  - name: routetableassociation-1b
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: RouteTableAssociation
-      spec:
-        forProvider:
-          routeTableIdSelector:
-            matchControllerRef: true
-          subnetIdSelector:
-            matchControllerRef: true
-            matchLabels:
-              zone: us-east-1b
-              access: public
-          gatewayIdSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
-    patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-1b'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
-  - name: routetableassociation-1c
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: RouteTableAssociation
-      spec:
-        forProvider:
-          routeTableIdSelector:
-            matchControllerRef: true
-          subnetIdSelector:
-            matchControllerRef: true
-            matchLabels:
-              zone: us-east-1c
-              access: public
-          gatewayIdSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
-    patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-1c'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
   - name: route
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -455,10 +330,10 @@ spec:
           roleArnSelector:
             matchControllerRef: true
           vpcConfig:
-            endpointPrivateAccess: true
-            endpointPublicAccess: true
-            subnetIdSelector:
-              matchControllerRef: true
+            - endpointPrivateAccess: true
+              endpointPublicAccess: true
+              subnetIdSelector:
+                matchControllerRef: true
       providerConfigRef:
         policy:
           resolve: "always"
@@ -530,17 +405,17 @@ spec:
           medium: t3.medium
           large: t3.large
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.nodeRoleSelector.matchLabels.role
+      toFieldPath: spec.forProvider.nodeRoleArnSelector.matchLabels.role
       transforms:
       - type: string
         string:
           fmt: '%s-nodegroup'
     - fromFieldPath: spec.eks.minNodeCount
-      toFieldPath: spec.forProvider.scalingConfig.minSize
+      toFieldPath: spec.forProvider.scalingConfig[0].minSize
     - fromFieldPath: spec.eks.maxNodeCount
-      toFieldPath: spec.forProvider.scalingConfig.maxSize
+      toFieldPath: spec.forProvider.scalingConfig[0].maxSize
     - fromFieldPath: spec.eks.desiredNodeCount
-      toFieldPath: spec.forProvider.scalingConfig.desiredSize
+      toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
     - fromFieldPath: spec.eks.diskSize
       toFieldPath: spec.forProvider.diskSize
     - type: ToCompositeFieldPath
