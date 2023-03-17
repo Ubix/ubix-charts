@@ -261,7 +261,7 @@ spec:
       spec:
         forProvider:
           availabilityZone: us-east-1a
-          cidrBlock: 10.1.0.0/24
+          cidrBlock: 10.0.100.0/24
           vpcIdSelector:
             matchControllerRef: true
           tags:
@@ -294,7 +294,7 @@ spec:
       spec:
         forProvider:
           availabilityZone: us-east-1b
-          cidrBlock: 10.1.1.0/24
+          cidrBlock: 10.0.101.0/24
           vpcIdSelector:
             matchControllerRef: true
           tags:
@@ -327,7 +327,7 @@ spec:
       spec:
         forProvider:
           availabilityZone: us-east-1c
-          cidrBlock: 10.1.2.0/24
+          cidrBlock: 10.0.102.0/24
           vpcIdSelector:
             matchControllerRef: true
           tags:
