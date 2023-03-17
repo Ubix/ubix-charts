@@ -418,8 +418,6 @@ spec:
 # ########
 # # EKS Cluster and related resources
 # ########
-
-
   - name: ekscluster
     base:
       apiVersion: eks.aws.upbound.io/v1beta1
@@ -474,59 +472,6 @@ spec:
     - fromConnectionSecretKey: kubeconfig
     - fromConnectionSecretKey: kubeconfig
       name: value
-
-  - name: eksnodegroup
-    base:
-      apiVersion: eks.aws.upbound.io/v1beta1
-      kind: NodeGroup
-      spec:
-        forProvider:
-          clusterNameSelector:
-            matchControllerRef: true
-          nodeRoleArnSelector:
-            matchControllerRef: true
-          subnetIdSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
-    patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - fromFieldPath: spec.eks.nodeSize
-      toFieldPath: spec.forProvider.instanceTypes[0]
-      transforms:
-      - type: map
-        map:
-          small: t3.small
-          medium: t3.medium
-          large: t3.large
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.nodeRoleArnSelector.matchLabels.role
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-nodegroup'
-    - fromFieldPath: spec.eks.minNodeCount
-      toFieldPath: spec.forProvider.scalingConfig[0].minSize
-    - fromFieldPath: spec.eks.maxNodeCount
-      toFieldPath: spec.forProvider.scalingConfig[0].maxSize
-    - fromFieldPath: spec.eks.desiredNodeCount
-      toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
-    - fromFieldPath: spec.eks.diskSize
-      toFieldPath: spec.forProvider.diskSize
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.status
-      toFieldPath: status.nodePoolStatus
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-    readinessChecks:
-    - type: MatchString
-      fieldPath: status.atProvider.status
-      matchString: ACTIVE
 
   - name: iamrole-controlplane
     base:
