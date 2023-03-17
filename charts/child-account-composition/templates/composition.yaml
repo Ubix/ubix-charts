@@ -349,7 +349,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-
   - name: gateway
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
