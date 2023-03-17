@@ -15,7 +15,7 @@ spec:
     patches:
     - fromFieldPath: metadata.labels
   resources:
-  - name: childaccount
+  - name: child-account
     base:
       apiVersion: organizations.aws.upbound.io/v1beta1
       kind: Account
@@ -62,7 +62,7 @@ spec:
       - fromConnectionSecretKey: kubeconfig
 
 #this resource is key to deploy everything inside the newly created account
-  - name: assumeroleconfig
+  - name: provider-config
     base:
       apiVersion: aws.upbound.io/v1beta1
       kind: ProviderConfig
@@ -89,7 +89,7 @@ spec:
           string:
             fmt: "arn:aws:iam::%s:role/OrganizationAccountAccessRole"
 
-  - name: vpc-nodepool
+  - name: vpc
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPC
@@ -150,7 +150,7 @@ spec:
     readinessChecks:
     - type: None
 
-  - name: subnet-nodepool-1a
+  - name: public-subnet-1a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
@@ -183,7 +183,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: subnet-nodepool-1b
+  - name: public-subnet-1b
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
@@ -217,7 +217,7 @@ spec:
       toFieldPath: spec.providerConfigRef.name
 
 
-  - name: subnet-nodepool-1c
+  - name: public-subnet-1c
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
@@ -339,7 +339,7 @@ spec:
           resolve: "always"
     patches:
     - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region    
+      toFieldPath: spec.forProvider.region
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
     - fromFieldPath: spec.eks.version
