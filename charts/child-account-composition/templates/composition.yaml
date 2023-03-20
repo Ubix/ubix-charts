@@ -3,7 +3,7 @@ kind: Composition
 metadata:
   name: childaccount
   labels:
-      provider: aws-jet
+      provider: provider-aws
       name: childaccount
 spec:
   compositeTypeRef:
@@ -15,9 +15,9 @@ spec:
     patches:
     - fromFieldPath: metadata.labels
   resources:
-  - name: childaccount
+  - name: child-account
     base:
-      apiVersion: organizations.aws.jet.crossplane.io/v1alpha1
+      apiVersion: organizations.aws.upbound.io/v1beta1
       kind: Account
       spec:
         forProvider:
@@ -25,7 +25,7 @@ spec:
           name: crossplanecreated
           parentId: ou-8jat-sv0412tm
         providerConfigRef:
-          name: aws-jet
+          name: root
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -62,23 +62,19 @@ spec:
       - fromConnectionSecretKey: kubeconfig
 
 #this resource is key to deploy everything inside the newly created account
-  - name: assumeroleconfig
+  - name: provider-config
     base:
-      apiVersion: aws.crossplane.io/v1beta1
+      apiVersion: aws.upbound.io/v1beta1
       kind: ProviderConfig
       metadata:
         #name: crossplane-test-pconfig
         labels:
-          provider: aws-jet
+          provider: provider-aws
           name: childaccount
       spec:
         #assumeRoleARN: "arn:aws:iam::798374069605:role/OrganizationAccountAccessRole"
         credentials:
-          source: Secret
-          secretRef:
-            namespace: crossplane-system
-            name: aws-creds
-            key: creds
+          source: IRSA
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -87,15 +83,15 @@ spec:
       toFieldPath: metadata.labels
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
-      toFieldPath: spec.assumeRoleARN
+      toFieldPath: spec.assumeRoleChain[0].roleARN
       transforms:
         - type: string
           string:
             fmt: "arn:aws:iam::%s:role/OrganizationAccountAccessRole"
 
-  - name: vpc-nodepool
+  - name: vpc
     base:
-      apiVersion: ec2.aws.crossplane.io/v1beta1
+      apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPC
       spec:
         forProvider:
@@ -115,21 +111,13 @@ spec:
 
   - name: sg-nodepool
     base:
-      apiVersion: ec2.aws.crossplane.io/v1beta1
+      apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroup
       spec:
         forProvider:
           description: Cluster communication with worker nodes
           vpcIdSelector:
             matchControllerRef: true
-          egress:
-          - ipProtocol: "-1"  # This is enough to let EC2 treats it like 
-                              # 'Type=All trafic', 'Protocol=All', 'Port range=All'
-                              # The same approach can be applied to "ingress"
-#            fromPort: 0      # Crossplane has never 'SYNC=true' if used
-#            toPort: 0        # Crossplane has never 'SYNC=true' if used
-            ipRanges:
-            - cidrIp: 0.0.0.0/0
       providerConfigRef:
         policy:
           resolve: "always"
@@ -138,17 +126,33 @@ spec:
       toFieldPath: spec.forProvider.region
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-node-sg'
+        type: string
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+      transforms:
+      - string:
+          fmt: '%s-node-sg'
+        type: string
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.groupName
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.labels[securitygroup]
+      transforms:
+      - string:
+          fmt: '%s-node-sg'
+        type: string
     readinessChecks:
     - type: None
 
-  - name: subnet-nodepool-1a
+  - name: public-subnet-1a
     base:
-      apiVersion: ec2.aws.crossplane.io/v1beta1
+      apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       metadata:
         labels:
@@ -162,8 +166,7 @@ spec:
             matchControllerRef: true
           mapPublicIPOnLaunch: true
           tags:
-          - key: kubernetes.io/role/elb
-            value: "1"
+            kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
           resolve: "always"
@@ -175,14 +178,14 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-1a'
+          fmt: 'public-%s-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: subnet-nodepool-1b
+  - name: public-subnet-1b
     base:
-      apiVersion: ec2.aws.crossplane.io/v1beta1
+      apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       metadata:
         labels:
@@ -196,8 +199,7 @@ spec:
             matchControllerRef: true
           mapPublicIPOnLaunch: true
           tags:
-          - key: kubernetes.io/role/elb
-            value: "1"
+            kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
           resolve: "always"
@@ -209,15 +211,15 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-1b'
+          fmt: 'public-%s-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
 
-  - name: subnet-nodepool-1c
+  - name: public-subnet-1c
     base:
-      apiVersion: ec2.aws.crossplane.io/v1beta1
+      apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       metadata:
         labels:
@@ -231,8 +233,7 @@ spec:
             matchControllerRef: true
           mapPublicIPOnLaunch: true
           tags:
-          - key: kubernetes.io/role/elb
-            value: "1"
+            kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
           resolve: "always"
@@ -244,15 +245,113 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-1c'
+          fmt: 'public-%s-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: private-subnet-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1a
+          access: private
+      spec:
+        forProvider:
+          availabilityZone: us-east-1a
+          cidrBlock: 10.0.100.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+          tags:
+            # kubernetes.io/role/elb: "1"
+            # TODO: add karpenter
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-subnet-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1b
+          access: private
+      spec:
+        forProvider:
+          availabilityZone: us-east-1b
+          cidrBlock: 10.0.101.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+          tags:
+            # kubernetes.io/role/elb: "1"
+            # TODO: add karpenter
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-subnet-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1c
+          access: private
+      spec:
+        forProvider:
+          availabilityZone: us-east-1c
+          cidrBlock: 10.0.102.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+          tags:
+            # kubernetes.io/role/elb: "1"
+            # TODO: Add karpenter
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: gateway
     base:
-      apiVersion: ec2.aws.crossplane.io/v1beta1
+      apiVersion: ec2.aws.upbound.io/v1beta1
       kind: InternetGateway
       spec:
         forProvider:
@@ -273,32 +372,35 @@ spec:
 
   - name: routetable
     base:
-      apiVersion: ec2.aws.crossplane.io/v1beta1
+      apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTable
       spec:
         forProvider:
           vpcIdSelector:
             matchControllerRef: true
-          routes:
-          - destinationCidrBlock: 0.0.0.0/0
-            gatewayIdSelector:
-              matchControllerRef: true
-          associations:
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-east-1a
-                access: public
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-east-1b
-                access: public
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-east-1c
-                access: public
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: route
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Route
+      spec:
+        forProvider:
+          routeTableIdSelector:
+            matchControllerRef: true
+          gatewayIdSelector:
+            matchControllerRef: true
+          destinationCidrBlock: 0.0.0.0/0
       providerConfigRef:
         policy:
           resolve: "always"
@@ -315,27 +417,25 @@ spec:
 # ########
 # # EKS Cluster and related resources
 # ########
-
-
   - name: ekscluster
     base:
-      apiVersion: eks.aws.crossplane.io/v1beta1
+      apiVersion: eks.aws.upbound.io/v1beta1
       kind: Cluster
       spec:
         forProvider:
           roleArnSelector:
             matchControllerRef: true
-          resourcesVpcConfig:
-            endpointPrivateAccess: true
-            endpointPublicAccess: true
-            subnetIdSelector:
-              matchControllerRef: true
+          vpcConfig:
+            - endpointPrivateAccess: true
+              endpointPublicAccess: true
+              subnetIdSelector:
+                matchControllerRef: true
       providerConfigRef:
         policy:
           resolve: "always"
     patches:
     - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region    
+      toFieldPath: spec.forProvider.region
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
     - fromFieldPath: spec.eks.version
@@ -372,66 +472,13 @@ spec:
     - fromConnectionSecretKey: kubeconfig
       name: value
 
-  - name: eksnodegroup
-    base:
-      apiVersion: eks.aws.crossplane.io/v1alpha1
-      kind: NodeGroup
-      spec:
-        forProvider:
-          clusterNameSelector:
-            matchControllerRef: true
-          nodeRoleSelector:
-            matchControllerRef: true
-          subnetSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
-    patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - fromFieldPath: spec.eks.nodeSize
-      toFieldPath: spec.forProvider.instanceTypes[0]
-      transforms:
-      - type: map
-        map:
-          small: t3.small
-          medium: t3.medium
-          large: t3.large
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.nodeRoleSelector.matchLabels.role
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-nodegroup'
-    - fromFieldPath: spec.eks.minNodeCount
-      toFieldPath: spec.forProvider.scalingConfig.minSize
-    - fromFieldPath: spec.eks.maxNodeCount
-      toFieldPath: spec.forProvider.scalingConfig.maxSize
-    - fromFieldPath: spec.eks.desiredNodeCount
-      toFieldPath: spec.forProvider.scalingConfig.desiredSize
-    - fromFieldPath: spec.eks.diskSize
-      toFieldPath: spec.forProvider.diskSize
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.status
-      toFieldPath: status.nodePoolStatus
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-    readinessChecks:
-    - type: MatchString
-      fieldPath: status.atProvider.status
-      matchString: ACTIVE
-
   - name: iamrole-controlplane
     base:
-      apiVersion: iam.aws.crossplane.io/v1beta1
+      apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
       spec:
         forProvider:
-          assumeRolePolicyDocument: |
+          assumeRolePolicy: |
             {
               "Version": "2012-10-17",
               "Statement": [
@@ -470,11 +517,11 @@ spec:
 
   - name: iamrole-nodegroup
     base:
-      apiVersion: iam.aws.crossplane.io/v1beta1
+      apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
       spec:
         forProvider:
-          assumeRolePolicyDocument: |
+          assumeRolePolicy: |
             {
               "Version": "2012-10-17",
               "Statement": [
@@ -513,12 +560,12 @@ spec:
 
   - name: iamattachment-controlplane
     base:
-      apiVersion: iam.aws.crossplane.io/v1beta1
+      apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
       providerConfigRef:
         policy:
@@ -531,7 +578,7 @@ spec:
         string:
           fmt: '%s-controlplane'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
@@ -542,12 +589,12 @@ spec:
 
   - name: iamattachment-service
     base:
-      apiVersion: iam.aws.crossplane.io/v1beta1
+      apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSServicePolicy
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
       providerConfigRef:
         policy:
@@ -560,7 +607,7 @@ spec:
         string:
           fmt: '%s-service'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
@@ -571,12 +618,12 @@ spec:
 
   - name: iamattachment-worker
     base:
-      apiVersion: iam.aws.crossplane.io/v1beta1
+      apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
       providerConfigRef:
         policy:
@@ -589,7 +636,7 @@ spec:
         string:
           fmt: '%s-worker'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
@@ -600,12 +647,12 @@ spec:
 
   - name: iamattachment-cni
     base:
-      apiVersion: iam.aws.crossplane.io/v1beta1
+      apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
       providerConfigRef:
         policy:
@@ -618,7 +665,7 @@ spec:
         string:
           fmt: '%s-cni'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
@@ -629,12 +676,12 @@ spec:
 
   - name: iamattachment-registry
     base:
-      apiVersion: iam.aws.crossplane.io/v1beta1
+      apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
       providerConfigRef:
         policy:
@@ -647,7 +694,7 @@ spec:
         string:
           fmt: '%s-registry'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
