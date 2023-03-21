@@ -500,6 +500,7 @@ spec:
       kind: Addon
       spec:
         forProvider:
+          addonVersion: "v1.11.4-eksbuild.1"
           serviceAccountRoleArn: ""
           clusterNameRef:
             name: ""
@@ -515,6 +516,8 @@ spec:
       toFieldPath: spec.forProvider.clusterNameRef.name
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.eks.vpcCniAddonVersion
+      toFieldPath: spec.forProvider.AddonVersion
     - fromFieldPath: status.vpcCniRoleArn
       toFieldPath: spec.forProvider.serviceAccountRoleArn
     - fromFieldPath: status.id
