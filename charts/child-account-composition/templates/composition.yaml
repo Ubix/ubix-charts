@@ -491,7 +491,7 @@ spec:
           policy:
             resolve: Always
     patches:
-    - fromFieldPath: spec.ids
+    - fromFieldPath: spec.id
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
