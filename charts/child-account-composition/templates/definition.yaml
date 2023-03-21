@@ -101,6 +101,9 @@ spec:
               clusterOIDC:
                 description: Issuer URL for the OpenID Connect identity provider.
                 type: string
+              vpcCniRoleArn:
+                description: Role to attach to VPC CNI service account
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
