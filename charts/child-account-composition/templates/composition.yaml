@@ -486,19 +486,94 @@ spec:
             - https://sts.amazonaws.com
           thumbprintList:
             - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280 # this is the sts static thumbprint
-        providerConfigRef:
-          name: ""
-          policy:
-            resolve: Always
+    patches:
+    - fromFieldPath: status.clusterOIDC
+      toFieldPath: spec.forProvider.url
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: vpc-cni-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      spec:
+        forProvider:
+          serviceAccountRoleArn: ""
+          clusterNameRef:
+            name: ""
+          region: us-east-1
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-vpc-cni'
+    - fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterNameRef.name
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: status.vpcCniRoleArn
+      toFieldPath: spec.forProvider.serviceAccountRoleArn
+    - fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+# ########
+# # IAM resources
+# ########
+  - name: vpc-cni-addon-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-vpc-cni"
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterOIDC
-      toFieldPath: spec.forProvider.url
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:kube-system:aws-node",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.vpcCniRoleArn
 
   - name: iamrole-controlplane
     base:
