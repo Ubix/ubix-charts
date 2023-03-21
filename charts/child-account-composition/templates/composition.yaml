@@ -500,6 +500,7 @@ spec:
       kind: Addon
       spec:
         forProvider:
+          addonVersion: "v1.11.4-eksbuild.1"
           serviceAccountRoleArn: ""
           clusterNameRef:
             name: ""
@@ -515,13 +516,15 @@ spec:
       toFieldPath: spec.forProvider.clusterNameRef.name
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.eks.vpcCniAddonVersion
+      toFieldPath: spec.forProvider.AddonVersion
     - fromFieldPath: status.vpcCniRoleArn
       toFieldPath: spec.forProvider.serviceAccountRoleArn
     - fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
 # ########
-# # IAM resources
+# # IAM Roles
 # ########
   - name: vpc-cni-addon-role
     base:
@@ -661,6 +664,14 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+# ########
+# # IAM Policies
+# ########
+
+# ########
+# # IAM Policy Attachments
+# ########
+
   - name: iamattachment-controlplane
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -755,11 +766,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          roleSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
+          role: ""
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -767,12 +774,9 @@ spec:
       - type: string
         string:
           fmt: '%s-cni'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-nodegroup'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcCniRoleArn
+      toFieldPath: spec.forProvider.role
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
