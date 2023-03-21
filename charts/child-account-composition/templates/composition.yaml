@@ -465,7 +465,7 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
-      toFieldPath: status.cluster.oidc
+      toFieldPath: status.clusterOIDC
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.status
