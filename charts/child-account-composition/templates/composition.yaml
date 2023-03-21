@@ -369,7 +369,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-
   - name: routetable
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -523,6 +522,66 @@ spec:
     - fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: karpenter-fargate-profile
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: FargateProfile
+      metadata:
+      spec:
+        forProvider:
+          clusterName: patch-me
+          podExecutionRoleArn: patch-me
+          region: patch-me
+          selector:
+            - namespace: karpenter
+          subnetIdRefs:
+          - name: "patch-me"
+          - name: "patch-me"
+          - name: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.forProvider.podExecutionRoleArn
+      transforms:
+      - type: string
+        string:
+          fmt: "arn:aws:iam::%s:role/aws-service-role/eks-fargate.amazonaws.com/AWSServiceRoleForAmazonEKSForFargate"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[1].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[2].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
 # ########
 # # IAM Roles
 # ########
