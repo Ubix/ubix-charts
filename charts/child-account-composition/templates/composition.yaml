@@ -497,7 +497,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
     - type: FromCompositeFieldPath
-      fromFieldPath: status.cluster.oidc
+      fromFieldPath: status.clusterOIDC
       toFieldPath: spec.forProvider.url
 
   - name: iamrole-controlplane
