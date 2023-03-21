@@ -463,6 +463,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
+      toFieldPath: status.clusterOIDC
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.status
@@ -471,6 +474,31 @@ spec:
     - fromConnectionSecretKey: kubeconfig
     - fromConnectionSecretKey: kubeconfig
       name: value
+
+  - name: identity-provider
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: OpenIDConnectProvider
+      spec:
+        forProvider:
+          url: ""
+          clientIdList:
+            - https://sts.amazonaws.com
+          thumbprintList:
+            - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280 # this is the sts static thumbprint
+        providerConfigRef:
+          name: ""
+          policy:
+            resolve: Always
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterOIDC
+      toFieldPath: spec.forProvider.url
 
   - name: iamrole-controlplane
     base:

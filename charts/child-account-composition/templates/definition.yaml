@@ -98,8 +98,11 @@ spec:
               nodePoolStatus:
                 description: The status of the node pool
                 type: string
+              clusterOIDC:
+                description: Issuer URL for the OpenID Connect identity provider.
+                type: string
     additionalPrinterColumns:
-    - name: id
+    - name: AWSAccountID
       type: string
       jsonPath: ".status.id"
     - name: arn
@@ -117,3 +120,6 @@ spec:
     - name: nodePool
       type: string
       jsonPath: ".status.nodePoolStatus"
+    - name: clusterOIDC
+      type: string
+      jsonPath: ".status.clusterOIDC"
