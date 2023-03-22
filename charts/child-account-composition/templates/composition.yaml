@@ -369,7 +369,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-
   - name: routetable
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -523,9 +522,103 @@ spec:
     - fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: karpenter-fargate-profile
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: FargateProfile
+      metadata:
+      spec:
+        forProvider:
+          clusterName: patch-me
+          podExecutionRoleArn: patch-me
+          region: patch-me
+          selector:
+            - namespace: karpenter
+          subnetIdRefs:
+          - name: "patch-me"
+          - name: "patch-me"
+          - name: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.fargateExecRoleArn
+      toFieldPath: spec.forProvider.podExecutionRoleArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[1].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[2].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
 # ########
 # # IAM Roles
 # ########
+  - name: fargate-profile-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "eks-fargate-pods.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-fargate-execution"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.fargateExecRoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.fargateExecRoleName
+
   - name: vpc-cni-addon-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -577,6 +670,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.vpcCniRoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.vpcCniRoleName
 
   - name: iamrole-controlplane
     base:
@@ -671,6 +767,27 @@ spec:
 # ########
 # # IAM Policy Attachments
 # ########
+  - name: fargate-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.fargateExecRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: iamattachment-controlplane
     base:
@@ -775,7 +892,7 @@ spec:
         string:
           fmt: '%s-cni'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcCniRoleArn
+      fromFieldPath: status.vpcCniRoleName
       toFieldPath: spec.forProvider.role
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
