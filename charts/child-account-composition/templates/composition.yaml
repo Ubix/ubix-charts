@@ -412,7 +412,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-
 # ########
 # # EKS Cluster and related resources
 # ########
@@ -490,35 +489,6 @@ spec:
       toFieldPath: spec.forProvider.url
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
-  - name: vpc-cni-addon
-    base:
-      apiVersion: eks.aws.upbound.io/v1beta1
-      kind: Addon
-      spec:
-        forProvider:
-          addonVersion: "v1.11.4-eksbuild.1"
-          serviceAccountRoleArn: ""
-          clusterNameRef:
-            name: ""
-          region: us-east-1
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-vpc-cni'
-    - fromFieldPath: status.clusterName
-      toFieldPath: spec.forProvider.clusterNameRef.name
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.eks.vpcCniAddonVersion
-      toFieldPath: spec.forProvider.AddonVersion
-    - fromFieldPath: status.vpcCniRoleArn
-      toFieldPath: spec.forProvider.serviceAccountRoleArn
     - fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
