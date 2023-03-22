@@ -670,6 +670,7 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.vpcCniRoleArn
+    - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.vpcCniRoleName
 
