@@ -549,12 +549,8 @@ spec:
       fromFieldPath: status.clusterName
       toFieldPath: spec.forProvider.clusterName
     - type: FromCompositeFieldPath
-      fromFieldPath: status.id
+      fromFieldPath: status.fargateExecRoleArn
       toFieldPath: spec.forProvider.podExecutionRoleArn
-      transforms:
-      - type: string
-        string:
-          fmt: "arn:aws:iam::%s:role/aws-service-role/eks-fargate.amazonaws.com/AWSServiceRoleForAmazonEKSForFargate"
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -585,6 +581,44 @@ spec:
 # ########
 # # IAM Roles
 # ########
+  - name: fargate-profile-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "eks-fargate-pods.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-fargate-execution"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.fargateExecRoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.fargateExecRoleName
+
   - name: vpc-cni-addon-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -636,6 +670,8 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.vpcCniRoleArn
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.vpcCniRoleName
 
   - name: iamrole-controlplane
     base:
@@ -730,6 +766,27 @@ spec:
 # ########
 # # IAM Policy Attachments
 # ########
+  - name: fargate-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.fargateExecRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: iamattachment-controlplane
     base:
@@ -834,7 +891,7 @@ spec:
         string:
           fmt: '%s-cni'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcCniRoleArn
+      fromFieldPath: status.vpcCniRoleName
       toFieldPath: spec.forProvider.role
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
