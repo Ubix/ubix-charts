@@ -465,6 +465,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
       toFieldPath: status.clusterOIDC
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.endpoint
+      toFieldPath: status.clusterEndpoint
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.status
@@ -926,3 +929,40 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
+
+#####
+# ArgoCD
+#####
+    - name: argocd-remote-cluster-credentials
+      base:
+        apiVersion: cluster.argocd.crossplane.io/v1alpha1
+        kind: Cluster
+        spec:
+          forProvider:
+            server: # patched
+            name: # patched
+            config:
+              awsAuthConfig:
+                  clusterName: # patched
+                  roleARN: # patched
+          providerConfigRef:
+            name: root
+      patches:
+        - fromFieldPath: spec.id
+          toFieldPath: metadata.name
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.name
+        - fromFieldPath: status.clusterEndpoint
+          toFieldPath: spec.forProvider.server
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.config.awsAuthConfig.clusterName
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.config.awsAuthConfig.clusterName
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.id
+          toFieldPath: spec.forProvider.config.awsAuthConfig.clusterName
+          transforms:
+            - type: string
+              string:
+                fmt: "arn:aws:iam::%s:role/OrganizationAccountAccessRole"
