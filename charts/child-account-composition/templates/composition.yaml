@@ -957,11 +957,9 @@ spec:
           toFieldPath: spec.forProvider.server
         - fromFieldPath: metadata.name
           toFieldPath: spec.forProvider.config.awsAuthConfig.clusterName
-        - fromFieldPath: metadata.name
-          toFieldPath: spec.forProvider.config.awsAuthConfig.clusterName
         - type: FromCompositeFieldPath
           fromFieldPath: status.id
-          toFieldPath: spec.forProvider.config.awsAuthConfig.clusterName
+          toFieldPath: spec.forProvider.config.awsAuthConfig.roleARN
           transforms:
             - type: string
               string:
