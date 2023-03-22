@@ -548,6 +548,32 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1c'
+
+# ########
+# # IAM Instance Profiles
+# ########
+
+  - name: karpenter-instance-profile
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: InstanceProfile
+      spec:
+        forProvider:
+          role: patchme
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 # ########
 # # IAM Roles
 # ########
