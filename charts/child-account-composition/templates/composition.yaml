@@ -464,6 +464,12 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
       toFieldPath: status.clusterOIDC
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.endpoint
+      toFieldPath: status.clusterEndpoint
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.certificateAuthority[0].data
+      toFieldPath: status.clusterCertificateAuthorityData
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.status
@@ -1236,3 +1242,67 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
+
+#####
+# ArgoCD
+#####
+  - name: argocd-secret-remote-cluster-credentials
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: # patched
+              namespace: argocd
+              labels:
+                argocd.argoproj.io/secret-type: cluster
+            # stringData:
+              # name: # patched
+              # server: # patched
+              # config:
+              #   awsAuthConfig:
+              #       clusterName: # patched
+              #       roleARN: # patched
+            type: Opaque
+        providerConfigRef:
+          name: kubernetes-provider
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.manifest.metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-argocd-cluster-secret"
+      - fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.manifest.stringData.name
+      - fromFieldPath: status.clusterEndpoint
+        toFieldPath: spec.forProvider.manifest.stringData.server
+      - type: CombineFromComposite
+        combine:
+          variables:
+            - fromFieldPath: status.clusterCertificateAuthorityData
+            - fromFieldPath: spec.id
+            - fromFieldPath: status.id
+          strategy: string
+          string:
+            fmt: |
+              {
+                "tlsClientConfig":{
+                  "insecure":false,
+                  "caData":"%s"
+                },
+                "awsAuthConfig":{
+                  "clusterName":"%s",
+                  "roleARN":"arn:aws:iam::%s:role/OrganizationAccountAccessRole"
+                }
+              }
+        toFieldPath: spec.forProvider.manifest.stringData.config
+        policy:
+          fromFieldPath: Required

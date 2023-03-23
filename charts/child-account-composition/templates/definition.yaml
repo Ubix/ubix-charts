@@ -106,6 +106,12 @@ spec:
               clusterOIDC:
                 description: Issuer URL for the OpenID Connect identity provider.
                 type: string
+              clusterEndpoint:
+                description: Endpoint for your Kubernetes API server.
+                type: string
+              clusterCertificateAuthorityData:
+                description: Base64 encoded certificate data required to communicate with your cluster.
+                type: string
               vpcCniRoleArn:
                 description: Role to attach to VPC CNI service account
                 type: string
