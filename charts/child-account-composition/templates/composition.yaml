@@ -265,8 +265,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           tags:
-            # kubernetes.io/role/elb: "1"
-            # TODO: add karpenter
+            karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
           resolve: "always"
@@ -279,6 +278,9 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -298,8 +300,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           tags:
-            # kubernetes.io/role/elb: "1"
-            # TODO: add karpenter
+            karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
           resolve: "always"
@@ -312,6 +313,9 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -331,8 +335,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           tags:
-            # kubernetes.io/role/elb: "1"
-            # TODO: Add karpenter
+            karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
           resolve: "always"
@@ -345,6 +348,9 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -521,6 +527,63 @@ spec:
       - type: string
         string:
           fmt: '%s-karpenter'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.fargateExecRoleArn
+      toFieldPath: spec.forProvider.podExecutionRoleArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[1].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[2].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
+
+  - name: kube-system-fargate-profile
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: FargateProfile
+      metadata:
+      spec:
+        forProvider:
+          clusterName: patch-me
+          podExecutionRoleArn: patch-me
+          region: patch-me
+          selector:
+            - namespace: kube-system
+          subnetIdRefs:
+          - name: "patch-me"
+          - name: "patch-me"
+          - name: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-kube-system'
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterName
       toFieldPath: spec.forProvider.clusterName
