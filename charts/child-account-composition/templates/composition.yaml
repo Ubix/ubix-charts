@@ -412,7 +412,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-
 # ########
 # # EKS Cluster and related resources
 # ########
@@ -496,35 +495,6 @@ spec:
     - fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: vpc-cni-addon
-    base:
-      apiVersion: eks.aws.upbound.io/v1beta1
-      kind: Addon
-      spec:
-        forProvider:
-          addonVersion: "v1.11.4-eksbuild.1"
-          serviceAccountRoleArn: ""
-          clusterNameRef:
-            name: ""
-          region: us-east-1
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-vpc-cni'
-    - fromFieldPath: status.clusterName
-      toFieldPath: spec.forProvider.clusterNameRef.name
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.eks.vpcCniAddonVersion
-      toFieldPath: spec.forProvider.AddonVersion
-    - fromFieldPath: status.vpcCniRoleArn
-      toFieldPath: spec.forProvider.serviceAccountRoleArn
-    - fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
   - name: karpenter-fargate-profile
     base:
       apiVersion: eks.aws.upbound.io/v1beta1
@@ -581,6 +551,32 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1c'
+
+# ########
+# # IAM Instance Profiles
+# ########
+
+  - name: karpenter-instance-profile
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: InstanceProfile
+      spec:
+        forProvider:
+          role: patchme
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 # ########
 # # IAM Roles
 # ########
@@ -621,6 +617,99 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.fargateExecRoleName
+
+  - name: karpenter-irsa-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-karpenter"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:karpenter:karpenter",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.karpenterIRSARoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.karpenterIRSARoleName
+
+  - name: karpenter-cluster-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "EKSNodeAssumeRole",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "ec2.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-karpenter-cluster"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.karpenterClusterRoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.karpenterClusterRoleName
 
   - name: vpc-cni-addon-role
     base:
@@ -767,6 +856,114 @@ spec:
 # # IAM Policies
 # ########
 
+  - name: karpenter-irsa-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      spec:
+        forProvider:
+          policy: |
+            {
+                "Statement": [
+                    {
+                        "Action": [
+                            "pricing:GetProducts",
+                            "ec2:DescribeSubnets",
+                            "ec2:DescribeSpotPriceHistory",
+                            "ec2:DescribeSecurityGroups",
+                            "ec2:DescribeLaunchTemplates",
+                            "ec2:DescribeInstances",
+                            "ec2:DescribeInstanceTypes",
+                            "ec2:DescribeInstanceTypeOfferings",
+                            "ec2:DescribeImages",
+                            "ec2:DescribeAvailabilityZones",
+                            "ec2:CreateTags",
+                            "ec2:CreateLaunchTemplate",
+                            "ec2:CreateFleet"
+                        ],
+                        "Effect": "Allow",
+                        "Resource": "*",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": [
+                            "ec2:TerminateInstances",
+                            "ec2:DeleteLaunchTemplate"
+                        ],
+                        "Condition": {
+                            "StringEquals": {
+                                "ec2:ResourceTag/karpenter.sh/discovery": "ubix-backoffice-cluster-1"
+                            }
+                        },
+                        "Effect": "Allow",
+                        "Resource": "*",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": "ec2:RunInstances",
+                        "Condition": {
+                            "StringEquals": {
+                                "ec2:ResourceTag/karpenter.sh/discovery": "ubix-backoffice-cluster-1"
+                            }
+                        },
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:ec2:*:882490700787:launch-template/*",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": "ec2:RunInstances",
+                        "Effect": "Allow",
+                        "Resource": [
+                            "arn:aws:ec2:*::image/*",
+                            "arn:aws:ec2:*:882490700787:volume/*",
+                            "arn:aws:ec2:*:882490700787:subnet/*",
+                            "arn:aws:ec2:*:882490700787:spot-instances-request/*",
+                            "arn:aws:ec2:*:882490700787:security-group/*",
+                            "arn:aws:ec2:*:882490700787:network-interface/*",
+                            "arn:aws:ec2:*:882490700787:instance/*"
+                        ],
+                        "Sid": ""
+                    },
+                    {
+                        "Action": "ssm:GetParameter",
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:ssm:*:*:parameter/aws/service/*",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": "iam:PassRole",
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:iam::882490700787:role/Karpenter-ubix-backoffice-cluster-1",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": [
+                            "sqs:ReceiveMessage",
+                            "sqs:GetQueueUrl",
+                            "sqs:GetQueueAttributes",
+                            "sqs:DeleteMessage"
+                        ],
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:sqs:us-east-1:882490700787:Karpenter-ubix-backoffice-cluster-1",
+                        "Sid": ""
+                    }
+                ],
+                "Version": "2012-10-17"
+            }
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-irsa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.karpenterIRSAPolicyArn
+
 # ########
 # # IAM Policy Attachments
 # ########
@@ -787,6 +984,119 @@ spec:
           fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
       fromFieldPath: status.fargateExecRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: fargate-cni-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-cni'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.fargateExecRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-eks-worker-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-eks-worker-node'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-ec2-container-registry-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-ec2-container-registry'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-cni-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster-cni'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-irsa-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-irsa-attachment'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterIRSAPolicyArn
+      toFieldPath: spec.forProvider.policyArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterIRSARoleName
       toFieldPath: spec.forProvider.role
     - type: FromCompositeFieldPath
       fromFieldPath: status.id

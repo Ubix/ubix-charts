@@ -121,6 +121,21 @@ spec:
               fargateExecRoleName:
                 description: Role to give fargate execution perms
                 type: string
+              karpenterIRSARoleArn:
+                description: Role to give karpenter workload
+                type: string
+              karpenterIRSARoleName:
+                description: Role to give karpenter workload
+                type: string
+              karpenterClusterRoleArn:
+                description: Role to give karpenter workload
+                type: string
+              karpenterClusterRoleName:
+                description: Role to give karpenter workload
+                type: string
+              karpenterIRSAPolicyArn:
+                description: Policy to allow karpenter workload to work
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
