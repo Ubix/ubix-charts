@@ -467,6 +467,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.endpoint
       toFieldPath: status.clusterEndpoint
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.certificateAuthority[0].data
+      toFieldPath: status.clusterCertificateAuthorityData
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.status
@@ -1244,41 +1247,77 @@ spec:
 #####
 # ArgoCD
 #####
-    - name: argocd-secret-remote-cluster-credentials
-      base:
-        apiVersion: kubernetes.crossplane.io/v1alpha1
-        kind: Object
-        spec:
-          forProvider:
-            manifest:
-              apiVersion: v1
-              kind: Secret
-              metadata:
-                namespace: argocd-system
-                labels:
-                  argocd.argoproj.io/secret-type: cluster
-              server: # patched
+  - name: argocd-secret-remote-cluster-credentials
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Secret
+            metadata:
               name: # patched
-              config:
-                awsAuthConfig:
-                    clusterName: # patched
-                    roleARN: # patched
-              type: Opaque
-          providerConfigRef:
-            name: ubix-backoffice-cluster-1
-      patches:
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.name
-        - fromFieldPath: metadata.name
-          toFieldPath: spec.forProvider.manifest.name
-        - fromFieldPath: status.clusterEndpoint
-          toFieldPath: spec.forProvider.manifest.server
-        - fromFieldPath: metadata.name
-          toFieldPath: spec.forProvider.manifest.config.awsAuthConfig.clusterName
-        - type: FromCompositeFieldPath
-          fromFieldPath: status.id
-          toFieldPath: spec.forProvider.manifest.config.awsAuthConfig.roleARN
-          transforms:
-            - type: string
-              string:
-                fmt: "arn:aws:iam::%s:role/OrganizationAccountAccessRole"
+              namespace: argocd
+              labels:
+                argocd.argoproj.io/secret-type: cluster
+            # stringData:
+            # name: # patched
+            # server: # patched
+            #   config:
+            #     awsAuthConfig:
+            #         clusterName: # patched
+            #         roleARN: # patched
+            type: Opaque
+        providerConfigRef:
+          name: root
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - fromFieldPath: metadata.name
+        toFieldPath: spec.forProvider.manifest.metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%sargocd-cluster-secret"
+      - fromFieldPath: metadata.name
+        toFieldPath: spec.forProvider.manifest.stringData.name
+        transforms:
+          - type: string
+            string:
+              type: Convert
+              convert: ToBase64
+      - fromFieldPath: status.clusterEndpoint
+        toFieldPath: spec.forProvider.manifest.stringData.server
+        transforms:
+          - type: string
+            string:
+              type: Convert
+              convert: ToBase64
+      - type: CombineFromComposite
+        combine:
+          variables:
+            - fromFieldPath: status.clusterCertificateAuthorityData
+            - fromFieldPath: metadata.name
+            - fromFieldPath: status.id
+          strategy: string
+          string:
+            fmt: |
+              {
+                "tlsClientConfig":{
+                  "insecure":false,
+                  "caData":"%s"
+                },
+                "awsAuthConfig":{
+                  "clusterName":"%",
+                  "arn:aws:iam::%s:role/OrganizationAccountAccessRole"
+                }
+              }
+        toFieldPath: spec.forProvider.manifest.stringData.config
+        policy:
+          fromFieldPath: Required
+        transforms:
+          - type: string
+            string:
+              type: Convert
+              convert: ToBase64
