@@ -934,32 +934,40 @@ spec:
 #####
 # ArgoCD
 #####
-    - name: argocd-remote-cluster-credentials
+    - name: argocd-secret-remote-cluster-credentials
       base:
-        apiVersion: cluster.argocd.crossplane.io/v1alpha1
-        kind: Cluster
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
         spec:
           forProvider:
-            server: # patched
-            name: # patched
-            config:
-              awsAuthConfig:
-                  clusterName: # patched
-                  roleARN: # patched
+            manifest:
+              apiVersion: v1
+              kind: Secret
+              metadata:
+                namespace: argocd-system
+                labels:
+                  argocd.argoproj.io/secret-type: cluster
+              server: # patched
+              name: # patched
+              config:
+                awsAuthConfig:
+                    clusterName: # patched
+                    roleARN: # patched
+              type: Opaque
           providerConfigRef:
-            name: root
+            name: ubix-backoffice-cluster-1
       patches:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
         - fromFieldPath: metadata.name
-          toFieldPath: spec.forProvider.name
+          toFieldPath: spec.forProvider.manifest.name
         - fromFieldPath: status.clusterEndpoint
-          toFieldPath: spec.forProvider.server
+          toFieldPath: spec.forProvider.manifest.server
         - fromFieldPath: metadata.name
-          toFieldPath: spec.forProvider.config.awsAuthConfig.clusterName
+          toFieldPath: spec.forProvider.manifest.config.awsAuthConfig.clusterName
         - type: FromCompositeFieldPath
           fromFieldPath: status.id
-          toFieldPath: spec.forProvider.config.awsAuthConfig.roleARN
+          toFieldPath: spec.forProvider.manifest.config.awsAuthConfig.roleARN
           transforms:
             - type: string
               string:
