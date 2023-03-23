@@ -265,8 +265,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           tags:
-            # kubernetes.io/role/elb: "1"
-            # TODO: add karpenter
+            karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
           resolve: "always"
@@ -279,6 +278,9 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -298,8 +300,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           tags:
-            # kubernetes.io/role/elb: "1"
-            # TODO: add karpenter
+            karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
           resolve: "always"
@@ -312,6 +313,9 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -331,8 +335,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           tags:
-            # kubernetes.io/role/elb: "1"
-            # TODO: Add karpenter
+            karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
           resolve: "always"
@@ -345,6 +348,9 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
