@@ -1270,35 +1270,25 @@ spec:
               #       roleARN: # patched
             type: Opaque
         providerConfigRef:
-          name: root
+          name: kubernetes-provider
     patches:
       - fromFieldPath: spec.id
         toFieldPath: metadata.name
-      - fromFieldPath: metadata.name
+      - fromFieldPath: spec.id
         toFieldPath: spec.forProvider.manifest.metadata.name
         transforms:
           - type: string
             string:
               fmt: "%sargocd-cluster-secret"
-      - fromFieldPath: metadata.name
+      - fromFieldPath: spec.id
         toFieldPath: spec.forProvider.manifest.stringData.name
-        transforms:
-          - type: string
-            string:
-              type: Convert
-              convert: ToBase64
       - fromFieldPath: status.clusterEndpoint
         toFieldPath: spec.forProvider.manifest.stringData.server
-        transforms:
-          - type: string
-            string:
-              type: Convert
-              convert: ToBase64
       - type: CombineFromComposite
         combine:
           variables:
             - fromFieldPath: status.clusterCertificateAuthorityData
-            - fromFieldPath: metadata.name
+            - fromFieldPath: spec.id
             - fromFieldPath: status.id
           strategy: string
           string:
@@ -1309,15 +1299,10 @@ spec:
                   "caData":"%s"
                 },
                 "awsAuthConfig":{
-                  "clusterName":"%",
-                  "arn:aws:iam::%s:role/OrganizationAccountAccessRole"
+                  "clusterName":"%s",
+                  "roleARN":"arn:aws:iam::%s:role/OrganizationAccountAccessRole"
                 }
               }
         toFieldPath: spec.forProvider.manifest.stringData.config
         policy:
           fromFieldPath: Required
-        transforms:
-          - type: string
-            string:
-              type: Convert
-              convert: ToBase64
