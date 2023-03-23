@@ -1262,12 +1262,12 @@ spec:
               labels:
                 argocd.argoproj.io/secret-type: cluster
             # stringData:
-            # name: # patched
-            # server: # patched
-            #   config:
-            #     awsAuthConfig:
-            #         clusterName: # patched
-            #         roleARN: # patched
+              # name: # patched
+              # server: # patched
+              # config:
+              #   awsAuthConfig:
+              #       clusterName: # patched
+              #       roleARN: # patched
             type: Opaque
         providerConfigRef:
           name: root
