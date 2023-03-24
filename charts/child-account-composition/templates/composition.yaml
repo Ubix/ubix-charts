@@ -713,6 +713,44 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.fargateExecRoleName
 
+  - name: backoffice-argocd-access-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Argo": "{{ .Values.backofficeArgocdRoleArn }}"
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-backoffice-argocd-access"
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.backofficeArgocdAccessRoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.backofficeArgocdAccessRoleName
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: karpenter-irsa-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
