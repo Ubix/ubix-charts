@@ -490,25 +490,32 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.privateRouteTableID
 
-  - name: route
+  - name: public-route
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Route
       spec:
         forProvider:
-          routeTableIdSelector:
-            matchControllerRef: true
-          gatewayIdSelector:
-            matchControllerRef: true
+          routeTableId: patchme
+          gatewayId: patchme
           destinationCidrBlock: 0.0.0.0/0
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.internetGatewayID
+      toFieldPath: spec.forProvider.gatewayId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
