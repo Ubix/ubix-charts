@@ -93,18 +93,18 @@ spec:
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPC
+      metadata:
+        name: eks-vpc
       spec:
         forProvider:
+          enableDnsHostnames: true
+          region: #patched
           cidrBlock: 10.0.0.0/16
-          enableDnsSupport: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
+          tags:
+            Name: eks-vpc
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -116,8 +116,8 @@ spec:
       spec:
         forProvider:
           description: Cluster communication with worker nodes
-          vpcIdSelector:
-            matchControllerRef: true
+          vpcIdRef:
+            name: eks-vpc
       providerConfigRef:
         policy:
           resolve: "always"
@@ -155,265 +155,372 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       metadata:
+        name: public-subnet-1a
         labels:
-          zone: us-east-1a
           access: public
       spec:
         forProvider:
-          availabilityZone: us-east-1a
+          region: #patched
+          mapPublicIpOnLaunch: true
+          availabilityZone: #patched us-east-1a
+          vpcIdRef:
+            name: eks-vpc
           cidrBlock: 10.0.0.0/24
-          vpcIdSelector:
-            matchControllerRef: true
-          mapPublicIPOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: 'public-%s-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.providerConfigRef.availabilityZone
+      transforms:
+      - type: string
+        string:
+          fmt: '%sa'
 
   - name: public-subnet-1b
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       metadata:
+        name: public-subnet-1b
         labels:
-          zone: us-east-1b
           access: public
       spec:
         forProvider:
-          availabilityZone: us-east-1b
+          region: #patched
+          mapPublicIpOnLaunch: true
+          availabilityZone: #patched us-east-1b
+          vpcIdRef:
+            name: eks-vpc
           cidrBlock: 10.0.1.0/24
-          vpcIdSelector:
-            matchControllerRef: true
-          mapPublicIPOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: 'public-%s-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.providerConfigRef.availabilityZone
+      transforms:
+      - type: string
+        string:
+          fmt: '%sb'
 
   - name: public-subnet-1c
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       metadata:
+        name: public-subnet-1c
         labels:
-          zone: us-east-1c
           access: public
       spec:
         forProvider:
-          availabilityZone: us-east-1c
+          region: #patched
+          mapPublicIpOnLaunch: true
+          availabilityZone: #patched us-east-1c
+          vpcIdRef:
+            name: eks-vpc
           cidrBlock: 10.0.2.0/24
-          vpcIdSelector:
-            matchControllerRef: true
-          mapPublicIPOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: 'public-%s-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.providerConfigRef.availabilityZone
+      transforms:
+      - type: string
+        string:
+          fmt: '%sc'
 
   - name: private-subnet-1a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       metadata:
+        name: private-subnet-1a
         labels:
-          zone: us-east-1a
           access: private
       spec:
         forProvider:
-          availabilityZone: us-east-1a
-          cidrBlock: 10.0.100.0/24
-          vpcIdSelector:
-            matchControllerRef: true
+          region: #patched
+          availabilityZone: #patched us-east-1a
+          vpcIdRef:
+            name: eks-vpc
+          cidrBlock: 10.0.10.0/24
           tags:
             karpenter.sh/discovery: patchme
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: 'private-%s-1a'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.providerConfigRef.availabilityZone
+      transforms:
+      - type: string
+        string:
+          fmt: '%sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
 
   - name: private-subnet-1b
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       metadata:
+        name: private-subnet-1b
         labels:
-          zone: us-east-1b
           access: private
       spec:
         forProvider:
-          availabilityZone: us-east-1b
-          cidrBlock: 10.0.101.0/24
-          vpcIdSelector:
-            matchControllerRef: true
+          region: #patched
+          availabilityZone: #patched us-east-1b
+          vpcIdRef:
+            name: eks-vpc
+          cidrBlock: 10.0.11.0/24
           tags:
             karpenter.sh/discovery: patchme
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: 'private-%s-1b'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.providerConfigRef.availabilityZone
+      transforms:
+      - type: string
+        string:
+          fmt: '%sb'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
 
   - name: private-subnet-1c
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       metadata:
+        name: private-subnet-1c
         labels:
-          zone: us-east-1c
           access: private
       spec:
         forProvider:
-          availabilityZone: us-east-1c
-          cidrBlock: 10.0.102.0/24
-          vpcIdSelector:
-            matchControllerRef: true
+          region: #patched
+          availabilityZone: #patched us-east-1c
+          vpcIdRef:
+            name: eks-vpc
+          cidrBlock: 10.0.12.0/24
           tags:
             karpenter.sh/discovery: patchme
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.providerConfigRef.availabilityZone
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1c'
+          fmt: '%sc'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
 
-  - name: gateway
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: InternetGateway
-      spec:
-        forProvider:
-          vpcIdSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
-    patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
-  - name: routetable
+  - name: eks-routetable
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTable
+      metadata:
+        name: eks-routetable
       spec:
         forProvider:
-          vpcIdSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
+          region: #patched
+          tags:
+            Name: eks-routetable
+          vpcIdRef:
+            name: eks-vpc
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: route
+  - name: eks-routetable-association-1a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: Route
+      kind: RouteTableAssociation
+      metadata:
+        name: eks-routetbl-association-1a
       spec:
         forProvider:
-          routeTableIdSelector:
-            matchControllerRef: true
-          gatewayIdSelector:
-            matchControllerRef: true
-          destinationCidrBlock: 0.0.0.0/0
-      providerConfigRef:
-        policy:
-          resolve: "always"
+          region: #patched
+          routeTableIdRef:
+            name: eks-routetable
+          subnetIdRef:
+            name: private-subnet-1a
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: eks-routetable-association-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      metadata:
+        name: eks-routetbl-association-1b
+      spec:
+        forProvider:
+          region: #patched
+          routeTableIdRef:
+            name: eks-routetable
+          subnetIdRef:
+            name: private-subnet-1b
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: eks-routetable-association-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      metadata:
+        name: eks-routetbl-association-1c
+      spec:
+        forProvider:
+          region: #patched
+          routeTableIdRef:
+            name: eks-routetable
+          subnetIdRef:
+            name: private-subnet-1c
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: internet-gateway
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: InternetGateway
+      metadata:
+        name: eks-igw
+      spec:
+        forProvider:
+          region: #patched
+          vpcIdRef:
+            name: eks-vpc
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: eks-default-routetable
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: DefaultRouteTable
+      metadata:
+        name: eks-def-routetable
+      spec:
+        forProvider:
+          defaultRouteTableIdRef:
+            name: eks-vpc
+          region: #patched
+          route:
+            - gatewayIdRef:
+                name: eks-igw
+              cidrBlock: 0.0.0.0/0
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: eks-nat-gateway-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: NATGateway
+      metadata:
+        name: eks-nat-gateway-1a
+      spec:
+        forProvider:
+          region: #patched
+          connectivityType: "private"
+          subnetIdRef:
+            name: private-subnet-1a
+          tags:
+            Name: eks-nat-gateway
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: eks-nat-gateway-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: NATGateway
+      metadata:
+        name: eks-nat-gateway-1b
+      spec:
+        forProvider:
+          region: #patched
+          connectivityType: "private"
+          subnetIdRef:
+            name: private-subnet-1b
+          tags:
+            Name: eks-nat-gateway
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: eks-nat-gateway-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: NATGateway
+      metadata:
+        name: eks-nat-gateway-1c
+      spec:
+        forProvider:
+          region: #patched
+          connectivityType: "private"
+          subnetIdRef:
+            name: private-subnet-1c
+          tags:
+            Name: eks-nat-gateway
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
