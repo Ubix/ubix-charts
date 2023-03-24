@@ -405,7 +405,7 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.natGatewayID
 
-  - name: gateway
+  - name: internet-gateway
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: InternetGateway
@@ -426,7 +426,7 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.ineternetGatewayID
+      toFieldPath: status.internetGatewayID
 
   - name: routetable-public
     base:

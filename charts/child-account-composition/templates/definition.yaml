@@ -106,7 +106,7 @@ spec:
               natGatewayID:
                 description: id of the nat gateway
                 type: string
-              ineternetGatewayID:
+              internetGatewayID:
                 description: id of the internet
                 type: string
               privateSubnet1aID:
