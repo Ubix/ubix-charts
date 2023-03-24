@@ -95,19 +95,23 @@ spec:
       kind: VPC
       spec:
         forProvider:
+          enableDnsHostnames: true
           cidrBlock: 10.0.0.0/16
           enableDnsSupport: true
       providerConfigRef:
         policy:
           resolve: "always"
     patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.vpcID
 
   - name: sg-nodepool
     base:
@@ -182,6 +186,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.publicSubnet1aID
 
   - name: public-subnet-1b
     base:
@@ -215,7 +222,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.publicSubnet1bID
 
   - name: public-subnet-1c
     base:
@@ -249,6 +258,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.publicSubnet1cID
 
   - name: private-subnet-1a
     base:
@@ -284,6 +296,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateSubnet1aID
 
   - name: private-subnet-1b
     base:
@@ -319,6 +334,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateSubnet1bID
 
   - name: private-subnet-1c
     base:
@@ -383,6 +401,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayID
 
   - name: gateway
     base:
@@ -403,26 +424,71 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.ineternetGatewayID
 
-  - name: routetable
+  - name: routetable-public
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTable
       spec:
         forProvider:
-          vpcIdSelector:
-            matchControllerRef: true
+          vpcId: patchme
       providerConfigRef:
         policy:
           resolve: "always"
     patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.publicRouteTableID
+
+  - name: routetable-private
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTable
+      spec:
+        forProvider:
+          vpcId: patchme
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateRouteTableID
 
   - name: route
     base:
@@ -443,6 +509,186 @@ spec:
       toFieldPath: spec.forProvider.region
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-route-table-assossiation-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1aID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-route-table-assossiation-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1bID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-route-table-assossiation-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1cID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: public-route-table-assossiation-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicSubnet1aID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: public-route-table-assossiation-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicSubnet1bID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: public-route-table-assossiation-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicSubnet1cID
+      toFieldPath: spec.forProvider.subnetId
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
