@@ -527,7 +527,7 @@ spec:
       spec:
         forProvider:
           routeTableId: patchme
-          gatewayId: patchme
+          natGatewayId: patchme
           destinationCidrBlock: 0.0.0.0/0
     patches:
     - type: FromCompositeFieldPath
@@ -542,7 +542,7 @@ spec:
       toFieldPath: spec.forProvider.routeTableId
     - type: FromCompositeFieldPath
       fromFieldPath: status.natGatewayID
-      toFieldPath: spec.forProvider.gatewayId
+      toFieldPath: spec.forProvider.natGatewayId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
