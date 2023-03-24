@@ -647,6 +647,39 @@ spec:
         string:
           fmt: 'private-%s-1c'
 
+  - name: core-dns-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        annotations:
+          crossplane.io/external-name: coredns
+      spec:
+        forProvider:
+          clusterName: patchme
+          region: us-east-1
+          configurationValues: |
+            {
+              "computeType": "Fargate"
+            }
+          resolveConflicts: OVERWRITE
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-core-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 # ########
 # # IAM Instance Profiles
 # ########
