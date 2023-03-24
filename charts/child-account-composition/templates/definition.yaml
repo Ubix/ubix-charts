@@ -142,15 +142,6 @@ spec:
               karpenterIRSAPolicyArn:
                 description: Policy to allow karpenter workload to work
                 type: string
-              backofficeArgocdAccessRoleArn:
-                description: Role to allow backoffice argocd to access and controll cluster
-                type: string
-              backofficeArgocdAccessRoleName:
-                description: Role to allow backoffice argocd to access and controll cluster
-                type: string
-              backofficeArgocdAcessPolicyArn:
-                description: Role to allow backoffice argocd to access and controll cluster
-                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
