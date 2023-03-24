@@ -118,9 +118,6 @@ spec:
           description: Cluster communication with worker nodes
           vpcIdRef:
             name: eks-vpc
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
