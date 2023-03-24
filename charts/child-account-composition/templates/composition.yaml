@@ -675,6 +675,44 @@ spec:
 # ########
 # # IAM Roles
 # ########
+
+  - name: organization-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: OrganizationAccountAccessRole
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": [
+                                "{{ .Values.backofficeArgocdRoleArn }}",
+                                "arn:aws:iam::543587022756:root"
+                            ]
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-organization-role"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: fargate-profile-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
