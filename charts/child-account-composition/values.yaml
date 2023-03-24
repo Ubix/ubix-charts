@@ -1,1 +1,1 @@
-childaccount:
+backofficeArgocdRoleArn: #required: arn:aws:iam::882490700787:role/argocd-server

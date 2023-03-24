@@ -378,6 +378,35 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateSubnet1cID
+
+  - name: nat-gateway
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: NATGateway
+      spec:
+        forProvider:
+          connectivityType: private
+          region: us-east-1
+          subnetId: patch-me
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1cID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: eks-routetable-association-1b
     base:
@@ -722,6 +751,39 @@ spec:
         string:
           fmt: 'private-%s-1c'
 
+  - name: core-dns-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        annotations:
+          crossplane.io/external-name: coredns
+      spec:
+        forProvider:
+          clusterName: patchme
+          region: us-east-1
+          configurationValues: |
+            {
+              "computeType": "Fargate"
+            }
+          resolveConflicts: OVERWRITE
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-core-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 # ########
 # # IAM Instance Profiles
 # ########
@@ -750,6 +812,44 @@ spec:
 # ########
 # # IAM Roles
 # ########
+
+  - name: organization-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: OrganizationAccountAccessRole
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": [
+                                "{{ .Values.backofficeArgocdRoleArn }}",
+                                "arn:aws:iam::543587022756:root"
+                            ]
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-organization-role"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: fargate-profile-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1

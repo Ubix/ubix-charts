@@ -94,6 +94,9 @@ spec:
               accountStatus:
                 description: The status of the AWS account
                 type: string
+              privateSubnet1cID:
+                description: id of the private subnet 1 on az c
+                type: string
               clusterName:
                 description: The name of the cluster
                 type: string
