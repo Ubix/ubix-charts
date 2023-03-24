@@ -727,7 +727,7 @@ spec:
                         "Sid": "",
                         "Effect": "Allow",
                         "Principal": {
-                            "Argo": "{{ .Values.backofficeArgocdRoleArn }}"
+                            "AWS": "{{ .Values.backofficeArgocdRoleArn }}"
                         },
                         "Action": "sts:AssumeRole"
                     }
