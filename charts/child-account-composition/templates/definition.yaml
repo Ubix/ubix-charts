@@ -91,10 +91,40 @@ spec:
               arn:
                 description:  The ARN for this account.
                 type: string
+              vpcID:
+                description: The VPC id
+                type: string
               accountStatus:
                 description: The status of the AWS account
                 type: string
+              publicRouteTableID:
+                description: the public route table id
+                type: string
+              privateRouteTableID:
+                description: the private route table id
+                type: string
+              natGatewayID:
+                description: id of the nat gateway
+                type: string
+              internetGatewayID:
+                description: id of the internet
+                type: string
+              privateSubnet1aID:
+                description: id of the private subnet 1 on az c
+                type: string
+              privateSubnet1bID:
+                description: id of the private subnet 1 on az c
+                type: string
               privateSubnet1cID:
+                description: id of the private subnet 1 on az c
+                type: string
+              publicSubnet1aID:
+                description: id of the private subnet 1 on az c
+                type: string
+              publicSubnet1bID:
+                description: id of the private subnet 1 on az c
+                type: string
+              publicSubnet1cID:
                 description: id of the private subnet 1 on az c
                 type: string
               clusterName:
