@@ -376,13 +376,39 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.privateSubnet1cID
 
+  - name: nat-gateway-eip
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: EIP
+      spec:
+        forProvider:
+          region: us-east-1
+          vpc: true
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayEIPID
+
   - name: nat-gateway
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: NATGateway
       spec:
         forProvider:
-          connectivityType: private
+          allocationId: patchme
           region: us-east-1
           subnetId: patch-me
     patches:
@@ -392,6 +418,9 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.natGatewayEIPID
+      toFieldPath: spec.forProvider.allocationId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
