@@ -773,8 +773,7 @@ spec:
           vpcConfig:
             - endpointPrivateAccess: true
               endpointPublicAccess: true
-              subnetIdSelector:
-                matchControllerRef: true
+              subnetIds:
       providerConfigRef:
         policy:
           resolve: "always"
@@ -785,6 +784,15 @@ spec:
       toFieldPath: metadata.name
     - fromFieldPath: spec.eks.version
       toFieldPath: spec.forProvider.version
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1aID
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[0]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1bID
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[1]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1cID
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[2]
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
