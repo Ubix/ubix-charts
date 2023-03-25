@@ -425,7 +425,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.publicSubnet1aID
+      fromFieldPath: status.privateSubnet1cID
       toFieldPath: spec.forProvider.subnetId
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -819,6 +819,11 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
       toFieldPath: status.clusterOIDC
+      transforms:
+      - type: string
+        string:
+          type: TrimPrefix
+          trim: 'https://'
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.endpoint
       toFieldPath: status.clusterEndpoint
