@@ -847,12 +847,16 @@ spec:
         forProvider:
           url: ""
           clientIdList:
-            - https://sts.amazonaws.com
+            - sts.amazonaws.com
           thumbprintList:
             - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280 # this is the sts static thumbprint
     patches:
     - fromFieldPath: status.clusterOIDC
       toFieldPath: spec.forProvider.url
+      transforms:
+      - type: string
+        string:
+          fmt: "https://%s"
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
     - fromFieldPath: status.id
