@@ -992,6 +992,64 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: vpc-cni-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        annotations:
+          crossplane.io/external-name: vpc-cni
+      spec:
+        forProvider:
+          clusterName: patchme
+          region: us-east-1
+          resolveConflicts: OVERWRITE
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-vpc-cni'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: kube-proxy-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        annotations:
+          crossplane.io/external-name: kube-proxy
+      spec:
+        forProvider:
+          clusterName: patchme
+          region: us-east-1
+          resolveConflicts: OVERWRITE
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-kube-proxy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 # ########
 # # IAM Instance Profiles
 # ########
