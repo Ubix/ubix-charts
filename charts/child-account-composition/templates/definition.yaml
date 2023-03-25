@@ -103,6 +103,9 @@ spec:
               privateRouteTableID:
                 description: the private route table id
                 type: string
+              natGatewayEIPID:
+                description: Nat Gateway elastic ip id
+                type: string
               natGatewayID:
                 description: id of the nat gateway
                 type: string

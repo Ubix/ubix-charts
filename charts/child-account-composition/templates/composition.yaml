@@ -376,13 +376,39 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.privateSubnet1cID
 
+  - name: nat-gateway-eip
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: EIP
+      spec:
+        forProvider:
+          region: us-east-1
+          vpc: true
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayEIPID
+
   - name: nat-gateway
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: NATGateway
       spec:
         forProvider:
-          connectivityType: private
+          allocationId: patchme
           region: us-east-1
           subnetId: patch-me
     patches:
@@ -392,6 +418,9 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.natGatewayEIPID
+      toFieldPath: spec.forProvider.allocationId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -744,8 +773,7 @@ spec:
           vpcConfig:
             - endpointPrivateAccess: true
               endpointPublicAccess: true
-              subnetIdSelector:
-                matchControllerRef: true
+              subnetIds:
       providerConfigRef:
         policy:
           resolve: "always"
@@ -756,6 +784,15 @@ spec:
       toFieldPath: metadata.name
     - fromFieldPath: spec.eks.version
       toFieldPath: spec.forProvider.version
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1aID
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[0]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1bID
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[1]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1cID
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[2]
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
@@ -953,6 +990,64 @@ spec:
       - type: string
         string:
           fmt: '%s-core-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: vpc-cni-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        annotations:
+          crossplane.io/external-name: vpc-cni
+      spec:
+        forProvider:
+          clusterName: patchme
+          region: us-east-1
+          resolveConflicts: OVERWRITE
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-vpc-cni'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: kube-proxy-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        annotations:
+          crossplane.io/external-name: kube-proxy
+      spec:
+        forProvider:
+          clusterName: patchme
+          region: us-east-1
+          resolveConflicts: OVERWRITE
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-kube-proxy'
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterName
       toFieldPath: spec.forProvider.clusterName
