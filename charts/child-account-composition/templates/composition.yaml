@@ -759,6 +759,103 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: bucket
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        labels:
+          #TODO: define labels
+          #name: childaccount
+      providerConfigRef:
+          policy:
+            resolve: "always"
+      spec:
+        forProvider:
+          region: us-east-1
+    patches:
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: spec.parameters.name
+          - fromFieldPath: spec.id
+          - fromFieldPath: spec.parameters.region
+        strategy: string
+        string:
+          #TODO: define 'name'
+          fmt: "%s-%s-%s-name"
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.aws_region
+      toFieldPath: spec.forProvider.region
+
+  - name: bucket-solutionspace-backend
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        labels:
+          #TODO: define labels
+          #name: childaccount
+      providerConfigRef:
+          policy:
+            resolve: "always"
+      spec:
+        forProvider:
+          region: us-east-1
+    patches:
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: spec.parameters.name
+          - fromFieldPath: spec.id
+          - fromFieldPath: spec.parameters.region
+        strategy: string
+        string:
+          #TODO: define 'name'
+          fmt: "%s-%s-%s-name"
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.aws_region
+      toFieldPath: spec.forProvider.region
+
+  - name: bucketpolicies
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPublicAccessBlock
+      spec:
+        forProvider:
+          blockPublicAcls: true
+          blockPublicPolicy: true
+          ignorePublicAcls: true
+          restrictPublicBuckets: true
+          bucketSelector:
+            matchLabels:
+              #TODO: add labels
+              #name: childaccount
+          region: us-west-1
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.aws_region
+      toFieldPath: spec.forProvider.region
+      
+  - name: bucketacl
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketACL
+      spec:
+        forProvider:
+          acl: private
+          bucketSelector:
+            matchLabels:
+              #TODO: add labels
+              #name: childaccount
+          region: us-west-1
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.aws_region
+      toFieldPath: spec.forProvider.region
+
 # ########
 # # EKS Cluster and related resources
 # ########
