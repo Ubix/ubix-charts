@@ -1,0 +1,199 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: childaccounts.cloudspace.resources
+spec:
+  connectionSecretKeys:
+  - kubeconfig
+  defaultCompositionRef:
+    name: account-aws
+  group: cloudspace.resources
+  names:
+    kind: ChildAccount
+    plural: childaccounts
+  claimNames:
+    kind: ChildAccountClaim
+    plural: childaccountclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID of this Account that other objects will use to refer to it.
+              parameters:
+                type: object
+                properties:
+                  name:
+                    description: Friendly name for the member account.
+                    type: string
+                  email:
+                    description: Email address of the owner to assign to the new member account. This email address must not already be associated with another AWS account.
+                    type: string
+                  parentId:
+                    description: Parent Organizational Unit ID or Root ID for the account. Defaults to the Organization default Root ID. A configuration must be present for this argument to perform drift detection.
+                    type: string
+                    default: ou-8jat-sv0412tm
+                  region:
+                    description: Region is the region you'd like your resource to be created in.
+                    type: string
+                    default: us-east-1
+                required:
+                - name
+                - email
+                - parentId
+              eks:
+                type: object
+                properties:
+                  version:
+                    description: The Kubernetes version for the cluster.
+                    type: string
+                    default: "1.24"
+                  vpcCniAddonVersion:
+                    description: The VPC CNI Addon version to install in the cluster.
+                    type: string
+                    default: "v1.11.4-eksbuild.1"
+                  nodeSize:
+                    description: The size of the nodes; small, medium, large
+                    type: string
+                    default: small
+                  minNodeCount:
+                    description: The minimum number of nodes
+                    type: integer
+                    default: 1
+                  maxNodeCount:
+                    description: The maximum number of nodes
+                    type: integer
+                    default: 3
+                  desiredNodeCount:
+                    description: The desired number of nodes
+                    type: integer
+                    default: 1
+                  diskSize:
+                    description: The root device disk size (in GiB) for your node group instances. The default disk size is 20 GiB.
+                    type: integer
+                    default: 20
+            required:
+            - parameters
+          status:
+            type: object
+            properties:
+              id:
+                description: The AWS account id
+                type: string
+              arn:
+                description:  The ARN for this account.
+                type: string
+              vpcID:
+                description: The VPC id
+                type: string
+              accountStatus:
+                description: The status of the AWS account
+                type: string
+              publicRouteTableID:
+                description: the public route table id
+                type: string
+              privateRouteTableID:
+                description: the private route table id
+                type: string
+              natGatewayEIPID:
+                description: Nat Gateway elastic ip id
+                type: string
+              natGatewayID:
+                description: id of the nat gateway
+                type: string
+              internetGatewayID:
+                description: id of the internet
+                type: string
+              privateSubnet1aID:
+                description: id of the private subnet 1 on az c
+                type: string
+              privateSubnet1bID:
+                description: id of the private subnet 1 on az c
+                type: string
+              privateSubnet1cID:
+                description: id of the private subnet 1 on az c
+                type: string
+              publicSubnet1aID:
+                description: id of the private subnet 1 on az c
+                type: string
+              publicSubnet1bID:
+                description: id of the private subnet 1 on az c
+                type: string
+              publicSubnet1cID:
+                description: id of the private subnet 1 on az c
+                type: string
+              clusterName:
+                description: The name of the cluster
+                type: string
+              controlPlaneStatus:
+                description: The status of the control plane
+                type: string
+              nodePoolStatus:
+                description: The status of the node pool
+                type: string
+              clusterOIDC:
+                description: Issuer URL for the OpenID Connect identity provider.
+                type: string
+              clusterEndpoint:
+                description: Endpoint for your Kubernetes API server.
+                type: string
+              clusterCertificateAuthorityData:
+                description: Base64 encoded certificate data required to communicate with your cluster.
+                type: string
+              vpcCniRoleArn:
+                description: Role to attach to VPC CNI service account
+                type: string
+              vpcCniRoleName:
+                description: Role to attach to VPC CNI service account
+                type: string
+              fargateExecRoleArn:
+                description: Role to give fargate execution perms
+                type: string
+              fargateExecRoleName:
+                description: Role to give fargate execution perms
+                type: string
+              karpenterIRSARoleArn:
+                description: Role to give karpenter workload
+                type: string
+              karpenterIRSARoleName:
+                description: Role to give karpenter workload
+                type: string
+              karpenterClusterRoleArn:
+                description: Role to give karpenter workload
+                type: string
+              karpenterClusterRoleName:
+                description: Role to give karpenter workload
+                type: string
+              karpenterIRSAPolicyArn:
+                description: Policy to allow karpenter workload to work
+                type: string
+    additionalPrinterColumns:
+    - name: AWSAccountID
+      type: string
+      jsonPath: ".status.id"
+    - name: arn
+      type: string
+      jsonPath: ".status.arn"
+    - name: accountStatus
+      type: string
+      jsonPath: ".status.accountStatus"
+    - name: clusterName
+      type: string
+      jsonPath: ".status.clusterName"
+    - name: controlPlane
+      type: string
+      jsonPath: ".status.controlPlaneStatus"
+    - name: nodePool
+      type: string
+      jsonPath: ".status.nodePoolStatus"
+    - name: clusterOIDC
+      type: string
+      jsonPath: ".status.clusterOIDC"

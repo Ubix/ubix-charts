@@ -1,0 +1,20 @@
+# Default values for compositioninstances.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#sample 
+metadata:
+  name: #name to tag the created resources
+spec:
+  id: #value used to name the aws resources created like vpc, subnet, eks cluster, etc
+  parameters:
+    name: #customer account name, will also be injected in the aws root account email
+    parentId: ou-8jat-sv0412tm
+    region: us-east-1
+  eks:
+    version: "1.23"
+    nodeSize: # small - medium - large
+    minNodeCount: #integer value for the eks cluster. min number of nodes
+    maxNodeCount: #integer value for the eks cluster. max number of nodes
+    desiredNodeCount: #integer value for the eks cluster. desired nodes in a regular state
+    diskSize: # disk size of the nodes

@@ -1,0 +1,1858 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: childaccount
+  labels:
+      provider: provider-aws
+      name: childaccount
+spec:
+  compositeTypeRef:
+    apiVersion: cloudspace.resources/v1alpha1
+    kind: ChildAccount
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: child-account
+    base:
+      apiVersion: organizations.aws.upbound.io/v1beta1
+      kind: Account
+      spec:
+        forProvider:
+          email: awsaccountadmin+crossplane.customername@ubixlabs.com
+          name: crossplanecreated
+          parentId: ou-8jat-sv0412tm
+        providerConfigRef:
+          name: root
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.email
+      toFieldPath: spec.forProvider.email
+    - fromFieldPath: spec.parameters.name
+      toFieldPath: spec.forProvider.name
+    - fromFieldPath: spec.parameters.parentId
+      toFieldPath: spec.forProvider.parentId
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-awsaccount"
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.id
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.status
+      toFieldPath: status.accountStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.arn
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.atProvider.status
+      matchString: ACTIVE
+    connectionDetails:
+      - fromConnectionSecretKey: kubeconfig
+
+#this resource is key to deploy everything inside the newly created account
+  - name: provider-config
+    base:
+      apiVersion: aws.upbound.io/v1beta1
+      kind: ProviderConfig
+      metadata:
+        #name: crossplane-test-pconfig
+        labels:
+          provider: provider-aws
+          name: childaccount
+      spec:
+        #assumeRoleARN: "arn:aws:iam::798374069605:role/OrganizationAccountAccessRole"
+        credentials:
+          source: IRSA
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: metadata.name
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.assumeRoleChain[0].roleARN
+      transforms:
+        - type: string
+          string:
+            fmt: "arn:aws:iam::%s:role/OrganizationAccountAccessRole"
+
+  - name: vpc
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPC
+      spec:
+        forProvider:
+          enableDnsHostnames: true
+          cidrBlock: 10.0.0.0/16
+          enableDnsSupport: true
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.vpcID
+
+  - name: sg-nodepool
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroup
+      spec:
+        forProvider:
+          description: Cluster communication with worker nodes
+          vpcIdSelector:
+            matchControllerRef: true
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-node-sg'
+        type: string
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+      transforms:
+      - string:
+          fmt: '%s-node-sg'
+        type: string
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.groupName
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.labels[securitygroup]
+      transforms:
+      - string:
+          fmt: '%s-node-sg'
+        type: string
+    readinessChecks:
+    - type: None
+
+  - name: public-subnet-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1a
+          access: public
+      spec:
+        forProvider:
+          availabilityZone: us-east-1a
+          cidrBlock: 10.0.0.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+          mapPublicIPOnLaunch: true
+          tags:
+            kubernetes.io/role/elb: "1"
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'public-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.publicSubnet1aID
+
+  - name: public-subnet-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1b
+          access: public
+      spec:
+        forProvider:
+          availabilityZone: us-east-1b
+          cidrBlock: 10.0.1.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+          mapPublicIPOnLaunch: true
+          tags:
+            kubernetes.io/role/elb: "1"
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'public-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.publicSubnet1bID
+
+  - name: public-subnet-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1c
+          access: public
+      spec:
+        forProvider:
+          availabilityZone: us-east-1c
+          cidrBlock: 10.0.2.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+          mapPublicIPOnLaunch: true
+          tags:
+            kubernetes.io/role/elb: "1"
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'public-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.publicSubnet1cID
+
+  - name: private-subnet-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1a
+          access: private
+      spec:
+        forProvider:
+          availabilityZone: us-east-1a
+          cidrBlock: 10.0.100.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+          tags:
+            karpenter.sh/discovery: patchme
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateSubnet1aID
+
+  - name: private-subnet-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1b
+          access: private
+      spec:
+        forProvider:
+          availabilityZone: us-east-1b
+          cidrBlock: 10.0.101.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+          tags:
+            karpenter.sh/discovery: patchme
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateSubnet1bID
+
+  - name: private-subnet-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1c
+          access: private
+      spec:
+        forProvider:
+          availabilityZone: us-east-1c
+          cidrBlock: 10.0.102.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+          tags:
+            karpenter.sh/discovery: patchme
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateSubnet1cID
+
+  - name: nat-gateway-eip
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: EIP
+      spec:
+        forProvider:
+          region: us-east-1
+          vpc: true
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayEIPID
+
+  - name: nat-gateway
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: NATGateway
+      spec:
+        forProvider:
+          allocationId: patchme
+          region: us-east-1
+          subnetId: patch-me
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.natGatewayEIPID
+      toFieldPath: spec.forProvider.allocationId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1cID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayID
+
+  - name: internet-gateway
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: InternetGateway
+      spec:
+        forProvider:
+          vpcIdSelector:
+            matchControllerRef: true
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.internetGatewayID
+
+  - name: routetable-public
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTable
+      spec:
+        forProvider:
+          vpcId: patchme
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.publicRouteTableID
+
+  - name: routetable-private
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTable
+      spec:
+        forProvider:
+          vpcId: patchme
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateRouteTableID
+
+  - name: public-route
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Route
+      spec:
+        forProvider:
+          routeTableId: patchme
+          gatewayId: patchme
+          destinationCidrBlock: 0.0.0.0/0
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.internetGatewayID
+      toFieldPath: spec.forProvider.gatewayId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-route
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Route
+      spec:
+        forProvider:
+          routeTableId: patchme
+          natGatewayId: patchme
+          destinationCidrBlock: 0.0.0.0/0
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.natGatewayID
+      toFieldPath: spec.forProvider.natGatewayId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-route-table-assossiation-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1aID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-route-table-assossiation-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1bID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-route-table-assossiation-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1cID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: public-route-table-assossiation-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicSubnet1aID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: public-route-table-assossiation-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicSubnet1bID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: public-route-table-assossiation-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableId: patchme
+          subnetId: patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.publicSubnet1cID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+# ########
+# # EKS Cluster and related resources
+# ########
+  - name: ekscluster
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Cluster
+      spec:
+        forProvider:
+          roleArnSelector:
+            matchControllerRef: true
+          vpcConfig:
+            - endpointPrivateAccess: true
+              endpointPublicAccess: true
+              subnetIds:
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.eks.version
+      toFieldPath: spec.forProvider.version
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1aID
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[0]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1bID
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[1]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1cID
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[2]
+    - fromFieldPath: spec.id
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-cluster'
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - type: ToCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: status.clusterName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.status
+      toFieldPath: status.controlPlaneStatus
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
+      toFieldPath: status.clusterOIDC
+      transforms:
+      - type: string
+        string:
+          type: TrimPrefix
+          trim: 'https://'
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.endpoint
+      toFieldPath: status.clusterEndpoint
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.certificateAuthority[0].data
+      toFieldPath: status.clusterCertificateAuthorityData
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.atProvider.status
+      matchString: ACTIVE
+    connectionDetails:
+    - fromConnectionSecretKey: kubeconfig
+    - fromConnectionSecretKey: kubeconfig
+      name: value
+
+  - name: identity-provider
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: OpenIDConnectProvider
+      spec:
+        forProvider:
+          url: ""
+          clientIdList:
+            - sts.amazonaws.com
+          thumbprintList:
+            - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280 # this is the sts static thumbprint
+    patches:
+    - fromFieldPath: status.clusterOIDC
+      toFieldPath: spec.forProvider.url
+      transforms:
+      - type: string
+        string:
+          fmt: "https://%s"
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-fargate-profile
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: FargateProfile
+      metadata:
+      spec:
+        forProvider:
+          clusterName: patch-me
+          podExecutionRoleArn: patch-me
+          region: patch-me
+          selector:
+            - namespace: karpenter
+          subnetIdRefs:
+          - name: "patch-me"
+          - name: "patch-me"
+          - name: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.fargateExecRoleArn
+      toFieldPath: spec.forProvider.podExecutionRoleArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[1].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[2].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
+
+  - name: kube-system-fargate-profile
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: FargateProfile
+      metadata:
+      spec:
+        forProvider:
+          clusterName: patch-me
+          podExecutionRoleArn: patch-me
+          region: patch-me
+          selector:
+            - namespace: kube-system
+          subnetIdRefs:
+          - name: "patch-me"
+          - name: "patch-me"
+          - name: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-kube-system'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.fargateExecRoleArn
+      toFieldPath: spec.forProvider.podExecutionRoleArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[1].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[2].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
+
+  - name: core-dns-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        annotations:
+          crossplane.io/external-name: coredns
+      spec:
+        forProvider:
+          clusterName: patchme
+          region: us-east-1
+          configurationValues: |
+            {
+              "computeType": "Fargate"
+            }
+          resolveConflicts: OVERWRITE
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-core-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: vpc-cni-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        annotations:
+          crossplane.io/external-name: vpc-cni
+      spec:
+        forProvider:
+          clusterName: patchme
+          region: us-east-1
+          resolveConflicts: OVERWRITE
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-vpc-cni'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: kube-proxy-addon
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        annotations:
+          crossplane.io/external-name: kube-proxy
+      spec:
+        forProvider:
+          clusterName: patchme
+          region: us-east-1
+          resolveConflicts: OVERWRITE
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-kube-proxy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+# ########
+# # IAM Instance Profiles
+# ########
+
+  - name: karpenter-instance-profile
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: InstanceProfile
+      spec:
+        forProvider:
+          role: patchme
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+# ########
+# # IAM Roles
+# ########
+
+  - name: organization-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: OrganizationAccountAccessRole
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": [
+                                "{{ .Values.backofficeArgocdRoleArn }}",
+                                "arn:aws:iam::543587022756:root"
+                            ]
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-organization-role"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: fargate-profile-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "eks-fargate-pods.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-fargate-execution"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.fargateExecRoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.fargateExecRoleName
+
+  - name: karpenter-irsa-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-karpenter"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:karpenter:karpenter",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.karpenterIRSARoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.karpenterIRSARoleName
+
+  - name: karpenter-cluster-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "EKSNodeAssumeRole",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "ec2.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-karpenter-cluster"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.karpenterClusterRoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.karpenterClusterRoleName
+
+  - name: vpc-cni-addon-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-vpc-cni"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:kube-system:aws-node",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.vpcCniRoleArn
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.vpcCniRoleName
+
+  - name: iamrole-controlplane
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Principal": {
+                          "Service": [
+                              "eks.amazonaws.com"
+                          ]
+                      },
+                      "Action": [
+                          "sts:AssumeRole"
+                      ]
+                  }
+              ]
+            }
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: iamrole-nodegroup
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Principal": {
+                          "Service": [
+                              "ec2.amazonaws.com"
+                          ]
+                      },
+                      "Action": [
+                          "sts:AssumeRole"
+                      ]
+                  }
+              ]
+            }
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+# ########
+# # IAM Policies
+# ########
+
+  - name: karpenter-irsa-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      spec:
+        forProvider:
+          policy: |
+            {
+                "Statement": [
+                    {
+                        "Action": [
+                            "pricing:GetProducts",
+                            "ec2:DescribeSubnets",
+                            "ec2:DescribeSpotPriceHistory",
+                            "ec2:DescribeSecurityGroups",
+                            "ec2:DescribeLaunchTemplates",
+                            "ec2:DescribeInstances",
+                            "ec2:DescribeInstanceTypes",
+                            "ec2:DescribeInstanceTypeOfferings",
+                            "ec2:DescribeImages",
+                            "ec2:DescribeAvailabilityZones",
+                            "ec2:CreateTags",
+                            "ec2:CreateLaunchTemplate",
+                            "ec2:CreateFleet"
+                        ],
+                        "Effect": "Allow",
+                        "Resource": "*",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": [
+                            "ec2:TerminateInstances",
+                            "ec2:DeleteLaunchTemplate"
+                        ],
+                        "Condition": {
+                            "StringEquals": {
+                                "ec2:ResourceTag/karpenter.sh/discovery": "ubix-backoffice-cluster-1"
+                            }
+                        },
+                        "Effect": "Allow",
+                        "Resource": "*",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": "ec2:RunInstances",
+                        "Condition": {
+                            "StringEquals": {
+                                "ec2:ResourceTag/karpenter.sh/discovery": "ubix-backoffice-cluster-1"
+                            }
+                        },
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:ec2:*:882490700787:launch-template/*",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": "ec2:RunInstances",
+                        "Effect": "Allow",
+                        "Resource": [
+                            "arn:aws:ec2:*::image/*",
+                            "arn:aws:ec2:*:882490700787:volume/*",
+                            "arn:aws:ec2:*:882490700787:subnet/*",
+                            "arn:aws:ec2:*:882490700787:spot-instances-request/*",
+                            "arn:aws:ec2:*:882490700787:security-group/*",
+                            "arn:aws:ec2:*:882490700787:network-interface/*",
+                            "arn:aws:ec2:*:882490700787:instance/*"
+                        ],
+                        "Sid": ""
+                    },
+                    {
+                        "Action": "ssm:GetParameter",
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:ssm:*:*:parameter/aws/service/*",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": "iam:PassRole",
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:iam::882490700787:role/Karpenter-ubix-backoffice-cluster-1",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": [
+                            "sqs:ReceiveMessage",
+                            "sqs:GetQueueUrl",
+                            "sqs:GetQueueAttributes",
+                            "sqs:DeleteMessage"
+                        ],
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:sqs:us-east-1:882490700787:Karpenter-ubix-backoffice-cluster-1",
+                        "Sid": ""
+                    }
+                ],
+                "Version": "2012-10-17"
+            }
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-irsa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.karpenterIRSAPolicyArn
+
+# ########
+# # IAM Policy Attachments
+# ########
+  - name: fargate-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.fargateExecRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: fargate-cni-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-cni'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.fargateExecRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-eks-worker-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-eks-worker-node'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-ec2-container-registry-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-ec2-container-registry'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-cni-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster-cni'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-irsa-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+          role: "patch-me"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-irsa-attachment'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterIRSAPolicyArn
+      toFieldPath: spec.forProvider.policyArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterIRSARoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: iamattachment-controlplane
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+          roleSelector:
+            matchControllerRef: true
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: iamattachment-service
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKSServicePolicy
+          roleSelector:
+            matchControllerRef: true
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-service'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: iamattachment-worker
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+          roleSelector:
+            matchControllerRef: true
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-worker'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: iamattachment-cni
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+          role: ""
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-cni'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcCniRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: iamattachment-registry
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+          roleSelector:
+            matchControllerRef: true
+      providerConfigRef:
+        policy:
+          resolve: "always"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-registry'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+
+#####
+# ArgoCD
+#####
+  - name: argocd-secret-remote-cluster-credentials
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: # patched
+              namespace: argocd
+              labels:
+                argocd.argoproj.io/secret-type: cluster
+            # stringData:
+              # name: # patched
+              # server: # patched
+              # config:
+              #   awsAuthConfig:
+              #       clusterName: # patched
+              #       roleARN: # patched
+            type: Opaque
+        providerConfigRef:
+          name: kubernetes-provider
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.manifest.metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-argocd-cluster-secret"
+      - fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.manifest.stringData.name
+      - fromFieldPath: status.clusterEndpoint
+        toFieldPath: spec.forProvider.manifest.stringData.server
+      - type: CombineFromComposite
+        combine:
+          variables:
+            - fromFieldPath: status.clusterCertificateAuthorityData
+            - fromFieldPath: spec.id
+            - fromFieldPath: status.id
+          strategy: string
+          string:
+            fmt: |
+              {
+                "tlsClientConfig":{
+                  "insecure":false,
+                  "caData":"%s"
+                },
+                "awsAuthConfig":{
+                  "clusterName":"%s",
+                  "roleARN":"arn:aws:iam::%s:role/OrganizationAccountAccessRole"
+                }
+              }
+        toFieldPath: spec.forProvider.manifest.stringData.config
+        policy:
+          fromFieldPath: Required
