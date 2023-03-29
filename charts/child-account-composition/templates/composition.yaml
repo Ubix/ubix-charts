@@ -786,7 +786,10 @@ spec:
           fmt: "%s-%s-%s-name"
       toFieldPath: metadata.name
     - fromFieldPath: spec.aws_region
-      toFieldPath: spec.forProvider.region
+      toFieldPath: spec.forProvider.region    
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: bucket-solutionspace-backend
     base:
@@ -816,6 +819,9 @@ spec:
       toFieldPath: metadata.name
     - fromFieldPath: spec.aws_region
       toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: bucket-policies
     base:
@@ -837,6 +843,9 @@ spec:
       toFieldPath: metadata.name
     - fromFieldPath: spec.aws_region
       toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
       
   - name: bucket-acl
     base:
@@ -855,6 +864,9 @@ spec:
       toFieldPath: metadata.name
     - fromFieldPath: spec.aws_region
       toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 # ########
 # # EKS Cluster and related resources
