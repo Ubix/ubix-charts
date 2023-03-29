@@ -994,8 +994,11 @@ spec:
       fromFieldPath: status.privateSubnet1cID
       toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[2]
     - type: FromCompositeFieldPath
-      fromFieldPath: status.nodeSecurityGroupID
+      fromFieldPath: status.clusterSecurityGroupID
       toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds[0]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.nodeSecurityGroupID
+      toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds[1]
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
