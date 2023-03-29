@@ -817,7 +817,7 @@ spec:
     - fromFieldPath: spec.aws_region
       toFieldPath: spec.forProvider.region
 
-  - name: bucketpolicies
+  - name: bucket-policies
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
