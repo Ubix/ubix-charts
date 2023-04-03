@@ -802,8 +802,7 @@ spec:
           - fromFieldPath: spec.parameters.region
         strategy: string
         string:
-          #TODO: define 'name'
-          fmt: "%s-%s-%s-name"
+          fmt: "%s-%s-%s-solution-space-backend"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
