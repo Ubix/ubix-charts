@@ -763,13 +763,6 @@ spec:
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: Bucket
-      metadata:
-        labels:
-          #TODO: define labels
-          #name: childaccount
-      providerConfigRef:
-          policy:
-            resolve: "always"
       spec:
         forProvider:
           region: #patched
@@ -796,12 +789,6 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: Bucket
       metadata:
-        labels:
-          #TODO: define labels
-          #name: childaccount
-      providerConfigRef:
-          policy:
-            resolve: "always"
       spec:
         forProvider:
           region: #patched
