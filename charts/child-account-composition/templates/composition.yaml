@@ -123,7 +123,11 @@ spec:
       spec:
         forProvider:
           description: Security group for all nodes in the cluster
+          name: #patchme
+          region: #patchme
           vpcId: #patchme
+        providerConfigRef:
+          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -259,17 +263,12 @@ spec:
       spec:
         forProvider:
           description: Cluster communication with worker nodes
+          name: #patchme
+          region: #patchme
           vpcId: #patchme
-      providerConfigRef:
-        policy:
-          resolve: "always"
+        providerConfigRef:
+          name: #patchme
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -285,8 +284,11 @@ spec:
           fmt: '%s-eskcluster-sg'
         type: string
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.groupName
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
