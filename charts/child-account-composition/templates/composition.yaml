@@ -827,10 +827,7 @@ spec:
           blockPublicPolicy: true
           ignorePublicAcls: true
           restrictPublicBuckets: true
-          bucketSelector:
-            matchLabels:
-              #TODO: add labels
-              #name: childaccount
+          bucket: #patched
           region: #patched
     patches:
     - type: FromCompositeFieldPath
@@ -839,6 +836,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.bucketName
+      toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -850,10 +850,7 @@ spec:
       spec:
         forProvider:
           acl: private
-          bucketSelector:
-            matchLabels:
-              #TODO: add labels
-              #name: childaccount
+          bucket: #patched
           region: #patched
     patches:
     - type: FromCompositeFieldPath
@@ -862,6 +859,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.bucketName
+      toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
