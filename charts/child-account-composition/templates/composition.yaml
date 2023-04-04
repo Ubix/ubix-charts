@@ -123,23 +123,28 @@ spec:
       spec:
         forProvider:
           description: Security group for all nodes in the cluster
-          vpcIdSelector:
-            matchControllerRef: true
+          vpcId: #patchme
     patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
           fmt: '%s-node-sg'
         type: string
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.name
       transforms:
       - string:
           fmt: '%s-node-sg'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -158,17 +163,17 @@ spec:
           description: Allow egress from the nodes
           fromPort: 0
           protocol: "-1"
-          securityGroupIdSelector:
-            matchControllerRef: true
           toPort: 0
           type: egress
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.nodeSecurityGroupID
       toFieldPath: spec.forProvider.securityGroupId
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
@@ -222,14 +227,13 @@ spec:
             the cluster control plane
           fromPort: 1025
           protocol: tcp
-          securityGroupIdSelector:
-            matchControllerRef: true
           sourceSecurityGroupIdSelector:
             matchControllerRef: true
           toPort: 65535
           type: ingress
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.nodeSecurityGroupID
@@ -237,7 +241,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.nodeSecurityGroupID
       toFieldPath: spec.forProvider.sourceSecurityGroupId
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
@@ -254,27 +259,33 @@ spec:
       spec:
         forProvider:
           description: Cluster communication with worker nodes
-          vpcIdSelector:
-            matchControllerRef: true
+          vpcId: #patchme
       providerConfigRef:
         policy:
           resolve: "always"
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
           fmt: '%s-eskcluster-sg'
         type: string
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.name
       transforms:
       - string:
           fmt: '%s-eskcluster-sg'
         type: string
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.groupName
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -294,14 +305,11 @@ spec:
           description: Allow pods to communicate with the cluster API Server -
           fromPort: 443
           protocol: tcp
-          securityGroupIdSelector:
-            matchControllerRef: true
-          sourceSecurityGroupIdSelector:
-            matchControllerRef: true
           toPort: 443
           type: ingress
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterSecurityGroupID
@@ -309,7 +317,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.nodeSecurityGroupID
       toFieldPath: spec.forProvider.sourceSecurityGroupId
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
@@ -330,17 +339,17 @@ spec:
           description: Egress
           fromPort: 0
           protocol: "-1"
-          securityGroupIdSelector:
-            matchControllerRef: true
           toPort: 0
           type: egress
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterSecurityGroupID
       toFieldPath: spec.forProvider.securityGroupId
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
