@@ -175,6 +175,12 @@ spec:
               karpenterIRSAPolicyArn:
                 description: Policy to allow karpenter workload to work
                 type: string
+              bucketName:
+                description: Bucket name
+                type: string
+              solutionSpaceBackendBucketName:
+                description: SolutionSpace Backend bucket name
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
