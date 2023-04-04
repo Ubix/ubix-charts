@@ -169,6 +169,11 @@ spec:
           protocol: "-1"
           toPort: 0
           type: egress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupId: #patchme
+        providerConfigRef:
+          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -196,14 +201,16 @@ spec:
           description: Allow node to communicate with each other
           fromPort: 0
           protocol: "-1"
-          securityGroupIdSelector:
-            matchControllerRef: true
-          sourceSecurityGroupIdSelector:
-            matchControllerRef: true
           toPort: 65535
           type: ingress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupId: #patchme
+        providerConfigRef:
+          name: #patchme
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.nodeSecurityGroupID
@@ -211,7 +218,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.nodeSecurityGroupID
       toFieldPath: spec.forProvider.sourceSecurityGroupId
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
@@ -235,6 +243,11 @@ spec:
             matchControllerRef: true
           toPort: 65535
           type: ingress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupId: #patchme
+        providerConfigRef:
+          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -309,6 +322,11 @@ spec:
           protocol: tcp
           toPort: 443
           type: ingress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupId: #patchme
+        providerConfigRef:
+          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -343,6 +361,10 @@ spec:
           protocol: "-1"
           toPort: 0
           type: egress
+          region: #patchme
+          securityGroupId: #patchme
+        providerConfigRef:
+          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
