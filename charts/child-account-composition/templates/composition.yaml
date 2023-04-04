@@ -239,8 +239,6 @@ spec:
             the cluster control plane
           fromPort: 1025
           protocol: tcp
-          sourceSecurityGroupIdSelector:
-            matchControllerRef: true
           toPort: 65535
           type: ingress
           region: #patchme
