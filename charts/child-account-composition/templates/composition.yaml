@@ -98,9 +98,6 @@ spec:
           enableDnsHostnames: true
           cidrBlock: 10.0.0.0/16
           enableDnsSupport: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -116,6 +113,7 @@ spec:
 ##
 # EKS Security Groups
 ##
+
   - name: node-security-group
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -149,9 +147,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.vpcID
       toFieldPath: spec.forProvider.vpcId
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.nodeSecurityGroupID
@@ -188,9 +183,6 @@ spec:
       - string:
           fmt: '%s-sg-rule-node-egress'
         type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
 
   - name: node-security-group-ingress-self
     base:
@@ -225,9 +217,6 @@ spec:
       - string:
           fmt: '%s-sg-rule-node-to-node'
         type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
 
   - name: node-security-group-ingress-cluster
     base:
@@ -263,9 +252,6 @@ spec:
       - string:
           fmt: '%s-sg-rule-kubelets'
         type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
 
   - name: cluster-security-group
     base:
@@ -300,9 +286,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.vpcID
       toFieldPath: spec.forProvider.vpcId
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.clusterSecurityGroupID
@@ -342,9 +325,6 @@ spec:
       - string:
           fmt: '%s-sg-rule-pods-to-api-server'
         type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
 
   - name: cluster-security-group-rule-egress
     base:
@@ -377,9 +357,7 @@ spec:
       - string:
           fmt: '%s-sg-rule-cluster-egress'
         type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+
 
 ##
 # End EKS Security Group
@@ -404,7 +382,7 @@ spec:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -440,7 +418,7 @@ spec:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -476,7 +454,7 @@ spec:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -511,7 +489,7 @@ spec:
             karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -549,7 +527,7 @@ spec:
             karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -587,7 +565,7 @@ spec:
             karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -675,7 +653,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -697,7 +675,7 @@ spec:
           vpcId: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -728,7 +706,7 @@ spec:
           vpcId: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -1007,7 +985,7 @@ spec:
               subnetIds:
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1581,7 +1559,7 @@ spec:
             }
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1624,7 +1602,7 @@ spec:
             }
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1903,7 +1881,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1932,7 +1910,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1961,7 +1939,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -2012,7 +1990,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
