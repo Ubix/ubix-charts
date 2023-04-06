@@ -120,6 +120,8 @@ spec:
       kind: SecurityGroup
       spec:
         forProvider:
+          tags:
+            karpenter.sh/discovery: #patchme
           description: Security group for all nodes in the cluster
           name: #patchme
           region: #patchme
@@ -127,6 +129,9 @@ spec:
         providerConfigRef:
           name: #patchme
     patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
