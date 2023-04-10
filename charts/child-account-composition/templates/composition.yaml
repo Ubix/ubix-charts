@@ -264,6 +264,8 @@ spec:
       kind: SecurityGroup
       spec:
         forProvider:
+          tags:
+            karpenter.sh/discovery: #patchme
           description: Cluster communication with worker nodes
           name: #patchme
           region: #patchme
@@ -271,6 +273,9 @@ spec:
         providerConfigRef:
           name: #patchme
     patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
