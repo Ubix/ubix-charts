@@ -155,6 +155,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.nodeSecurityGroupID
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: node-security-group-rule-egress
     base:
@@ -188,6 +191,9 @@ spec:
       - string:
           fmt: '%s-sg-rule-node-egress'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: node-security-group-ingress-self
     base:
@@ -222,6 +228,9 @@ spec:
       - string:
           fmt: '%s-sg-rule-node-to-node'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: node-security-group-ingress-cluster
     base:
@@ -257,6 +266,9 @@ spec:
       - string:
           fmt: '%s-sg-rule-kubelets'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: cluster-security-group
     base:
@@ -299,6 +311,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.clusterSecurityGroupID
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
     readinessChecks:
     - type: None
 
@@ -335,6 +350,9 @@ spec:
       - string:
           fmt: '%s-sg-rule-pods-to-api-server'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: cluster-security-group-rule-egress
     base:
@@ -367,6 +385,9 @@ spec:
       - string:
           fmt: '%s-sg-rule-cluster-egress'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 
 ##
