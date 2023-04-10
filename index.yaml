@@ -242,6 +242,27 @@ entries:
   hive-metastore:
   - apiVersion: v1
     appVersion: 2.3.6
+    created: "2023-04-10T10:53:58.987030458Z"
+    description: The Apache Hive ™ data warehouse software facilitates reading, writing,
+      and managing large datasets residing in distributed storage using SQL. Structure
+      can be projected onto data already in storage. A command line tool and JDBC
+      driver are provided to connect users to Hive.
+    digest: c791f06fbd5e60c8f8ccaa88b03f1336639be9fd1a49ac58c696d8febe9730d8
+    home: https://hive.apache.org/
+    icon: https://hive.apache.org/images/hive_logo_medium.jpg
+    maintainers:
+    - email: cgiraldo@gradiant.org
+      name: cgiraldo
+    name: hive-metastore
+    sources:
+    - https://github.com/apache/hive
+    - https://github.com/gradiant/charts
+    - https://github.com/big-data-europe/docker-hive
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/hive-metastore-0.1.5/hive-metastore-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v1
+    appVersion: 2.3.6
     created: "2023-01-11T07:40:27.046735939Z"
     description: The Apache Hive ™ data warehouse software facilitates reading, writing,
       and managing large datasets residing in distributed storage using SQL. Structure
@@ -293,4 +314,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/master_account-0.1.0/master_account-0.1.0.tgz
     version: 0.1.0
-generated: "2023-03-27T14:13:34.297119707Z"
+generated: "2023-04-10T10:53:58.987150962Z"
