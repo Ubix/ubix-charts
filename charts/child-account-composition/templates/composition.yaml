@@ -98,9 +98,6 @@ spec:
           enableDnsHostnames: true
           cidrBlock: 10.0.0.0/16
           enableDnsSupport: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -113,46 +110,275 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.vpcID
 
-  - name: sg-nodepool
+##
+# EKS Security Groups
+##
+
+  - name: node-security-group
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroup
       spec:
         forProvider:
-          description: Cluster communication with worker nodes
-          vpcIdSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "always"
+          tags:
+            karpenter.sh/discovery: #patchme
+          description: Security group for all nodes in the cluster
+          name: #patchme
+          region: #patchme
+          vpcId: #patchme
     patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
           fmt: '%s-node-sg'
         type: string
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.name
       transforms:
       - string:
           fmt: '%s-node-sg'
         type: string
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.groupName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.nodeSecurityGroupID
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.labels[securitygroup]
+
+  - name: node-security-group-rule-egress
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          cidrBlocks:
+          - 0.0.0.0/0
+          description: Allow egress from the nodes
+          fromPort: 0
+          protocol: "-1"
+          toPort: 0
+          type: egress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupId: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.nodeSecurityGroupID
+      toFieldPath: spec.forProvider.securityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
       transforms:
       - string:
-          fmt: '%s-node-sg'
+          fmt: '%s-sg-rule-node-egress'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: node-security-group-ingress-self
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Allow node to communicate with each other
+          fromPort: 0
+          protocol: "-1"
+          toPort: 65535
+          type: ingress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupId: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.nodeSecurityGroupID
+      toFieldPath: spec.forProvider.securityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.nodeSecurityGroupID
+      toFieldPath: spec.forProvider.sourceSecurityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-node-to-node'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: node-security-group-ingress-cluster
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Allow worker Kubelets and pods to receive communication from
+            the cluster control plane
+          fromPort: 1025
+          protocol: tcp
+          toPort: 65535
+          type: ingress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupId: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.nodeSecurityGroupID
+      toFieldPath: spec.forProvider.securityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.nodeSecurityGroupID
+      toFieldPath: spec.forProvider.sourceSecurityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-kubelets'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: cluster-security-group
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroup
+      spec:
+        forProvider:
+          tags:
+            karpenter.sh/discovery: #patchme
+          description: Cluster communication with worker nodes
+          name: #patchme
+          region: #patchme
+          vpcId: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-eskcluster-sg'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+      transforms:
+      - string:
+          fmt: '%s-eskcluster-sg'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.clusterSecurityGroupID
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
     readinessChecks:
     - type: None
+
+  - name: cluster-security-group-rule-ingress
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Allow pods to communicate with the cluster API Server -
+          fromPort: 443
+          protocol: tcp
+          toPort: 443
+          type: ingress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupId: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterSecurityGroupID
+      toFieldPath: spec.forProvider.securityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.nodeSecurityGroupID
+      toFieldPath: spec.forProvider.sourceSecurityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-pods-to-api-server'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: cluster-security-group-rule-egress
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          cidrBlocks:
+          - 0.0.0.0/0
+          description: Egress
+          fromPort: 0
+          protocol: "-1"
+          toPort: 0
+          type: egress
+          region: #patchme
+          securityGroupId: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterSecurityGroupID
+      toFieldPath: spec.forProvider.securityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-cluster-egress'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+
+##
+# End EKS Security Group
+##
 
   - name: public-subnet-1a
     base:
@@ -173,7 +399,7 @@ spec:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -209,7 +435,7 @@ spec:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -245,7 +471,7 @@ spec:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -280,7 +506,7 @@ spec:
             karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -318,7 +544,7 @@ spec:
             karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -356,7 +582,7 @@ spec:
             karpenter.sh/discovery: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -444,7 +670,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -466,7 +692,7 @@ spec:
           vpcId: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -497,7 +723,7 @@ spec:
           vpcId: patchme
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -776,7 +1002,7 @@ spec:
               subnetIds:
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -793,6 +1019,12 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.privateSubnet1cID
       toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[2]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterSecurityGroupID
+      toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds[0]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.nodeSecurityGroupID
+      toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds[1]
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
@@ -1344,7 +1576,7 @@ spec:
             }
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1387,7 +1619,7 @@ spec:
             }
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1666,7 +1898,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1695,7 +1927,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1724,7 +1956,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1775,7 +2007,7 @@ spec:
             matchControllerRef: true
       providerConfigRef:
         policy:
-          resolve: "always"
+          resolve: "Always"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name

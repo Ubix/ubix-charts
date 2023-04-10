@@ -130,6 +130,12 @@ spec:
               publicSubnet1cID:
                 description: id of the private subnet 1 on az c
                 type: string
+              clusterSecurityGroupID:
+                description: ID of the EKS cluster communication with worker nodes security group.
+                type: string
+              nodeSecurityGroupID:
+                description: ID of the Security group for all EKS nodes in the cluster
+                type: string
               clusterName:
                 description: The name of the cluster
                 type: string
