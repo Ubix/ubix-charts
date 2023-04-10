@@ -126,8 +126,6 @@ spec:
           name: #patchme
           region: #patchme
           vpcId: #patchme
-        providerConfigRef:
-          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -175,8 +173,6 @@ spec:
           region: #patchme
           securityGroupId: #patchme
           sourceSecurityGroupId: #patchme
-        providerConfigRef:
-          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -209,8 +205,6 @@ spec:
           region: #patchme
           securityGroupId: #patchme
           sourceSecurityGroupId: #patchme
-        providerConfigRef:
-          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -247,8 +241,6 @@ spec:
           region: #patchme
           securityGroupId: #patchme
           sourceSecurityGroupId: #patchme
-        providerConfigRef:
-          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -282,8 +274,6 @@ spec:
           name: #patchme
           region: #patchme
           vpcId: #patchme
-        providerConfigRef:
-          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -331,8 +321,6 @@ spec:
           region: #patchme
           securityGroupId: #patchme
           sourceSecurityGroupId: #patchme
-        providerConfigRef:
-          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -369,8 +357,6 @@ spec:
           type: egress
           region: #patchme
           securityGroupId: #patchme
-        providerConfigRef:
-          name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
