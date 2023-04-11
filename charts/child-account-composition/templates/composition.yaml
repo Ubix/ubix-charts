@@ -268,16 +268,11 @@ spec:
       kind: SecurityGroup
       spec:
         forProvider:
-          tags:
-            karpenter.sh/discovery: #patchme
           description: Cluster communication with worker nodes
           name: #patchme
           region: #patchme
           vpcId: #patchme
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -304,8 +299,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-    readinessChecks:
-    - type: None
 
   - name: cluster-security-group-rule-ingress
     base:
@@ -651,7 +644,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1cID
+      fromFieldPath: status.publicSubnet1cID
       toFieldPath: spec.forProvider.subnetId
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -1022,9 +1015,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterSecurityGroupID
       toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds[0]
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.nodeSecurityGroupID
-      toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds[1]
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
@@ -1647,7 +1637,36 @@ spec:
       kind: Policy
       spec:
         forProvider:
-          policy: |
+          policy: "{}"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-irsa'
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: status.clusterName
+          - fromFieldPath: status.clusterName
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.karpenterClusterRoleArn
+          - fromFieldPath: spec.parameters.region
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: |
             {
                 "Statement": [
                     {
@@ -1677,7 +1696,7 @@ spec:
                         ],
                         "Condition": {
                             "StringEquals": {
-                                "ec2:ResourceTag/karpenter.sh/discovery": "ubix-backoffice-cluster-1"
+                                "ec2:ResourceTag/karpenter.sh/discovery": "%s"
                             }
                         },
                         "Effect": "Allow",
@@ -1688,11 +1707,11 @@ spec:
                         "Action": "ec2:RunInstances",
                         "Condition": {
                             "StringEquals": {
-                                "ec2:ResourceTag/karpenter.sh/discovery": "ubix-backoffice-cluster-1"
+                                "ec2:ResourceTag/karpenter.sh/discovery": "%s"
                             }
                         },
                         "Effect": "Allow",
-                        "Resource": "arn:aws:ec2:*:882490700787:launch-template/*",
+                        "Resource": "arn:aws:ec2:*:%s:launch-template/*",
                         "Sid": ""
                     },
                     {
@@ -1700,12 +1719,12 @@ spec:
                         "Effect": "Allow",
                         "Resource": [
                             "arn:aws:ec2:*::image/*",
-                            "arn:aws:ec2:*:882490700787:volume/*",
-                            "arn:aws:ec2:*:882490700787:subnet/*",
-                            "arn:aws:ec2:*:882490700787:spot-instances-request/*",
-                            "arn:aws:ec2:*:882490700787:security-group/*",
-                            "arn:aws:ec2:*:882490700787:network-interface/*",
-                            "arn:aws:ec2:*:882490700787:instance/*"
+                            "arn:aws:ec2:*:%s:volume/*",
+                            "arn:aws:ec2:*:%s:subnet/*",
+                            "arn:aws:ec2:*:%s:spot-instances-request/*",
+                            "arn:aws:ec2:*:%s:security-group/*",
+                            "arn:aws:ec2:*:%s:network-interface/*",
+                            "arn:aws:ec2:*:%s:instance/*"
                         ],
                         "Sid": ""
                     },
@@ -1718,7 +1737,7 @@ spec:
                     {
                         "Action": "iam:PassRole",
                         "Effect": "Allow",
-                        "Resource": "arn:aws:iam::882490700787:role/Karpenter-ubix-backoffice-cluster-1",
+                        "Resource": "%s",
                         "Sid": ""
                     },
                     {
@@ -1729,19 +1748,12 @@ spec:
                             "sqs:DeleteMessage"
                         ],
                         "Effect": "Allow",
-                        "Resource": "arn:aws:sqs:us-east-1:882490700787:Karpenter-ubix-backoffice-cluster-1",
+                        "Resource": "arn:aws:sqs:%s:%s:%s-karpenter-cluster",
                         "Sid": ""
                     }
                 ],
                 "Version": "2012-10-17"
             }
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-karpenter-irsa'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
