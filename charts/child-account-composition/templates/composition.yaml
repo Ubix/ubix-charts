@@ -759,35 +759,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: bucket
-    base:
-      apiVersion: s3.aws.upbound.io/v1beta1
-      kind: Bucket
-      spec:
-        forProvider:
-          region: #patched
-    patches:
-    - type: CombineFromComposite
-      combine:
-        variables:
-          - fromFieldPath: spec.parameters.name
-          - fromFieldPath: spec.id
-          - fromFieldPath: spec.parameters.region
-        strategy: string
-        string:
-          #TODO: define 'name'
-          fmt: "%s-%s-%s-name"
-      toFieldPath: metadata.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region    
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.bucketName
-
   - name: bucket-solutionspace-backend
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
@@ -817,32 +788,6 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.solutionSpaceBackendBucketName
 
-  - name: bucket-policies
-    base:
-      apiVersion: s3.aws.upbound.io/v1beta1
-      kind: BucketPublicAccessBlock
-      spec:
-        forProvider:
-          blockPublicAcls: true
-          blockPublicPolicy: true
-          ignorePublicAcls: true
-          restrictPublicBuckets: true
-          bucket: #patched
-          region: #patched
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.bucketName
-      toFieldPath: spec.forProvider.bucket
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
   - name: bucket-solutionspace-backend-policies
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
@@ -864,29 +809,6 @@ spec:
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: spec.status.solutionSpaceBackendBucketName
-      toFieldPath: spec.forProvider.bucket
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-      
-  - name: bucket-acl
-    base:
-      apiVersion: s3.aws.upbound.io/v1beta1
-      kind: BucketACL
-      spec:
-        forProvider:
-          acl: private
-          bucket: #patched
-          region: #patched
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.bucketName
       toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
