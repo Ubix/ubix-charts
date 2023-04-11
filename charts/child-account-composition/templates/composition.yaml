@@ -1637,7 +1637,7 @@ spec:
       kind: Policy
       spec:
         forProvider:
-          policy: #patchme
+          policy: "{}"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1646,22 +1646,24 @@ spec:
         string:
           fmt: '%s-karpenter-irsa'
     - type: CombineFromComposite
-      toFieldPath: spec.forProvier.policy
+      toFieldPath: spec.forProvider.policy
+      policy:
+        fromFieldPath: Required
       combine:
         variables:
-        - fromFieldPath: status.clusterName
-        - fromFieldPath: status.clusterName
-        - fromFieldPath: status.id
-        - fromFieldPath: status.id
-        - fromFieldPath: status.id
-        - fromFieldPath: status.id
-        - fromFieldPath: status.id
-        - fromFieldPath: status.id
-        - fromFieldPath: status.id
-        - fromFieldPath: status.karpenterClusterRoleArn
-        - fromFieldPath: spec.region
-        - fromFieldPath: status.id
-        - fromFieldPath: spec.id
+          - fromFieldPath: status.clusterName
+          - fromFieldPath: status.clusterName
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.karpenterClusterRoleArn
+          - fromFieldPath: spec.parameters.region
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
         strategy: string
         string:
           fmt: |
@@ -1752,8 +1754,6 @@ spec:
                 ],
                 "Version": "2012-10-17"
             }
-      policy:
-        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
