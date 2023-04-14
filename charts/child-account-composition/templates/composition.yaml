@@ -496,7 +496,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           tags:
-            karpenter.sh/discovery: patchme
+            karpenter.sh/discovery: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -534,7 +534,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           tags:
-            karpenter.sh/discovery: patchme
+            karpenter.sh/discovery: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -572,7 +572,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           tags:
-            karpenter.sh/discovery: patchme
+            karpenter.sh/discovery: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -601,7 +601,7 @@ spec:
       kind: EIP
       spec:
         forProvider:
-          region: us-east-1
+          region: #patchme
           vpc: true
     patches:
     - type: FromCompositeFieldPath
@@ -627,9 +627,9 @@ spec:
       kind: NATGateway
       spec:
         forProvider:
-          allocationId: patchme
-          region: us-east-1
-          subnetId: patch-me
+          allocationId: #patchme
+          region: #patchme
+          subnetId: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -682,7 +682,7 @@ spec:
       kind: RouteTable
       spec:
         forProvider:
-          vpcId: patchme
+          vpcId: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -713,7 +713,7 @@ spec:
       kind: RouteTable
       spec:
         forProvider:
-          vpcId: patchme
+          vpcId: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -744,8 +744,8 @@ spec:
       kind: Route
       spec:
         forProvider:
-          routeTableId: patchme
-          gatewayId: patchme
+          routeTableId: #patchme
+          gatewayId: #patchme
           destinationCidrBlock: 0.0.0.0/0
     patches:
     - type: FromCompositeFieldPath
@@ -774,8 +774,8 @@ spec:
       kind: Route
       spec:
         forProvider:
-          routeTableId: patchme
-          natGatewayId: patchme
+          routeTableId: #patchme
+          natGatewayId: #patchme
           destinationCidrBlock: 0.0.0.0/0
     patches:
     - type: FromCompositeFieldPath
@@ -804,9 +804,9 @@ spec:
       kind: RouteTableAssociation
       spec:
         forProvider:
-          region: us-east-1
-          routeTableId: patchme
-          subnetId: patchme
+          region: #patchme
+          routeTableId: #patchme
+          subnetId: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -834,9 +834,9 @@ spec:
       kind: RouteTableAssociation
       spec:
         forProvider:
-          region: us-east-1
-          routeTableId: patchme
-          subnetId: patchme
+          region: #patchme
+          routeTableId: #patchme
+          subnetId: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -864,9 +864,9 @@ spec:
       kind: RouteTableAssociation
       spec:
         forProvider:
-          region: us-east-1
-          routeTableId: patchme
-          subnetId: patchme
+          region: #patchme
+          routeTableId: #patchme
+          subnetId: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -894,9 +894,9 @@ spec:
       kind: RouteTableAssociation
       spec:
         forProvider:
-          region: us-east-1
-          routeTableId: patchme
-          subnetId: patchme
+          region: #patchme
+          routeTableId: #patchme
+          subnetId: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -924,9 +924,9 @@ spec:
       kind: RouteTableAssociation
       spec:
         forProvider:
-          region: us-east-1
-          routeTableId: patchme
-          subnetId: patchme
+          region: #patchme
+          routeTableId: #patchme
+          subnetId: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -954,9 +954,9 @@ spec:
       kind: RouteTableAssociation
       spec:
         forProvider:
-          region: us-east-1
-          routeTableId: patchme
-          subnetId: patchme
+          region: #patchme
+          routeTableId: #patchme
+          subnetId: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -1091,15 +1091,15 @@ spec:
       metadata:
       spec:
         forProvider:
-          clusterName: patch-me
-          podExecutionRoleArn: patch-me
-          region: patch-me
+          clusterName: #patchme
+          podExecutionRoleArn: #patchme
+          region: #patchme
           selector:
             - namespace: karpenter
           subnetIdRefs:
-          - name: "patch-me"
-          - name: "patch-me"
-          - name: "patch-me"
+          - name: #patchme
+          - name: #patchme
+          - name: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1148,15 +1148,15 @@ spec:
       metadata:
       spec:
         forProvider:
-          clusterName: patch-me
-          podExecutionRoleArn: patch-me
-          region: patch-me
+          clusterName: #patchme
+          podExecutionRoleArn: #patchme
+          region: #patchme
           selector:
             - namespace: kube-system
           subnetIdRefs:
-          - name: "patch-me"
-          - name: "patch-me"
-          - name: "patch-me"
+          - name: #patchme
+          - name: #patchme
+          - name: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1207,8 +1207,8 @@ spec:
           crossplane.io/external-name: coredns
       spec:
         forProvider:
-          clusterName: patchme
-          region: us-east-1
+          clusterName: #patchme
+          region: #patchme
           configurationValues: |
             {
               "computeType": "Fargate"
@@ -1240,8 +1240,8 @@ spec:
           crossplane.io/external-name: vpc-cni
       spec:
         forProvider:
-          clusterName: patchme
-          region: us-east-1
+          clusterName: #patchme
+          region: #patchme
           resolveConflicts: OVERWRITE
     patches:
     - fromFieldPath: spec.id
@@ -1269,8 +1269,8 @@ spec:
           crossplane.io/external-name: kube-proxy
       spec:
         forProvider:
-          clusterName: patchme
-          region: us-east-1
+          clusterName: #patchme
+          region: #patchme
           resolveConflicts: OVERWRITE
     patches:
     - fromFieldPath: spec.id
@@ -1299,7 +1299,7 @@ spec:
       kind: InstanceProfile
       spec:
         forProvider:
-          role: patchme
+          role: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1771,7 +1771,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
-          role: "patch-me"
+          role: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1793,7 +1793,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          role: "patch-me"
+          role: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1815,7 +1815,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-          role: "patch-me"
+          role: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1837,7 +1837,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-          role: "patch-me"
+          role: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1859,7 +1859,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          role: "patch-me"
+          role: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1880,8 +1880,8 @@ spec:
       kind: RolePolicyAttachment
       spec:
         forProvider:
-          policyArn: patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          role: "patch-me"
+          policyArn: #patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+          role: #patchme
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
