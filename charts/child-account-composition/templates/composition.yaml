@@ -1859,9 +1859,10 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
-          role: "patch-me"
+          role: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
