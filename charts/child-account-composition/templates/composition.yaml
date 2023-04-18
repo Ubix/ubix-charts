@@ -27,17 +27,23 @@ spec:
         providerConfigRef:
           name: root
     patches:
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.parameters.email
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.email
       toFieldPath: spec.forProvider.email
-    - fromFieldPath: spec.parameters.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.name
       toFieldPath: spec.forProvider.name
-    - fromFieldPath: spec.parameters.parentId
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.parentId
       toFieldPath: spec.forProvider.parentId
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
         - type: string
@@ -46,7 +52,8 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.id
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.writeConnectionSecretToRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.status
@@ -79,7 +86,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: metadata.name
-    - fromFieldPath: metadata.labels
+    - type: ToCompositeFieldPath
+      fromFieldPath: metadata.labels
       toFieldPath: metadata.labels
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -99,9 +107,11 @@ spec:
           cidrBlock: 10.0.0.0/16
           enableDnsSupport: true
     patches:
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -394,9 +404,11 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -430,9 +442,11 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -466,7 +480,8 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -501,7 +516,8 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -539,9 +555,11 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -577,9 +595,11 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -631,7 +651,8 @@ spec:
           region: us-east-1
           subnetId: patch-me
     patches:
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -665,9 +686,11 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -997,11 +1020,14 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.eks.version
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.eks.version
       toFieldPath: spec.forProvider.version
     - type: FromCompositeFieldPath
       fromFieldPath: status.privateSubnet1aID
@@ -1015,15 +1041,18 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterSecurityGroupID
       toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds[0]
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
       - type: string
         string:
           fmt: '%s-cluster'
-    - fromFieldPath: spec.claimRef.namespace
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
       transforms:
       - type: string
@@ -1073,15 +1102,18 @@ spec:
           thumbprintList:
             - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280 # this is the sts static thumbprint
     patches:
-    - fromFieldPath: status.clusterOIDC
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.clusterOIDC
       toFieldPath: spec.forProvider.url
       transforms:
       - type: string
         string:
           fmt: "https://%s"
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: status.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
   - name: karpenter-fargate-profile
@@ -1101,7 +1133,8 @@ spec:
           - name: "patch-me"
           - name: "patch-me"
     patches:
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1244,7 +1277,8 @@ spec:
           region: us-east-1
           resolveConflicts: OVERWRITE
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1273,7 +1307,8 @@ spec:
           region: us-east-1
           resolveConflicts: OVERWRITE
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1301,7 +1336,8 @@ spec:
         forProvider:
           role: patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1568,13 +1604,15 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-controlplane'
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.labels.role
       transforms:
       - type: string
@@ -1611,13 +1649,15 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-nodegroup'
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.labels.role
       transforms:
       - type: string
@@ -1639,7 +1679,8 @@ spec:
         forProvider:
           policy: "{}"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1773,7 +1814,8 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
           role: "patch-me"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1795,7 +1837,8 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           role: "patch-me"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1817,7 +1860,8 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
           role: "patch-me"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1839,7 +1883,8 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
           role: "patch-me"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1861,7 +1906,8 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           role: "patch-me"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1883,7 +1929,8 @@ spec:
           policyArn: patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           role: "patch-me"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1912,13 +1959,15 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-controlplane'
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
@@ -1941,13 +1990,15 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-service'
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
@@ -1970,13 +2021,15 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-worker'
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
@@ -1995,7 +2048,8 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           role: ""
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -2021,13 +2075,15 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-registry'
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
@@ -2066,17 +2122,21 @@ spec:
         providerConfigRef:
           name: kubernetes-provider
     patches:
-      - fromFieldPath: spec.id
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
         toFieldPath: metadata.name
-      - fromFieldPath: spec.id
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
         toFieldPath: spec.forProvider.manifest.metadata.name
         transforms:
           - type: string
             string:
               fmt: "%s-argocd-cluster-secret"
-      - fromFieldPath: spec.id
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
         toFieldPath: spec.forProvider.manifest.stringData.name
-      - fromFieldPath: status.clusterEndpoint
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.clusterEndpoint
         toFieldPath: spec.forProvider.manifest.stringData.server
       - type: CombineFromComposite
         combine:
