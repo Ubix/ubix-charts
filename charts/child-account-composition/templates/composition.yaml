@@ -1852,6 +1852,29 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: karpenter-ssm-managed-instance-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+          role: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-ssm-managed-instance'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterClusterRoleName
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: karpenter-cni-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
