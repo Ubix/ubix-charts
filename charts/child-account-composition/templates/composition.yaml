@@ -1066,7 +1066,7 @@ spec:
         string:
           fmt: '%s-controlplane'
     - type: ToCompositeFieldPath
-      fromFieldPath: metadata.name
+      fromFieldPath: status.atProvider.id
       toFieldPath: status.clusterName
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.status
