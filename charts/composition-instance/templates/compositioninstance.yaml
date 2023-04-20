@@ -17,7 +17,7 @@ spec:
     parentId: {{ .Values.spec.parameters.parentId }}
     region: {{ .Values.spec.parameters.region }}
   eks:
-    version: {{ .Values.spec.eks.version }}
+    version: {{ quote .Values.spec.eks.version }}
     nodeSize: {{ .Values.spec.eks.nodeSize }}
     minNodeCount: {{ .Values.spec.eks.nodeSize }}
     maxNodeCount: {{ .Values.spec.eks.maxNodeCount }}
