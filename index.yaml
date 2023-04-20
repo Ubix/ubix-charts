@@ -240,6 +240,16 @@ entries:
   composition-instance:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-04-20T09:58:25.986840446Z"
+    description: Child account CRD helm chart
+    digest: 82876a5013bb02b68e5d574a0d37421ef38b2fcbe63748ca9b62b7c59d250444
+    name: composition-instance
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/composition-instance-0.1.1/composition-instance-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-03-13T23:39:56.046533858Z"
     description: Child account CRD helm chart
     digest: dfa1deff0398b5ca6df7e393075dc81e2e2be95c166fdb5a53c13411d595a342
@@ -364,4 +374,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/master_account-0.1.0/master_account-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-18T16:37:01.509100895Z"
+generated: "2023-04-20T09:58:25.986899246Z"
