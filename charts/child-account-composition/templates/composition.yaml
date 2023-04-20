@@ -382,9 +382,7 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.0.0/24
-          vpcIdSelector:
-            matchControllerRef: true
-          mapPublicIPOnLaunch: true
+          vpcId: #patched
           tags:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
@@ -409,6 +407,9 @@ spec:
         string:
           fmt: '%sa'
     - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
@@ -424,8 +425,7 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.1.0/24
-          vpcIdSelector:
-            matchControllerRef: true
+          vpcId: #patched
           mapPublicIPOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
@@ -451,6 +451,9 @@ spec:
         string:
           fmt: '%sb'
     - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
@@ -466,8 +469,7 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.2.0/24
-          vpcIdSelector:
-            matchControllerRef: true
+          vpcId: #patched
           mapPublicIPOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
@@ -493,6 +495,9 @@ spec:
         string:
           fmt: '%sc'
     - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
@@ -508,8 +513,7 @@ spec:
           region: #patched
           availabilityZone: #pached
           cidrBlock: 10.0.100.0/24
-          vpcIdSelector:
-            matchControllerRef: true
+          vpcId: #patched
           tags:
             karpenter.sh/discovery: #patchme
       providerConfigRef:
@@ -534,6 +538,9 @@ spec:
         string:
           fmt: '%sa'
     - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
@@ -552,8 +559,7 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.101.0/24
-          vpcIdSelector:
-            matchControllerRef: true
+          vpcId: #patched
           tags:
             karpenter.sh/discovery: #patchme
       providerConfigRef:
@@ -578,6 +584,9 @@ spec:
         string:
           fmt: '%sb'
     - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
@@ -596,8 +605,7 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.102.0/24
-          vpcIdSelector:
-            matchControllerRef: true
+          vpcId: #patched
           tags:
             karpenter.sh/discovery: #patchme
       providerConfigRef:
@@ -621,6 +629,9 @@ spec:
       - type: string
         string:
           fmt: '%sc'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.vpcID
+      toFieldPath: spec.forProvider.vpcId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
