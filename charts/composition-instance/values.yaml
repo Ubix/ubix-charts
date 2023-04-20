@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-#sample 
+#sample
 metadata:
   name: #name to tag the created resources
 spec:
@@ -12,9 +12,10 @@ spec:
     parentId: ou-8jat-sv0412tm
     region: us-east-1
   eks:
-    version: "1.23"
+    version: 1.24
     nodeSize: # small - medium - large
     minNodeCount: #integer value for the eks cluster. min number of nodes
     maxNodeCount: #integer value for the eks cluster. max number of nodes
     desiredNodeCount: #integer value for the eks cluster. desired nodes in a regular state
     diskSize: # disk size of the nodes
+    vpcCniAddonVersion: # version of the vpc cni build
