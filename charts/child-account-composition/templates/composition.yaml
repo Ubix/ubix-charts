@@ -383,6 +383,7 @@ spec:
           availabilityZone: #patched
           cidrBlock: 10.0.0.0/24
           vpcId: #patched
+          mapPublicIpOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
@@ -426,7 +427,7 @@ spec:
           availabilityZone: #patched
           cidrBlock: 10.0.1.0/24
           vpcId: #patched
-          mapPublicIPOnLaunch: true
+          mapPublicIpOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
@@ -470,7 +471,7 @@ spec:
           availabilityZone: #patched
           cidrBlock: 10.0.2.0/24
           vpcId: #patched
-          mapPublicIPOnLaunch: true
+          mapPublicIpOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
