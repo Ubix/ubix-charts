@@ -2242,13 +2242,13 @@ spec:
         fromFieldPath: spec.parameters.region
         toFieldPath: spec.forProvider.region
 
-  - name: s3-longhorn-backup-policy
+  - name: iam-longhorn-backup-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
       metadata:
         labels:
-          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+          cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
         name: #patchme
       spec:
         forProvider:
@@ -2257,7 +2257,7 @@ spec:
           - status: Enabled
           bucketSelector:
             matchLabels:
-              cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+              cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
           policy: #patchme
     patches:
       - type: FromCompositeFieldPath
@@ -2302,7 +2302,7 @@ spec:
       kind: User
       metadata:
         labels:
-          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+          cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
         name: longhorn
       spec:
         forProvider: {}
@@ -2317,7 +2317,7 @@ spec:
       kind: Group
       metadata:
         labels:
-          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+          cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
         name: longhorn-backup
       spec:
         forProvider: {}
@@ -2332,13 +2332,13 @@ spec:
       kind: GroupMembership
       metadata:
         labels:
-          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+          cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
         name: longhorn
       spec:
         forProvider:
           groupSelector:
             matchLabels:
-              cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+              cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
           name: longhorn
           userRefs:
           - name: longhorn
@@ -2355,10 +2355,10 @@ spec:
         forProvider:
           groupSelector:
             matchLabels:
-              cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+              cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
           policyArnSelector:
             matchLabels:
-              cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+              cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
