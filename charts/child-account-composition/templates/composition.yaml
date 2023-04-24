@@ -2170,3 +2170,198 @@ spec:
         toFieldPath: spec.forProvider.manifest.stringData.config
         policy:
           fromFieldPath: Required
+
+
+#####
+# Longhorn
+#####
+
+  - name: s3-longhorn-backup
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        labels:
+          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+        name: #patchme
+      spec:
+        forProvider:
+          region: #patchme
+          vpcId: #patchme
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
+      - type: CombineFromComposite
+        combine:
+          variables:
+            - fromFieldPath: spec.id
+            - fromFieldPath: spec.parameters.region
+        toFieldPath: metadata.name
+        transforms:
+        - string:
+            fmt: '%s-lh-backups-%s'
+          type: string
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.parameters.region
+        toFieldPath: spec.forProvider.region
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.longhornS3BucketName
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.arn
+        toFieldPath: status.longhornS3BucketArn
+
+  - name: s3-longhorn-backup-versioning
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketVersioning
+      metadata:
+        labels:
+          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+        name: #patchme
+      spec:
+        forProvider:
+          region: #patchme
+          versioningConfiguration:
+          - status: Enabled
+          bucketSelector:
+            matchLabels:
+              cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.longhornS3BucketName
+        toFieldPath: metadata.name
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.longhornS3BucketName
+        toFieldPath: spec.forProvider.bucket
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.parameters.region
+        toFieldPath: spec.forProvider.region
+
+  - name: s3-longhorn-backup-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        labels:
+          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+        name: #patchme
+      spec:
+        forProvider:
+          region: #patchme
+          versioningConfiguration:
+          - status: Enabled
+          bucketSelector:
+            matchLabels:
+              cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+          policy: #patchme
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.longhornS3BucketName
+        toFieldPath: metadata.name
+      - type: CombineFromComposite
+        fromFieldPath: status.longhornS3BucketName
+        toFieldPath: spec.forProvider.bucket
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.parameters.region
+        toFieldPath: spec.forProvider.region
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.longhornS3BucketArn
+        toFieldPath: spec.forProvider.policy
+        transforms:
+        - type: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "GrantLonghornBackupstoreAccess0",
+                    "Effect": "Allow",
+                    "Action": [
+                      "s3:PutObject",
+                      "s3:GetObject",
+                      "s3:ListBucket",
+                      "s3:DeleteObject"
+                    ],
+                    "Resource": [
+                      "%s",
+                      "%s/*"
+                    ]
+                  }
+                ]
+              }
+
+  - name: longhorn-iam-user
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: User
+      metadata:
+        labels:
+          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+        name: longhorn
+      spec:
+        forProvider: {}
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: longhorn-iam-group
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Group
+      metadata:
+        labels:
+          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+        name: longhorn-backup
+      spec:
+        forProvider: {}
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: longhorn-iam-group-membership
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: GroupMembership
+      metadata:
+        labels:
+          cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+        name: longhorn
+      spec:
+        forProvider:
+          groupSelector:
+            matchLabels:
+              cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+          name: longhorn
+          userRefs:
+          - name: longhorn
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: longhorn-iam-user-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: GroupPolicyAttachment
+      spec:
+        forProvider:
+          groupSelector:
+            matchLabels:
+              cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+          policyArnSelector:
+            matchLabels:
+              cloudspace.upbound.io/s3longhorn: s3-longhorn-backup
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
