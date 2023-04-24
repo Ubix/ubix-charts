@@ -304,14 +304,14 @@ spec:
       toFieldPath: metadata.name
       transforms:
       - string:
-          fmt: '%s-eskcluster-sg'
+          fmt: '%s-ekscluster-sg'
         type: string
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.name
       transforms:
       - string:
-          fmt: '%s-eskcluster-sg'
+          fmt: '%s-ekscluster-sg'
         type: string
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
