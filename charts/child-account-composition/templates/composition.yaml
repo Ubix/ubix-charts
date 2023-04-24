@@ -2025,7 +2025,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-farget-execution'
+          fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
