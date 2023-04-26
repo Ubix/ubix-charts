@@ -282,7 +282,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-node-sg'
+          fmt: '%s-ekscluster-sg'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -366,49 +366,10 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-ekscluster-sg'
+          fmt: '%s-node-sg'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-
-  - name: cluster-security-group-rule-egress
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: SecurityGroupRule
-      spec:
-        forProvider:
-          cidrBlocks:
-          - 0.0.0.0/0
-          description: Egress
-          fromPort: 0
-          protocol: "-1"
-          toPort: 0
-          type: egress
-          region: #patchme
-          securityGroupIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-sg-rule-cluster-egress'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.securityGroupIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-ekscluster-sg'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
 
 ##
 # End EKS Security Group
