@@ -2237,7 +2237,7 @@ spec:
         toFieldPath: metadata.name
       - type: FromCompositeFieldPath
         fromFieldPath: status.longhornS3BucketName
-        toFieldPath: spec.forProvider.bucket
+        toFieldPath: spec.forProvider.bucketRef.name
       - type: FromCompositeFieldPath
         fromFieldPath: spec.parameters.region
         toFieldPath: spec.forProvider.region
@@ -2249,23 +2249,12 @@ spec:
       metadata:
         labels:
           cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
-        name: #patchme
+        name: iam-longhorn-backup-policy
       spec:
         forProvider:
           region: #patchme
-          versioningConfiguration:
-          - status: Enabled
-          bucketSelector:
-            matchLabels:
-              cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
           policy: #patchme
     patches:
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.longhornS3BucketName
-        toFieldPath: metadata.name
-      - type: CombineFromComposite
-        fromFieldPath: status.longhornS3BucketName
-        toFieldPath: spec.forProvider.bucket
       - type: FromCompositeFieldPath
         fromFieldPath: spec.parameters.region
         toFieldPath: spec.forProvider.region
