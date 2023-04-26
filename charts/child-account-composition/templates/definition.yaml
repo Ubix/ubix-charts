@@ -187,6 +187,12 @@ spec:
               longhornS3BucketArn:
                 description: s3 Bucket ARN used for Longhorn backups
                 type: string
+              longhornUserName:
+                description: IAM User name for longhorn service
+                type: string
+              longhornGroupName:
+                description: IAM Group name for longhorn service
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
