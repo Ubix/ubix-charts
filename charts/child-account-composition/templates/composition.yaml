@@ -2494,7 +2494,7 @@ spec:
         - string:
             fmt: '%s-%s-longhorn'
           type: string
-      - type: toCompositeFieldPath
+      - type: ToCompositeFieldPath
         fromFieldPath: metadata.name
         toFieldPath: status.longhornUserName
       - type: FromCompositeFieldPath
@@ -2520,7 +2520,7 @@ spec:
         - string:
             fmt: '%s-%s-longhorn-backup'
           type: string
-      - type: toCompositeFieldPath
+      - type: ToCompositeFieldPath
         fromFieldPath: metadata.name
         toFieldPath: status.longhornGroupName
       - type: FromCompositeFieldPath
