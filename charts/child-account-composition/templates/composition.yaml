@@ -1191,7 +1191,6 @@ spec:
                 - name: #patchme
           roleArnSelector:
             matchControllerRef: true
-          vpcConfig:
       providerConfigRef:
         policy:
           resolve: "Always"
