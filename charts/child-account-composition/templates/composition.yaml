@@ -2533,10 +2533,6 @@ spec:
         name: #patchme
       spec:
         forProvider:
-          groupRef:
-            name: #patchme
-          userRefs:
-          - name: #patchme
     patches:
       - fromFieldPath: spec.id
         toFieldPath: spec.forProvider.name
