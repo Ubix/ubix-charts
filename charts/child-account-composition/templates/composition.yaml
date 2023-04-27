@@ -2386,11 +2386,11 @@ spec:
             - fromFieldPath: status.id
             - fromFieldPath: spec.id
             - fromFieldPath: spec.parameters.region
-        toFieldPath: metadata.name
-        transforms:
-        - string:
+
+          strategy: string
+          string:
             fmt: '%s-%s-lh-backups-%s'
-          type: string
+        toFieldPath: metadata.name
       - type: FromCompositeFieldPath
         fromFieldPath: spec.parameters.region
         toFieldPath: spec.forProvider.region
@@ -2489,11 +2489,10 @@ spec:
           variables:
             - fromFieldPath: status.id
             - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-        - string:
+          strategy: string
+          string:
             fmt: '%s-%s-longhorn'
-          type: string
+        toFieldPath: metadata.name
       - type: ToCompositeFieldPath
         fromFieldPath: metadata.name
         toFieldPath: status.longhornUserName
@@ -2515,11 +2514,10 @@ spec:
           variables:
             - fromFieldPath: status.id
             - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-        - string:
+          strategy: string
+          string:
             fmt: '%s-%s-longhorn-backup'
-          type: string
+        toFieldPath: metadata.name
       - type: ToCompositeFieldPath
         fromFieldPath: metadata.name
         toFieldPath: status.longhornGroupName
@@ -2536,7 +2534,7 @@ spec:
       spec:
         forProvider:
           groupRef:
-          - name: #patchme
+            name: #patchme
           userRefs:
           - name: #patchme
     patches:
@@ -2554,7 +2552,7 @@ spec:
               fmt: "%s-longhorn-iam-group-membership"
       - type: FromCompositeFieldPath
         fromFieldPath: status.longhornGroupName
-        toFieldPath: spec.forProvider.groupRef[0].name
+        toFieldPath: spec.forProvider.groupRef.name
       - type: FromCompositeFieldPath
         fromFieldPath: status.longhornUserName
         toFieldPath: spec.forProvider.userRefs[0].name
