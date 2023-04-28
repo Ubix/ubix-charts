@@ -2506,9 +2506,6 @@ spec:
           - type: string
             string:
               fmt: "%s-longhorn-iam-user"
-      - type: ToCompositeFieldPath
-        fromFieldPath: metadata.name
-        toFieldPath: status.longhornUserName
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
