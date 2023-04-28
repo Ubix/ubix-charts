@@ -2436,17 +2436,19 @@ spec:
       kind: Policy
       metadata:
         name: #patchme
+        annotations:
+          crossplane.io/external-name: longhorn-s3-backup
       spec:
         forProvider:
           region: #patchme
           policy: #patchme
     patches:
-      - fromFieldPath: status.id
+      - fromFieldPath: spec.id
         toFieldPath: metadata.name
         transforms:
           - type: string
             string:
-              fmt: "ubx-%s-iam-longhorn-backup-policy"
+              fmt: "%s-longhorn-iam-policy"
       - type: FromCompositeFieldPath
         fromFieldPath: spec.parameters.region
         toFieldPath: spec.forProvider.region
@@ -2483,6 +2485,9 @@ spec:
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.arn
+        toFieldPath: status.longhornBackupPolicyArn
 
   - name: longhorn-iam-user
     base:
@@ -2490,18 +2495,17 @@ spec:
       kind: User
       metadata:
         name: #patchme
+        annotations:
+          crossplane.io/external-name: longhorn
       spec:
         forProvider: {}
     patches:
-      - type: CombineFromComposite
-        combine:
-          variables:
-            - fromFieldPath: status.id
-            - fromFieldPath: spec.id
-          strategy: string
-          string:
-            fmt: 'longhorn-%s-%s'
+      - fromFieldPath: spec.id
         toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-longhorn-iam-user"
       - type: ToCompositeFieldPath
         fromFieldPath: metadata.name
         toFieldPath: status.longhornUserName
@@ -2509,79 +2513,28 @@ spec:
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
 
-  - name: longhorn-iam-group
+  - name: longhorn-user-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
-      kind: Group
+      kind: UserPolicyAttachment
       metadata:
         name: #patchme
-      spec:
-        forProvider: {}
-    patches:
-      - type: CombineFromComposite
-        combine:
-          variables:
-            - fromFieldPath: status.id
-            - fromFieldPath: spec.id
-          strategy: string
-          string:
-            fmt: 'longhorn-backup-%s-%s'
-        toFieldPath: metadata.name
-      - type: ToCompositeFieldPath
-        fromFieldPath: metadata.name
-        toFieldPath: status.longhornGroupName
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
-
-  - name: longhorn-iam-group-membership
-    base:
-      apiVersion: iam.aws.upbound.io/v1beta1
-      kind: GroupMembership
-      metadata:
-        name: #patchme
+        annotations:
+          crossplane.io/external-name: longhorn-policy-attachment
       spec:
         forProvider:
+          user: longhorn
+          policyArn: #patchme
     patches:
       - fromFieldPath: spec.id
         toFieldPath: metadata.name
         transforms:
           - type: string
             string:
-              fmt: "longhorn-iam-group-membership-%s"
-      - fromFieldPath: metadata.name
-        toFieldPath: spec.forProvider.name
+              fmt: "%s-longhorn-iam-policy-attch"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.longhornGroupName
-        toFieldPath: spec.forProvider.groupRef.name
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.longhornUserName
-        toFieldPath: spec.forProvider.userRefs[0].name
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
-
-  - name: longhorn-iam-user-policy-attachment
-    base:
-      apiVersion: iam.aws.upbound.io/v1beta1
-      kind: GroupPolicyAttachment
-      metadata:
-        name: #patchme
-      spec:
-        forProvider:
-          groupSelector:
-            matchLabels:
-              cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
-          policyArnSelector:
-            matchLabels:
-              cloudspace.upbound.io/iamlonghorn: iam-longhorn-backup
-    patches:
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "longhorn-iam-user-policy-attachment-%s"
+        fromFieldPath: status.longhornBackupPolicyArn
+        toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name

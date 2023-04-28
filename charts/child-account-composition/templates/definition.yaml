@@ -190,8 +190,8 @@ spec:
               longhornUserName:
                 description: IAM User name for longhorn service
                 type: string
-              longhornGroupName:
-                description: IAM Group name for longhorn service
+              longhornBackupPolicyArn:
+                description: IAM Backup policy ARN
                 type: string
     additionalPrinterColumns:
     - name: AWSAccountID
