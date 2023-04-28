@@ -764,6 +764,8 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: Bucket
       metadata:
+        annotations:
+          crossplane.io/external-name: my-special-db
       spec:
         forProvider:
           region: #patched
@@ -771,12 +773,10 @@ spec:
     - type: CombineFromComposite
       combine:
         variables:
-          - fromFieldPath: spec.parameters.name
           - fromFieldPath: status.id
-          - fromFieldPath: spec.parameters.region
         strategy: string
         string:
-          fmt: "%s-%s-%s-solution-space-backend"
+          fmt: "%s-solution-space-backend"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
