@@ -1,21 +1,19 @@
 apiVersion: v2
-name: master_account
-description: Provisions accounts in the Ubix AWS organization
+name: composition-instance
+description: Child account CRD helm chart
 
-# A chart can be either an 'application' or a 'library' chart.
-#
-# Application charts are a collection of templates that can be packaged into versioned archives
-# to be deployed.
-#
-# Library charts provide useful utilities or functions for the chart developer. They're included as
-# a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+# Child account CRD helm chart
+# this chart will create a resource kind: ChildAccountClaim that will use the child-account-composition chart
+# link to the chart -> https://github.com/Ubix/ubix-charts/tree/main/charts/childaccount
+# The CRD is defined by a crossplane composition and definition
+# Additional information here: https://docs.crossplane.io/v1.10/reference/composition/
+
 type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.0
+version: 0.1.2
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

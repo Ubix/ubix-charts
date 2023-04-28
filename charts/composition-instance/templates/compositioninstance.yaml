@@ -3,13 +3,13 @@ kind: ChildAccountClaim
 metadata:
   name: {{ .Values.metadata.name }}
   labels:
-    provider: aws-jet
+    provider: provider-aws
     name: childaccount
 spec:
   id: {{ .Values.spec.id }}
   compositionSelector:
     matchLabels:
-      provider: aws-jet
+      provider: provider-aws
       name: childaccount
   parameters:
     email: awsaccountadmin+{{ .Values.spec.parameters.name }}@ubixlabs.com
@@ -17,9 +17,10 @@ spec:
     parentId: {{ .Values.spec.parameters.parentId }}
     region: {{ .Values.spec.parameters.region }}
   eks:
-    version: {{ .Values.spec.eks.version }}
+    version: {{ quote .Values.spec.eks.version }}
     nodeSize: {{ .Values.spec.eks.nodeSize }}
     minNodeCount: {{ .Values.spec.eks.nodeSize }}
     maxNodeCount: {{ .Values.spec.eks.maxNodeCount }}
     desiredNodeCount: {{ .Values.spec.eks.desiredNodeCount }}
     diskSize: {{ .Values.spec.eks.diskSize }}
+    vpcCniAddonVersion: {{ .Values.spec.eks.vpcCniAddonVersion }}
