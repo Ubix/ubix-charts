@@ -2554,7 +2554,8 @@ spec:
       spec:
         forProvider: {}
     patches:
-      - fromFieldPath: spec.id
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
         toFieldPath: metadata.name
         transforms:
           - type: string
@@ -2578,7 +2579,8 @@ spec:
           policyArnRef:
             name: #patchme
     patches:
-      - fromFieldPath: spec.id
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
         toFieldPath: metadata.name
         transforms:
           - type: string
