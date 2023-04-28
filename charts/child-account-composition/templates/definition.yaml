@@ -184,9 +184,6 @@ spec:
               longhornS3BucketArn:
                 description: s3 Bucket ARN used for Longhorn backups
                 type: string
-              longhornBackupPolicyArn:
-                description: IAM Backup policy ARN
-                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string

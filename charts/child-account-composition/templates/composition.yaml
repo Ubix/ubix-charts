@@ -2494,9 +2494,6 @@ spec:
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
-      - type: ToCompositeFieldPath
-        fromFieldPath: status.atProvider.arn
-        toFieldPath: status.longhornBackupPolicyArn
 
   - name: longhorn-iam-user
     base:
