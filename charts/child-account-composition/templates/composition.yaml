@@ -2380,16 +2380,23 @@ spec:
         forProvider:
           region: #patchme
     patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-longhorn-backups"
       - type: CombineFromComposite
         combine:
           variables:
-            - fromFieldPath: status.id
             - fromFieldPath: spec.id
+            - fromFieldPath: status.id
             - fromFieldPath: spec.parameters.region
           strategy: string
           string:
-            fmt: 'ubx-%s-%s-lh-backups-%s'
-        toFieldPath: metadata.name
+            fmt: '%s-%s-%s-longhorn-backups'
+        toFieldPath: metadata.annotations['crossplane.io/external-name']
       - type: FromCompositeFieldPath
         fromFieldPath: spec.parameters.region
         toFieldPath: spec.forProvider.region
@@ -2443,12 +2450,13 @@ spec:
           region: #patchme
           policy: #patchme
     patches:
-      - fromFieldPath: spec.id
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
         toFieldPath: metadata.name
         transforms:
           - type: string
             string:
-              fmt: "%s-longhorn-iam-policy"
+              fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
         fromFieldPath: spec.parameters.region
         toFieldPath: spec.forProvider.region
@@ -2505,7 +2513,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-longhorn-iam-user"
+              fmt: "%s-longhorn"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -2528,7 +2536,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-longhorn-iam-policy-attch"
+              fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
         fromFieldPath: status.longhornBackupPolicyArn
         toFieldPath: spec.forProvider.policyArn
