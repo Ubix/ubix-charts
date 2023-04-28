@@ -765,7 +765,7 @@ spec:
       kind: Bucket
       metadata:
         annotations:
-          crossplane.io/external-name: my-special-db
+          crossplane.io/external-name: solution-space-backend-bucket
       spec:
         forProvider:
           region: #patched
