@@ -584,7 +584,6 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - type: ToCompositeFieldPath
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -1362,7 +1361,8 @@ spec:
           - name: #patchme
           - name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -1425,7 +1425,8 @@ spec:
             }
           resolveConflicts: OVERWRITE
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
