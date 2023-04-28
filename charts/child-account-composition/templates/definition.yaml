@@ -187,9 +187,6 @@ spec:
               longhornS3BucketArn:
                 description: s3 Bucket ARN used for Longhorn backups
                 type: string
-              longhornUserName:
-                description: IAM User name for longhorn service
-                type: string
               longhornBackupPolicyArn:
                 description: IAM Backup policy ARN
                 type: string
