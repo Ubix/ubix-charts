@@ -2404,9 +2404,6 @@ spec:
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
       - type: ToCompositeFieldPath
-        fromFieldPath: status.atProvider.id
-        toFieldPath: status.longhornS3BucketName
-      - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.arn
         toFieldPath: status.longhornS3BucketArn
 
@@ -2425,10 +2422,14 @@ spec:
             name: #patchme
     patches:
       - type: FromCompositeFieldPath
-        fromFieldPath: status.longhornS3BucketName
+        fromFieldPath: spec.id
         toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.longhornS3BucketName
+        fromFieldPath: metadata.name
         toFieldPath: spec.forProvider.bucketRef.name
       - type: FromCompositeFieldPath
         fromFieldPath: spec.parameters.region
@@ -2529,7 +2530,8 @@ spec:
       spec:
         forProvider:
           user: longhorn
-          policyArn: #patchme
+          policyArnRef:
+            name: #patchme
     patches:
       - fromFieldPath: spec.id
         toFieldPath: metadata.name
@@ -2538,8 +2540,12 @@ spec:
             string:
               fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.longhornBackupPolicyArn
-        toFieldPath: spec.forProvider.policyArn
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.policyArnRef.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
