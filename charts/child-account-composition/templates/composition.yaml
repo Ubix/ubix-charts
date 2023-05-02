@@ -2596,3 +2596,29 @@ spec:
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
+
+ - name: longhorn-iam-access-key
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: AccessKey
+      metadata:
+        name: #patchme
+        annotations:
+          crossplane.io/external-name: longhorn-access-key
+      spec:
+        forProvider:
+          user: longhorn
+        writeConnectionSecretToRef:
+          name: aws-secret
+          namespace: longhorn-system
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-longhorn-backups"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
