@@ -2560,7 +2560,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-longhorn"
+              fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
