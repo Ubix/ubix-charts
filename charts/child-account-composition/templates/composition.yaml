@@ -2607,7 +2607,8 @@ spec:
           crossplane.io/external-name: longhorn-access-key
       spec:
         forProvider:
-          user: longhorn
+          userRef: 
+            name: longhorn
         writeConnectionSecretToRef:
           name: aws-secret
           namespace: longhorn-system
