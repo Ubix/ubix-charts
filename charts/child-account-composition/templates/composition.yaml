@@ -2603,12 +2603,10 @@ spec:
       kind: AccessKey
       metadata:
         name: #patchme
-        annotations:
-          crossplane.io/external-name: longhorn-access-key
       spec:
         forProvider:
           userRef: 
-            name: longhorn
+            name: #patchme
         writeConnectionSecretToRef:
           name: aws-secret
           namespace: longhorn-system
@@ -2620,6 +2618,9 @@ spec:
           - type: string
             string:
               fmt: "%s-longhorn-backups"
+      - type: FromCompositeFieldPath
+        fromFieldPath: metadata.name
+        toFieldPath: spec.forProvider.userRef.name
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
