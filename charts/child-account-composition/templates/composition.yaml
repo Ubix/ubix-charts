@@ -2575,7 +2575,8 @@ spec:
           crossplane.io/external-name: longhorn-policy-attachment
       spec:
         forProvider:
-          user: #patchme
+          userRef: 
+            name: #patchme
           policyArnRef:
             name: #patchme
     patches:
@@ -2587,8 +2588,12 @@ spec:
             string:
               fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
-        fromFieldPath: metadata.name
+        fromFieldPath: spec.id
         toFieldPath: spec.forProvider.userRef.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
         fromFieldPath: spec.id
         toFieldPath: spec.forProvider.policyArnRef.name
@@ -2622,8 +2627,12 @@ spec:
             string:
               fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
-        fromFieldPath: metadata.name
+        fromFieldPath: spec.id
         toFieldPath: spec.forProvider.userRef.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-longhorn-backups"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
