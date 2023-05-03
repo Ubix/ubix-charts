@@ -2605,7 +2605,7 @@ spec:
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
 
- - name: longhorn-iam-access-key
+  - name: longhorn-iam-access-key
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: AccessKey

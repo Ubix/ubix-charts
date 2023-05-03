@@ -1,1 +1,1 @@
-backofficeArgocdRoleArn: #required: arn:aws:iam::882490700787:role/argocd-server
+backofficeArgocdRoleArn: arn:aws:iam::882490700787:role/argocd-server
