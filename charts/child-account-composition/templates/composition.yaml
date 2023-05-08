@@ -1695,7 +1695,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
-      transforms:bl
+      transforms:
       - type: string
         string:
           fmt: "%s-karpenter-cluster"
