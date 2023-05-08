@@ -1654,7 +1654,13 @@ spec:
                   "Principal": {
                     "Federated": "arn:aws:iam::%s:oidc-provider/%s"
                   },
-                  "Action": "sts:AssumeRoleWithWebIdentity",
+                                    "Action": [
+                      "sts:AssumeRoleWithWebIdentity",
+                      "kms:Decrypt",
+                      "kms:GenerateDataKeyWithoutPlaintext",
+                      "kms:CreateGrant"
+                  ],
+                  "Resource": "*",
                   "Condition": {
                     "StringEquals": {
                         "%s:sub": "system:serviceaccount:karpenter:karpenter",
