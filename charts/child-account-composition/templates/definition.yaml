@@ -181,9 +181,6 @@ spec:
               karpenterIRSAPolicyArn:
                 description: Policy to allow karpenter workload to work
                 type: string
-              longhornS3BucketArn:
-                description: s3 Bucket ARN used for Longhorn backups
-                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
