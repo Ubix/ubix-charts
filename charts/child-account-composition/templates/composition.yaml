@@ -1854,6 +1854,55 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: iamrole-ebs-csi-driver
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa",
+                        "%s:sub": "system:serviceaccount:kube-system:ebs-csi-node-sa",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+      providerConfigRef:
+        policy:
+          resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ebs-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ebs-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 # ########
 # # IAM Policies
 # ########
@@ -2368,7 +2417,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-karpenter-cluster'
+          fmt: '%s-ebs-csi-driver'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
