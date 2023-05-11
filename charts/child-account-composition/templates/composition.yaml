@@ -1860,7 +1860,29 @@ spec:
       kind: Role
       spec:
         forProvider:
-          assumeRolePolicy: |
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-ebs-csi-driver"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
             {
               "Version": "2012-10-17",
               "Statement": [
@@ -1874,24 +1896,12 @@ spec:
                   "Condition": {
                     "StringEquals": {
                         "%s:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa",
-                        "%s:sub": "system:serviceaccount:kube-system:ebs-csi-node-sa",
                         "%s:aud": "sts.amazonaws.com"
                     }
                   }
                 }
               ]
             }
-      providerConfigRef:
-        policy:
-          resolve: "Always"
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-ebs-csi-driver'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.labels.role
@@ -1899,9 +1909,6 @@ spec:
       - type: string
         string:
           fmt: '%s-ebs-csi-driver'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
 
 # ########
 # # IAM Policies
