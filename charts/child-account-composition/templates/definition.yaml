@@ -181,6 +181,12 @@ spec:
               karpenterIRSAPolicyArn:
                 description: Policy to allow karpenter workload to work
                 type: string
+              zoneNameServers:
+                description: Zone name servers
+                type: array
+                items:
+                  type: string
+                default: []
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
