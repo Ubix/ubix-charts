@@ -2537,7 +2537,7 @@ spec:
           name: #patchme
           type: NS
           ttl: 300
-          zoneID: {{ .values.zoneID }}
+          zoneID: {{ .Values.zoneID }}
         providerConfigRef:
           name: root
     patches:
