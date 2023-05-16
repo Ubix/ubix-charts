@@ -2529,7 +2529,7 @@ spec:
           string:
             fmt: "%s.ubix.io-ZONE"
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
+      fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.nameServers
@@ -2544,7 +2544,7 @@ spec:
           name: #patchme
           type: NS
           ttl: 300
-          zoneID: {{ .Values.zoneID }}
+          zoneId: {{ .Values.zoneId }}
         providerConfigRef:
           name: root
     patches:
