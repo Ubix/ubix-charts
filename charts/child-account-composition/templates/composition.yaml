@@ -1910,6 +1910,62 @@ spec:
         string:
           fmt: '%s-ebs-csi-driver'
 
+  - name: iamrole-efs-csi-driver
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-efs-csi-driver"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:kube-system:efs-csi-controller-sa",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi-driver'
+
 # ########
 # # IAM Policies
 # ########
@@ -2044,6 +2100,69 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.karpenterIRSAPolicyArn
+
+- name: efs-csi-driver-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        name: "AmazonEFSCSIDriverPolicy"
+      spec:
+        forProvider:
+          policy: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "elasticfilesystem:DescribeAccessPoints",
+                    "elasticfilesystem:DescribeFileSystems",
+                    "elasticfilesystem:DescribeMountTargets",
+                    "ec2:DescribeAvailabilityZones"
+                  ],
+                  "Resource": "*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "elasticfilesystem:CreateAccessPoint"
+                  ],
+                  "Resource": "*",
+                  "Condition": {
+                    "StringLike": {
+                      "aws:RequestTag/efs.csi.aws.com/cluster": "true"
+                    }
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "elasticfilesystem:TagResource"
+                  ],
+                  "Resource": "*",
+                  "Condition": {
+                    "StringLike": {
+                      "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
+                    }
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "elasticfilesystem:DeleteAccessPoint",
+                  "Resource": "*",
+                  "Condition": {
+                    "StringEquals": {
+                      "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
+                    }
+                  }
+                }
+              ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 # ########
 # # IAM Policy Attachments
@@ -2428,6 +2547,35 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
+  - name: iamattachment-efs-csi-driver
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy
+          roleRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 #####
 # ArgoCD
 #####
