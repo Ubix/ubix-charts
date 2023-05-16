@@ -2519,8 +2519,15 @@ spec:
           string:
             fmt: "%s.ubix.io"
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.config.comment
+      transforms:
+        - type: string
+          string:
+            fmt: "%s.ubix.io-ZONE"
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
@@ -2548,6 +2555,8 @@ spec:
         fromFieldPath: spec.id
         toFieldPath: spec.forProvider.name
       - type: FromCompositeFieldPath
+        fromFieldPath: spec.parameters.region
+        toFieldPath: spec.forProvider.region
+      - type: FromCompositeFieldPath
         fromFieldPath: status.zoneNameServers
         toFieldPath: spec.forProvider.records
-
