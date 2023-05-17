@@ -2654,3 +2654,69 @@ spec:
         toFieldPath: spec.forProvider.manifest.stringData.config
         policy:
           fromFieldPath: Required
+#####
+# Route53
+#####
+  - name: route53-zone
+    base:
+      apiVersion: route53.aws.upbound.io/v1beta1
+      kind: Zone
+      spec:
+        forProvider:
+          name: #patchme
+          config:
+            comment: #patchme
+            privateZone: false
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s.ubix.io"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.config.comment
+      transforms:
+        - type: string
+          string:
+            fmt: "%s.ubix.io-ZONE"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.nameServers
+      toFieldPath: status.zoneNameServers
+
+  - name: route53-record
+    base:
+      apiVersion: route53.aws.upbound.io/v1beta1
+      kind: Record
+      spec:
+        forProvider:
+          name: #patchme
+          type: NS
+          ttl: 300
+          zoneId: {{ .Values.zoneId }}
+        providerConfigRef:
+          name: root
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.name
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.parameters.region
+        toFieldPath: spec.forProvider.region
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.zoneNameServers
+        toFieldPath: spec.forProvider.records
