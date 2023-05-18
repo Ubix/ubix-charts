@@ -1895,7 +1895,7 @@ spec:
                   "Action": "sts:AssumeRoleWithWebIdentity",
                   "Condition": {
                     "StringEquals": {
-                        "%s:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa",
+                        "%s:sub": "system:serviceaccount:addons:ebs-csi-controller-sa",
                         "%s:aud": "sts.amazonaws.com"
                     }
                   }
@@ -1951,7 +1951,7 @@ spec:
                   "Action": "sts:AssumeRoleWithWebIdentity",
                   "Condition": {
                     "StringEquals": {
-                        "%s:sub": "system:serviceaccount:kube-system:efs-csi-controller-sa",
+                        "%s:sub": "system:serviceaccount:addons:efs-csi-controller-sa",
                         "%s:aud": "sts.amazonaws.com"
                     }
                   }
