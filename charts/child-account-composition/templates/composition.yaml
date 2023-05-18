@@ -2216,17 +2216,17 @@ spec:
                 }
               ]
             }
-      patches:
-      - type: FromCompositeFieldPath
-        fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-        - type: string
-          string:
-            fmt: '%s-efs-csi'
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
     
   - name: external-dns-policy
     base:
@@ -2235,47 +2235,47 @@ spec:
       spec:
         forProvider:
           policy: "{}"
-      patches:
-      - type: FromCompositeFieldPath
-        fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-        - type: string
-          string:
-            fmt: '%s-external-dns'
-      - type: CombineFromComposite
-        toFieldPath: spec.forProvider.policy
-        policy:
-          fromFieldPath: Required
-        combine:
-          variables:
-            - fromFieldPath: status.zoneId
-          strategy: string
-          string:
-            fmt: |
-              {
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: status.zoneId
+        strategy: string
+        string:
+          fmt: |
+            {
+                "Version": "2012-10-17",
                 "Statement": [
                     {
-                        "Action": "route53:ChangeResourceRecordSets",
+                        "Sid": "ChangeResourceRecordSets",
                         "Effect": "Allow",
-                        "Resource": "arn:aws:route53:::hostedzone/%s",
-                        "Sid": ""
+                        "Action": "route53:ChangeResourceRecordSets",
+                        "Resource": "arn:aws:route53:::hostedzone/%s"
                     },
                     {
+                        "Sid": "ListResourceRecordSetsAndHostedZones",
+                        "Effect": "Allow",
                         "Action": [
                             "route53:ListResourceRecordSets",
                             "route53:ListHostedZones"
                         ],
-                        "Effect": "Allow",
-                        "Resource": "*",
-                        "Sid": ""
+                        "Resource": "*"
                     }
-                ],
-                "Version": "2012-10-17"
-              }
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
+                ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 # ########
 # # IAM Policy Attachments
