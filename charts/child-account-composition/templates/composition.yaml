@@ -1966,6 +1966,65 @@ spec:
         string:
           fmt: '%s-efs-csi-driver'
 
+  - name: iamrole-external-dns
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-external-dns"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:addons:external-dns",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.externalDnsRoleArn
+
 # ########
 # # IAM Policies
 # ########
@@ -2165,6 +2224,55 @@ spec:
         - type: string
           string:
             fmt: '%s-efs-csi'
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+    
+  - name: external-dns-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      spec:
+        forProvider:
+          policy: "{}"
+      patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+        - type: string
+          string:
+            fmt: '%s-external-dns'
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.policy
+        policy:
+          fromFieldPath: Required
+        combine:
+          variables:
+            - fromFieldPath: status.zoneId
+          strategy: string
+          string:
+            fmt: |
+              {
+                "Statement": [
+                    {
+                        "Action": "route53:ChangeResourceRecordSets",
+                        "Effect": "Allow",
+                        "Resource": "arn:aws:route53:::hostedzone/%s",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": [
+                            "route53:ListResourceRecordSets",
+                            "route53:ListHostedZones"
+                        ],
+                        "Effect": "Allow",
+                        "Resource": "*",
+                        "Sid": ""
+                    }
+                ],
+                "Version": "2012-10-17"
+              }
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -2587,6 +2695,41 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    
+  - name: iamattachment-external-dns
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArnRef: #patchme
+          roleRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 #####
 # ArgoCD
@@ -2694,6 +2837,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.nameServers
       toFieldPath: status.zoneNameServers
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.zoneId
+      toFieldPath: status.zoneId
 
   - name: route53-record
     base:

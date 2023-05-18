@@ -181,6 +181,12 @@ spec:
               karpenterIRSAPolicyArn:
                 description: Policy to allow karpenter workload to work
                 type: string
+              externalDnsRoleArn:
+                description: Policy to allow external dns to work
+                type: string
+              zoneId:
+                description: Zone id
+                type: string
               zoneNameServers:
                 description: Zone name servers
                 type: array
