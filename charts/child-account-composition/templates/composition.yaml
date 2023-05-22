@@ -644,6 +644,51 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: node-security-group-ingress-cluster-10250
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: "Allow access from control plane to webhook port 10250."
+          fromPort: 10250
+          protocol: tcp
+          toPort: 10250
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-10250'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 ##
 # End EKS Security Group
 ##
