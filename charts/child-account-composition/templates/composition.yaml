@@ -1933,6 +1933,9 @@ spec:
             string:
               fmt: "%s-cluster-s3"
       - type: FromCompositeFieldPath
+        fromFieldPath: status.clusterS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+      - type: FromCompositeFieldPath
         fromFieldPath: status.clusterS3RoleName
         toFieldPath: spec.forProvider.role
       - type: FromCompositeFieldPath
