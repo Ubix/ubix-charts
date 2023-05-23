@@ -1365,6 +1365,64 @@ spec:
 # # IAM Roles
 # ########
 
+  - name: cluster-s3-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-cluster-s3-role"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.assumeRolePolicy
+        combine:
+          variables:
+            - fromFieldPath: status.id
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+          strategy: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                      "StringEquals": {
+                          "%s:sub": [
+                          "system:serviceaccount:data-tooling:mlflow",
+                          "system:serviceaccount:data-tooling:data-service",
+                          "system:serviceaccount:data-tooling:dataflow-listener",
+                          "system:serviceaccount:services:exec-service-node",
+                          "system:serviceaccount:services:exec-service-python",
+                          "system:serviceaccount:services:solution-engine"],
+                          "%s:aud": "sts.amazonaws.com"
+                      }
+                    }
+                  }
+                ]
+              }
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.clusterS3RoleName
+
   - name: organization-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -1678,6 +1736,53 @@ spec:
 # # IAM Policies
 # ########
 
+  - name: cluster-s3-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      spec:
+        forProvider:
+          policy: "{}"
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-cluster-s3"
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.policy
+        policy:
+          fromFieldPath: Required
+          string:
+            fmt: |
+              {
+                  "Statement": [
+                      {
+                          "Action": [
+                              "s3:*"
+                          ],
+                          "Effect": "Allow",
+                          "Resource": [
+                              "arn:aws:s3:::client-dev-backoffice-1",
+                              "arn:aws:s3:::client-dev-backoffice-1/*",
+                              "arn:aws:s3:::ubix-backoffice-cluster-1-client-data-us-east-1/*",
+                              "arn:aws:s3:::artifact-store.backoffice.ubix.io",
+                              "arn:aws:s3:::artifact-store.backoffice.ubix.io/*",
+                              "arn:aws:s3:::ubix-backoffice-data-js-bundle-actionspace-20220504",
+                              "arn:aws:s3:::ubix-backoffice-data-js-bundle-actionspace-20220504/*"
+                          ]
+                      }
+                  ],
+                  "Version": "2012-10-17"
+              }
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.clusterS3PolicyArn
+
   - name: karpenter-irsa-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -1811,6 +1916,29 @@ spec:
 # ########
 # # IAM Policy Attachments
 # ########
+
+  - name: cluster-s3-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-cluster-s3"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.clusterS3RoleName
+        toFieldPath: spec.forProvider.role
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+
   - name: fargate-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
