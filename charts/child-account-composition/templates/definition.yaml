@@ -133,7 +133,7 @@ spec:
               clusterSecurityGroupID:
                 description: ID of the EKS cluster communication with worker nodes security group.
                 type: string
-              clusterPrimarySecurityGroupID:
+              clusterPrimarySecurityGroupId:
                 description: ID of the Primary EKS cluster communication with worker nodes security group.
                 type: string
               nodeSecurityGroupID:

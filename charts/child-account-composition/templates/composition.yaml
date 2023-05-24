@@ -1597,8 +1597,8 @@ spec:
       fromFieldPath: status.atProvider.certificateAuthority[0].data
       toFieldPath: status.clusterCertificateAuthorityData
     - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.vpcConfig.clusterSecurityGroupId
-      toFieldPath: status.clusterPrimarySecurityGroupID
+      fromFieldPath: status.atProvider.vpcConfig[0].clusterSecurityGroupId
+      toFieldPath: status.clusterPrimarySecurityGroupId
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.status
