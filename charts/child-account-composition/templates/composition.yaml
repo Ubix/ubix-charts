@@ -381,6 +381,51 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
   
+  - name: cluster-security-group-rule-engress-api-server-to-pods
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Cluster API to node groups
+          fromPort: 443
+          protocol: tcp
+          toPort: 443
+          type: egress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-pods-to-api-server'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: cluster-security-group-rule-egress-ephemeral-ports
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -415,6 +460,88 @@ spec:
       - type: string
         string:
           fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: cluster-primary-security-group-rule-dns-tcp
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Allow pods to communicate with CoreDNS
+          fromPort: 53
+          protocol: tcp
+          toPort: 53
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-pods-to-core-dns-tcp'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterPrimarySecurityGroupId
+      toFieldPath: spec.forProvider.securityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: cluster-primary-security-group-rule-dns-udp
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Allow pods to communicate with CoreDNS
+          fromPort: 53
+          protocol: tcp
+          toPort: 53
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-pods-to-core-dns-udp'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterPrimarySecurityGroupId
+      toFieldPath: spec.forProvider.securityGroupId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
