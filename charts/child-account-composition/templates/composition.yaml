@@ -383,7 +383,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
   
-  - name: cluster-security-group-rule-engress-api-server-to-pods
+  - name: cluster-security-group-rule-egress-api-server-to-pods
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
