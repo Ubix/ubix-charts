@@ -177,6 +177,8 @@ spec:
           cidrBlocks:
           - 0.0.0.0/0
           description: Allow egress from the nodes
+          ipv6CidrBlocks:
+          - ::/0
           fromPort: 0
           protocol: "-1"
           toPort: 0
