@@ -405,7 +405,7 @@ spec:
       toFieldPath: metadata.name
       transforms:
       - string:
-          fmt: '%s-sg-rule-pods-to-api-server'
+          fmt: '%s-sg-rule-api-server-to-pods'
         type: string
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
