@@ -522,7 +522,7 @@ spec:
         forProvider:
           description: Allow pods to communicate with CoreDNS
           fromPort: 53
-          protocol: tcp
+          protocol: udp
           toPort: 53
           type: ingress
           region: #patchme
