@@ -485,8 +485,7 @@ spec:
           toPort: 53
           type: ingress
           region: #patchme
-          securityGroupIdRef:
-            name: #patchme
+          securityGroupId: #patchme
           sourceSecurityGroupIdRef:
             name: #patchme
     patches:
@@ -526,8 +525,7 @@ spec:
           toPort: 53
           type: ingress
           region: #patchme
-          securityGroupIdRef:
-            name: #patchme
+          securityGroupId: #patchme
           sourceSecurityGroupIdRef:
             name: #patchme
     patches:
