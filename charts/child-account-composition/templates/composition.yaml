@@ -1556,7 +1556,7 @@ spec:
       - type: string
         string:
           fmt: '%s-ekscluster-sg'
-    - type: FromCompositeFieldPath      
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
@@ -1596,6 +1596,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.certificateAuthority[0].data
       toFieldPath: status.clusterCertificateAuthorityData
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.vpcConfig.clusterSecurityGroupId
+      toFieldPath: status.clusterPrimarySecurityGroupID
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.status
