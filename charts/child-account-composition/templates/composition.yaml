@@ -1365,13 +1365,13 @@ spec:
 # # IAM Roles
 # ########
 
-  - name: client-dev-s3-role
+  - name: mlflow-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: client-dev-s3-role
+          crossplane.io/external-name: mlflow
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -1382,7 +1382,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-client-dev-s3-role"
+              fmt: "%s-mlflow"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -1410,9 +1410,7 @@ spec:
                     "Condition": {
                       "StringEquals": {
                           "%s:sub": [
-                          "system:serviceaccount:data-tooling:mlflow",
-                          "system:serviceaccount:data-tooling:data-service",
-                          "system:serviceaccount:data-tooling:dataflow-listener"],
+                          "system:serviceaccount:data-tooling:mlflow"],
                           "%s:aud": "sts.amazonaws.com"
                       }
                     }
@@ -1421,15 +1419,15 @@ spec:
               }
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.clientDevRoleName
+        toFieldPath: status.mlflowRoleName
 
-  - name: artifact-store-s3-role
+  - name: data-service-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: artifact-store-s3-role
+          crossplane.io/external-name: data-service
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -1440,7 +1438,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-artifact-store-s3-role"
+              fmt: "%s-data-service"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -1468,8 +1466,62 @@ spec:
                     "Condition": {
                       "StringEquals": {
                           "%s:sub": [
-                          "system:serviceaccount:data-tooling:exec-service-python",
-                          "system:serviceaccount:data-tooling:data-service",
+                          "system:serviceaccount:data-tooling:data-service"],
+                          "%s:aud": "sts.amazonaws.com"
+                      }
+                    }
+                  }
+                ]
+              }
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.dataServiceRoleName
+
+  - name: dataflow-listener-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: dataflow-listener
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-dataflow-listener"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.assumeRolePolicy
+        combine:
+          variables:
+            - fromFieldPath: status.id
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+          strategy: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                      "StringEquals": {
+                          "%s:sub": [
                           "system:serviceaccount:data-tooling:dataflow-listener"],
                           "%s:aud": "sts.amazonaws.com"
                       }
@@ -1479,7 +1531,63 @@ spec:
               }
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.artifactStoreRoleName
+        toFieldPath: status.dataFlowListenerRoleName
+
+  - name: exec-service-python-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: exec-service-python
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-exec-service-python"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.assumeRolePolicy
+        combine:
+          variables:
+            - fromFieldPath: status.id
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+          strategy: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                      "StringEquals": {
+                          "%s:sub": [
+                          "system:serviceaccount:data-tooling:exec-service-python"],
+                          "%s:aud": "sts.amazonaws.com"
+                      }
+                    }
+                  }
+                ]
+              }
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.execServicePythonRoleName
 
   - name: organization-role
     base:
@@ -2012,7 +2120,7 @@ spec:
 # # IAM Policy Attachments
 # ########
 
-  - name: client-dev-s3-policy-attachment
+  - name: mlflow-client-dev-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -2026,18 +2134,18 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-client-dev-s3"
+              fmt: "%s-mlflow-client-dev"
       - type: FromCompositeFieldPath
         fromFieldPath: status.clientDevS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
-        fromFieldPath: status.clientDevS3RoleName
+        fromFieldPath: status.mlflowRoleName
         toFieldPath: spec.forProvider.role
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
 
-  - name: artifact-store-s3-policy-attachment
+  - name: data-service-client-dev-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -2051,12 +2159,113 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-artifact-store-s3"
+              fmt: "%s-data-service-client-dev"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.clientDevS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.dataServiceRoleName
+        toFieldPath: spec.forProvider.role
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+
+  - name: data-service-artifact-store-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-data-service-artifact-store"
       - type: FromCompositeFieldPath
         fromFieldPath: status.artifactStoreS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
-        fromFieldPath: status.artifactStoreS3RoleName
+        fromFieldPath: status.dataServiceRoleName
+        toFieldPath: spec.forProvider.role
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+
+
+  - name: data-flow-listener-client-dev-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-data-flow-listener-client-dev"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.clientDevS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.dataFlowListenerRoleName
+        toFieldPath: spec.forProvider.role
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+
+  - name: data-flow-listener-artifact-store-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-data-flow-listener-artifact-store"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.artifactStoreS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.dataFlowListenerRoleName
+        toFieldPath: spec.forProvider.role
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+
+  - name: exec-service-python-artifact-store-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-exec-service-python-artifact-store"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.artifactStoreS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.execServicePythonRoleName
         toFieldPath: spec.forProvider.role
       - type: FromCompositeFieldPath
         fromFieldPath: status.id

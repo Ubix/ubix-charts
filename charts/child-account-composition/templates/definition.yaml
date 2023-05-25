@@ -181,10 +181,16 @@ spec:
               karpenterIRSAPolicyArn:
                 description: Policy to allow karpenter workload to work
                 type: string
-              clientDevS3RoleName:
+              mlflowRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
-              artifactStoreS3RoleName:
+              dataServiceRoleName:
+                description: Role to give s3 access to the cluster
+                type: string
+              dataflowListenerRoleName:
+                description: Role to give s3 access to the cluster
+                type: string
+              execServicePythonRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
               clientDevS3PolicyArn:
