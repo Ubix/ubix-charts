@@ -1915,7 +1915,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-client-dev-s3"
+              fmt: "%s-client-dev-s3-full-access"
       - type: CombineFromComposite
         toFieldPath: spec.forProvider.policy
         policy:
@@ -1957,7 +1957,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-artifact-store-s3"
+              fmt: "%s-artifact-store-s3-full-access"
       - type: CombineFromComposite
         toFieldPath: spec.forProvider.policy
         policy:
