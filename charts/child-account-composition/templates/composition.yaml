@@ -1908,20 +1908,7 @@ spec:
       kind: Policy
       spec:
         forProvider:
-          policy: "{}"
-    patches:
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-client-dev-s3-full-access"
-      - type: CombineFromComposite
-        toFieldPath: spec.forProvider.policy
-        policy:
-          fromFieldPath: Required
-          string:
-            fmt: |
+          policy: |
               {
                   "Statement": [
                       {
@@ -1931,12 +1918,19 @@ spec:
                           "Effect": "Allow",
                           "Resource": [
                               "arn:aws:s3:::client-dev-backoffice-1",
-                              "arn:aws:s3:::client-dev-backoffice-1/*",
+                              "arn:aws:s3:::client-dev-backoffice-1/*"
                           ]
                       }
                   ],
                   "Version": "2012-10-17"
               }
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-client-dev-s3-full-access"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -1950,20 +1944,7 @@ spec:
       kind: Policy
       spec:
         forProvider:
-          policy: "{}"
-    patches:
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-artifact-store-s3-full-access"
-      - type: CombineFromComposite
-        toFieldPath: spec.forProvider.policy
-        policy:
-          fromFieldPath: Required
-          string:
-            fmt: |
+          policy: |
               {
                   "Statement": [
                       {
@@ -1973,12 +1954,19 @@ spec:
                           "Effect": "Allow",
                           "Resource": [
                               "arn:aws:s3:::artifact-store.backoffice.ubix.io",
-                              "arn:aws:s3:::artifact-store.backoffice.ubix.io/*",
+                              "arn:aws:s3:::artifact-store.backoffice.ubix.io/*"
                           ]
                       }
                   ],
                   "Version": "2012-10-17"
               }
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-artifact-store-s3-full-access"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
