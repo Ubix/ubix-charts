@@ -1736,7 +1736,7 @@ spec:
 # # IAM Policies
 # ########
 
-  - name: cluster-s3-policy
+  - name: client-dev-s3-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
@@ -1749,7 +1749,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-cluster-s3"
+              fmt: "%s-client-dev-s3"
       - type: CombineFromComposite
         toFieldPath: spec.forProvider.policy
         policy:
@@ -1766,11 +1766,6 @@ spec:
                           "Resource": [
                               "arn:aws:s3:::client-dev-backoffice-1",
                               "arn:aws:s3:::client-dev-backoffice-1/*",
-                              "arn:aws:s3:::ubix-backoffice-cluster-1-client-data-us-east-1/*",
-                              "arn:aws:s3:::artifact-store.backoffice.ubix.io",
-                              "arn:aws:s3:::artifact-store.backoffice.ubix.io/*",
-                              "arn:aws:s3:::ubix-backoffice-data-js-bundle-actionspace-20220504",
-                              "arn:aws:s3:::ubix-backoffice-data-js-bundle-actionspace-20220504/*"
                           ]
                       }
                   ],
@@ -1781,7 +1776,49 @@ spec:
         toFieldPath: spec.providerConfigRef.name
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.clusterS3PolicyArn
+        toFieldPath: status.clientDevS3PolicyArn
+
+  - name: artifact-store-s3-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      spec:
+        forProvider:
+          policy: "{}"
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-artifact-store-s3"
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.policy
+        policy:
+          fromFieldPath: Required
+          string:
+            fmt: |
+              {
+                  "Statement": [
+                      {
+                          "Action": [
+                              "s3:*"
+                          ],
+                          "Effect": "Allow",
+                          "Resource": [
+                              "arn:aws:s3:::artifact-store.backoffice.ubix.io",
+                              "arn:aws:s3:::artifact-store.backoffice.ubix.io/*",
+                          ]
+                      }
+                  ],
+                  "Version": "2012-10-17"
+              }
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.artifactStoreS3PolicyArn
 
   - name: karpenter-irsa-policy
     base:
@@ -1917,7 +1954,7 @@ spec:
 # # IAM Policy Attachments
 # ########
 
-  - name: cluster-s3-policy-attachment
+  - name: client-dev-s3-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -1931,12 +1968,37 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-cluster-s3"
+              fmt: "%s-client-dev-s3"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.clusterS3PolicyArn
+        fromFieldPath: status.clientDevS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
-        fromFieldPath: status.clusterS3RoleName
+        fromFieldPath: status.clientDevS3RoleName
+        toFieldPath: spec.forProvider.role
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+
+  - name: artifact-store-s3-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-artifact-store-s3"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.artifactStoreS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.artifactStoreS3RoleName
         toFieldPath: spec.forProvider.role
       - type: FromCompositeFieldPath
         fromFieldPath: status.id

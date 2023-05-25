@@ -181,10 +181,16 @@ spec:
               karpenterIRSAPolicyArn:
                 description: Policy to allow karpenter workload to work
                 type: string
-              clusterS3RoleName:
+              clientDevS3RoleName:
                 description: Role to give s3 access to the cluster
                 type: string
-              clusterS3PolicyArn:
+              artifactStoreS3RoleName:
+                description: Role to give s3 access to the cluster
+                type: string
+              clientDevS3PolicyArn:
+                description: Policy to give s3 access to the cluster
+                type: string
+              artifactStoreS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
     additionalPrinterColumns:
