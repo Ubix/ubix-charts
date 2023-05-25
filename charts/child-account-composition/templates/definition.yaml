@@ -133,6 +133,9 @@ spec:
               clusterSecurityGroupID:
                 description: ID of the EKS cluster communication with worker nodes security group.
                 type: string
+              clusterPrimarySecurityGroupId:
+                description: ID of the Primary EKS cluster communication with worker nodes security group.
+                type: string
               nodeSecurityGroupID:
                 description: ID of the Security group for all EKS nodes in the cluster
                 type: string
@@ -199,6 +202,18 @@ spec:
               artifactStoreS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
+              externalDnsRoleArn:
+                description: Policy to allow external dns to work
+                type: string
+              zoneId:
+                description: Zone id
+                type: string
+              zoneNameServers:
+                description: Zone name servers
+                type: array
+                items:
+                  type: string
+                default: []
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string

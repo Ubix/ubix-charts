@@ -27,17 +27,23 @@ spec:
         providerConfigRef:
           name: root
     patches:
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.parameters.email
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.email
       toFieldPath: spec.forProvider.email
-    - fromFieldPath: spec.parameters.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.name
       toFieldPath: spec.forProvider.name
-    - fromFieldPath: spec.parameters.parentId
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.parentId
       toFieldPath: spec.forProvider.parentId
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
         - type: string
@@ -46,7 +52,8 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.id
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.writeConnectionSecretToRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.status
@@ -79,7 +86,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: metadata.name
-    - fromFieldPath: metadata.labels
+    - type: ToCompositeFieldPath
+      fromFieldPath: metadata.labels
       toFieldPath: metadata.labels
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -99,9 +107,11 @@ spec:
           cidrBlock: 10.0.0.0/16
           enableDnsSupport: true
     patches:
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.parameters.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -125,7 +135,8 @@ spec:
           description: Security group for all nodes in the cluster
           name: #patchme
           region: #patchme
-          vpcId: #patchme
+          vpcIdRef:
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -148,8 +159,8 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.nodeSecurityGroupID
@@ -166,20 +177,16 @@ spec:
           cidrBlocks:
           - 0.0.0.0/0
           description: Allow egress from the nodes
+          ipv6CidrBlocks:
+          - ::/0
           fromPort: 0
           protocol: "-1"
           toPort: 0
           type: egress
           region: #patchme
-          securityGroupId: #patchme
-          sourceSecurityGroupId: #patchme
+          securityGroupIdRef:
+            name: #patchme
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.nodeSecurityGroupID
-      toFieldPath: spec.forProvider.securityGroupId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -187,6 +194,16 @@ spec:
       - string:
           fmt: '%s-sg-rule-node-egress'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -203,18 +220,11 @@ spec:
           toPort: 65535
           type: ingress
           region: #patchme
-          securityGroupId: #patchme
-          sourceSecurityGroupId: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.nodeSecurityGroupID
-      toFieldPath: spec.forProvider.securityGroupId
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.nodeSecurityGroupID
-      toFieldPath: spec.forProvider.sourceSecurityGroupId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -222,6 +232,23 @@ spec:
       - string:
           fmt: '%s-sg-rule-node-to-node'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -239,18 +266,11 @@ spec:
           toPort: 65535
           type: ingress
           region: #patchme
-          securityGroupId: #patchme
-          sourceSecurityGroupId: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.nodeSecurityGroupID
-      toFieldPath: spec.forProvider.securityGroupId
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.nodeSecurityGroupID
-      toFieldPath: spec.forProvider.sourceSecurityGroupId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -258,6 +278,23 @@ spec:
       - string:
           fmt: '%s-sg-rule-kubelets'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -271,28 +308,29 @@ spec:
           description: Cluster communication with worker nodes
           name: #patchme
           region: #patchme
-          vpcId: #patchme
+          vpcIdRef:
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
-          fmt: '%s-eskcluster-sg'
+          fmt: '%s-ekscluster-sg'
         type: string
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.name
       transforms:
       - string:
-          fmt: '%s-eskcluster-sg'
+          fmt: '%s-ekscluster-sg'
         type: string
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.clusterSecurityGroupID
@@ -312,18 +350,11 @@ spec:
           toPort: 443
           type: ingress
           region: #patchme
-          securityGroupId: #patchme
-          sourceSecurityGroupId: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterSecurityGroupID
-      toFieldPath: spec.forProvider.securityGroupId
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.nodeSecurityGroupID
-      toFieldPath: spec.forProvider.sourceSecurityGroupId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -332,10 +363,197 @@ spec:
           fmt: '%s-sg-rule-pods-to-api-server'
         type: string
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+  
+  - name: cluster-security-group-rule-egress-api-server-to-pods
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Cluster API to node groups
+          fromPort: 443
+          protocol: tcp
+          toPort: 443
+          type: egress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-api-server-to-pods'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: cluster-security-group-rule-egress
+  - name: cluster-security-group-rule-egress-ephemeral-ports
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Allow pods to communicate with using ephemeral ports.
+          fromPort: 1025
+          protocol: tcp
+          toPort: 65535
+          type: egress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-pods-ephemeral-ports'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: cluster-primary-security-group-rule-dns-tcp
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Allow pods to communicate with CoreDNS
+          fromPort: 53
+          protocol: tcp
+          toPort: 53
+          type: ingress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-pods-to-core-dns-tcp'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterPrimarySecurityGroupId
+      toFieldPath: spec.forProvider.securityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: cluster-primary-security-group-rule-dns-udp
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Allow pods to communicate with CoreDNS
+          fromPort: 53
+          protocol: udp
+          toPort: 53
+          type: ingress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-pods-to-core-dns-udp'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterPrimarySecurityGroupId
+      toFieldPath: spec.forProvider.securityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: node-security-group-rule-ingress-efs
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
@@ -343,31 +561,305 @@ spec:
         forProvider:
           cidrBlocks:
           - 0.0.0.0/0
-          description: Egress
-          fromPort: 0
-          protocol: "-1"
-          toPort: 0
-          type: egress
+          description: Allow efs ingress communication
+          fromPort: 2049
+          protocol: tcp
+          toPort: 2049
+          type: ingress
           region: #patchme
-          securityGroupId: #patchme
+          securityGroupIdRef:
+            name: #patchme
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterSecurityGroupID
-      toFieldPath: spec.forProvider.securityGroupId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - string:
-          fmt: '%s-sg-rule-cluster-egress'
+          fmt: '%s-sg-rule-node-ingress-efs'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: node-security-group-ingress-cluster-4443
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: "Allow access from control plane to webhook for metrics server."
+          fromPort: 4443
+          protocol: tcp
+          toPort: 4443
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-4443'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: node-security-group-ingress-cluster-6443
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: "Allow access from control plane for Prometheus Server."
+          fromPort: 6443
+          protocol: tcp
+          toPort: 6443
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-6443'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: node-security-group-ingress-cluster-8443
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: "Allow access from control plane for Karpenter."
+          fromPort: 8443
+          protocol: tcp
+          toPort: 8443
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-8443'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: node-security-group-ingress-cluster-9443
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: "Allow access from control plane to webhook port of AWS load balancer/NGINX controller."
+          fromPort: 9443
+          protocol: tcp
+          toPort: 9443
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-9443'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: node-security-group-ingress-cluster-10260
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: "Allow access from control plane to webhook port 10260(cert-manage-webhook)."
+          fromPort: 10260
+          protocol: tcp
+          toPort: 10260
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-10260'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: node-security-group-ingress-cluster-10250
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: "Allow access from control plane to webhook port 10250."
+          fromPort: 10250
+          protocol: tcp
+          toPort: 10250
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-10250'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 ##
 # End EKS Security Group
@@ -382,7 +874,9 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.0.0/24
-          vpcId: #patched
+          vpcIdRef:
+            name: #patched
+          mapPublicIpOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
@@ -407,8 +901,8 @@ spec:
         string:
           fmt: '%sa'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -425,8 +919,9 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.1.0/24
-          vpcId: #patched
-          mapPublicIPOnLaunch: true
+          vpcIdRef:
+            name: #patched
+          mapPublicIpOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
@@ -451,8 +946,8 @@ spec:
         string:
           fmt: '%sb'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -469,8 +964,9 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.2.0/24
-          vpcId: #patched
-          mapPublicIPOnLaunch: true
+          vpcIdRef:
+            name: #patched
+          mapPublicIpOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
       providerConfigRef:
@@ -495,8 +991,8 @@ spec:
         string:
           fmt: '%sc'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -513,7 +1009,8 @@ spec:
           region: #patched
           availabilityZone: #pached
           cidrBlock: 10.0.100.0/24
-          vpcId: #patched
+          vpcIdRef:
+            name: #patched
           tags:
             karpenter.sh/discovery: #patchme
       providerConfigRef:
@@ -538,8 +1035,8 @@ spec:
         string:
           fmt: '%sa'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
@@ -559,7 +1056,8 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.101.0/24
-          vpcId: #patched
+          vpcIdRef:
+            name: #patched
           tags:
             karpenter.sh/discovery: #patchme
       providerConfigRef:
@@ -584,8 +1082,8 @@ spec:
         string:
           fmt: '%sb'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
@@ -605,7 +1103,8 @@ spec:
           region: #patched
           availabilityZone: #patched
           cidrBlock: 10.0.102.0/24
-          vpcId: #patched
+          vpcIdRef:
+            name: #patched
           tags:
             karpenter.sh/discovery: #patchme
       providerConfigRef:
@@ -630,8 +1129,8 @@ spec:
         string:
           fmt: '%sc'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
@@ -674,25 +1173,36 @@ spec:
       kind: NATGateway
       spec:
         forProvider:
-          allocationId: #patchme
+          allocationIdRef:
+            name: #patchme
           region: #patchme
-          subnetId: #patchme
+          subnetIdRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: 'private-%s-1c'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.natGatewayEIPID
-      toFieldPath: spec.forProvider.allocationId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.allocationIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.publicSubnet1cID
-      toFieldPath: spec.forProvider.subnetId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'public-%s-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -706,16 +1216,22 @@ spec:
       kind: InternetGateway
       spec:
         forProvider:
-          vpcIdSelector:
-            matchControllerRef: true
+          region: #patchme
+          vpcIdRef:
+            name: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -729,7 +1245,9 @@ spec:
       kind: RouteTable
       spec:
         forProvider:
-          vpcId: #patchme
+          vpcIdRef:
+            name: #patchme
+          region: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -742,8 +1260,8 @@ spec:
         string:
           fmt: '%s-public'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -760,7 +1278,9 @@ spec:
       kind: RouteTable
       spec:
         forProvider:
-          vpcId: #patchme
+          vpcIdRef:
+            name: #patchme
+          region: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -773,8 +1293,8 @@ spec:
         string:
           fmt: '%s-private'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcID
-      toFieldPath: spec.forProvider.vpcId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -791,8 +1311,10 @@ spec:
       kind: Route
       spec:
         forProvider:
-          routeTableId: #patchme
-          gatewayId: #patchme
+          routeTableIdRef:
+            name: #patchme
+          gatewayIdRef:
+            name: #patchme
           destinationCidrBlock: 0.0.0.0/0
     patches:
     - type: FromCompositeFieldPath
@@ -803,11 +1325,15 @@ spec:
         string:
           fmt: '%s-public'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.publicRouteTableID
-      toFieldPath: spec.forProvider.routeTableId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.internetGatewayID
-      toFieldPath: spec.forProvider.gatewayId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.gatewayIdRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -821,8 +1347,11 @@ spec:
       kind: Route
       spec:
         forProvider:
-          routeTableId: #patchme
-          natGatewayId: #patchme
+          routeTableIdRef:
+            name: #patchme
+          natGatewayIdRef:
+            name: #patchme
+          region: #patchme
           destinationCidrBlock: 0.0.0.0/0
     patches:
     - type: FromCompositeFieldPath
@@ -833,11 +1362,19 @@ spec:
         string:
           fmt: '%s-private'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateRouteTableID
-      toFieldPath: spec.forProvider.routeTableId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.natGatewayID
-      toFieldPath: spec.forProvider.natGatewayId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.natGatewayIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -852,8 +1389,10 @@ spec:
       spec:
         forProvider:
           region: #patchme
-          routeTableId: #patchme
-          subnetId: #patchme
+          routeTableIdRef:
+            name: #patchme
+          subnetIdRef:
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -866,11 +1405,19 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateRouteTableID
-      toFieldPath: spec.forProvider.routeTableId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1aID
-      toFieldPath: spec.forProvider.subnetId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -882,8 +1429,10 @@ spec:
       spec:
         forProvider:
           region: #patchme
-          routeTableId: #patchme
-          subnetId: #patchme
+          routeTableIdRef:
+            name: #patchme
+          subnetIdRef:
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -896,11 +1445,19 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateRouteTableID
-      toFieldPath: spec.forProvider.routeTableId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1bID
-      toFieldPath: spec.forProvider.subnetId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -926,11 +1483,19 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateRouteTableID
-      toFieldPath: spec.forProvider.routeTableId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1cID
-      toFieldPath: spec.forProvider.subnetId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -942,8 +1507,10 @@ spec:
       spec:
         forProvider:
           region: #patchme
-          routeTableId: #patchme
-          subnetId: #patchme
+          routeTableIdRef:
+            name: #patchme
+          subnetIdRef:
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -956,11 +1523,19 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.publicRouteTableID
-      toFieldPath: spec.forProvider.routeTableId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.publicSubnet1aID
-      toFieldPath: spec.forProvider.subnetId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'public-%s-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -972,8 +1547,10 @@ spec:
       spec:
         forProvider:
           region: #patchme
-          routeTableId: #patchme
-          subnetId: #patchme
+          routeTableIdRef:
+            name: #patchme
+          subnetIdRef:
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -986,11 +1563,19 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.publicRouteTableID
-      toFieldPath: spec.forProvider.routeTableId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.publicSubnet1bID
-      toFieldPath: spec.forProvider.subnetId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'public-%s-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -1002,8 +1587,10 @@ spec:
       spec:
         forProvider:
           region: #patchme
-          routeTableId: #patchme
-          subnetId: #patchme
+          routeTableIdRef:
+            name: #patchme
+          subnetIdRef:
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -1016,11 +1603,19 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.publicRouteTableID
-      toFieldPath: spec.forProvider.routeTableId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.publicSubnet1cID
-      toFieldPath: spec.forProvider.subnetId
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'public-%s-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -1034,43 +1629,72 @@ spec:
       kind: Cluster
       spec:
         forProvider:
-          roleArnSelector:
-            matchControllerRef: true
+          region: #patchme
+          version: #patchme
           vpcConfig:
             - endpointPrivateAccess: true
               endpointPublicAccess: true
-              subnetIds:
+              subnetIdRefs:
+                - name: #patchme
+                - name: #patchme
+                - name: #patchme
+              securityGroupIdRefs:
+                - name: #patchme
+          roleArnSelector:
+            matchControllerRef: true
       providerConfigRef:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.eks.version
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.eks.version
       toFieldPath: spec.forProvider.version
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1aID
-      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[0]
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1bID
-      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[1]
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[1].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1cID
-      toFieldPath: spec.forProvider.vpcConfig[0].subnetIds[2]
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[2].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterSecurityGroupID
-      toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds[0]
-    - fromFieldPath: spec.id
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIdRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ekscluster-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
       - type: string
         string:
           fmt: '%s-cluster'
-    - fromFieldPath: spec.claimRef.namespace
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
       transforms:
       - type: string
@@ -1099,6 +1723,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.certificateAuthority[0].data
       toFieldPath: status.clusterCertificateAuthorityData
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.vpcConfig[0].clusterSecurityGroupId
+      toFieldPath: status.clusterPrimarySecurityGroupId
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.status
@@ -1120,15 +1747,18 @@ spec:
           thumbprintList:
             - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280 # this is the sts static thumbprint
     patches:
-    - fromFieldPath: status.clusterOIDC
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.clusterOIDC
       toFieldPath: spec.forProvider.url
       transforms:
       - type: string
         string:
           fmt: "https://%s"
-    - fromFieldPath: spec.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: status.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
   - name: karpenter-fargate-profile
@@ -1138,8 +1768,10 @@ spec:
       metadata:
       spec:
         forProvider:
-          clusterName: #patchme
-          podExecutionRoleArn: #patchme
+          clusterNameRef:
+            name: #patchme
+          podExecutionRoleArnRef:
+            name: #patchme
           region: #patchme
           selector:
             - namespace: karpenter
@@ -1148,18 +1780,23 @@ spec:
           - name: #patchme
           - name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-karpenter'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterName
-      toFieldPath: spec.forProvider.clusterName
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.clusterNameRef.name
     - type: FromCompositeFieldPath
-      fromFieldPath: status.fargateExecRoleArn
-      toFieldPath: spec.forProvider.podExecutionRoleArn
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.podExecutionRoleArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1195,8 +1832,10 @@ spec:
       metadata:
       spec:
         forProvider:
-          clusterName: #patchme
-          podExecutionRoleArn: #patchme
+          clusterNameRef:
+            name: #patchme
+          podExecutionRoleArnRef:
+            name: #patchme
           region: #patchme
           selector:
             - namespace: kube-system
@@ -1205,18 +1844,23 @@ spec:
           - name: #patchme
           - name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-kube-system'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterName
-      toFieldPath: spec.forProvider.clusterName
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.clusterNameRef.name
     - type: FromCompositeFieldPath
-      fromFieldPath: status.fargateExecRoleArn
-      toFieldPath: spec.forProvider.podExecutionRoleArn
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.podExecutionRoleArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1254,7 +1898,9 @@ spec:
           crossplane.io/external-name: coredns
       spec:
         forProvider:
-          clusterName: #patchme
+          addonName: coredns
+          clusterNameRef:
+            name: #patchme
           region: #patchme
           configurationValues: |
             {
@@ -1262,15 +1908,16 @@ spec:
             }
           resolveConflicts: OVERWRITE
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-core-dns'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterName
-      toFieldPath: spec.forProvider.clusterName
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.clusterNameRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1287,19 +1934,22 @@ spec:
           crossplane.io/external-name: vpc-cni
       spec:
         forProvider:
-          clusterName: #patchme
+          addonName: vpc-cni
+          clusterNameRef:
+            name: #patchme
           region: #patchme
           resolveConflicts: OVERWRITE
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-vpc-cni'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterName
-      toFieldPath: spec.forProvider.clusterName
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.clusterNameRef.name
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1316,19 +1966,44 @@ spec:
           crossplane.io/external-name: kube-proxy
       spec:
         forProvider:
-          clusterName: #patchme
+          addonName: kube-proxy
+          clusterNameRef:
+            name: #patchme
           region: #patchme
           resolveConflicts: OVERWRITE
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-kube-proxy'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterName
-      toFieldPath: spec.forProvider.clusterName
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.clusterNameRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: efs
+    base:
+      apiVersion: efs.aws.upbound.io/v1beta1
+      kind: FileSystem
+      spec:
+        forProvider:
+          region: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1346,17 +2021,23 @@ spec:
       kind: InstanceProfile
       spec:
         forProvider:
-          role: #patchme
+          roleRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-karpenter'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.karpenterClusterRoleName
-      toFieldPath: spec.forProvider.role
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -1839,13 +2520,15 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-controlplane'
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.labels.role
       transforms:
       - type: string
@@ -1882,13 +2565,15 @@ spec:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-nodegroup'
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.labels.role
       transforms:
       - type: string
@@ -1898,6 +2583,177 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: iamrole-ebs-csi-driver
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-ebs-csi-driver"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:addons:ebs-csi-controller-sa",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ebs-csi-driver'
+
+  - name: iamrole-efs-csi-driver
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-efs-csi-driver"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:addons:efs-csi-controller-sa",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi-driver'
+
+  - name: iamrole-external-dns
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-external-dns"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:addons:external-dns",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.externalDnsRoleArn
+
 # ########
 # # IAM Policies
 # ########
@@ -1906,6 +2762,9 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
+      metadata:
+        annotations:
+          crossplane.io/external-name: client-dev-s3-full-access
       spec:
         forProvider:
           policy: |
@@ -1942,6 +2801,9 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
+      metadata:
+        annotations:
+          crossplane.io/external-name: artifact-store-s3-full-access
       spec:
         forProvider:
           policy: |
@@ -1982,7 +2844,8 @@ spec:
         forProvider:
           policy: "{}"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
@@ -2103,6 +2966,123 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.karpenterIRSAPolicyArn
+
+  - name: efs-csi-driver-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      spec:
+        forProvider:
+          policy: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "elasticfilesystem:DescribeAccessPoints",
+                    "elasticfilesystem:DescribeFileSystems",
+                    "elasticfilesystem:DescribeMountTargets",
+                    "ec2:DescribeAvailabilityZones"
+                  ],
+                  "Resource": "*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "elasticfilesystem:CreateAccessPoint"
+                  ],
+                  "Resource": "*",
+                  "Condition": {
+                    "StringLike": {
+                      "aws:RequestTag/efs.csi.aws.com/cluster": "true"
+                    }
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "elasticfilesystem:TagResource"
+                  ],
+                  "Resource": "*",
+                  "Condition": {
+                    "StringLike": {
+                      "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
+                    }
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "elasticfilesystem:DeleteAccessPoint",
+                  "Resource": "*",
+                  "Condition": {
+                    "StringEquals": {
+                      "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
+                    }
+                  }
+                }
+              ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    
+  - name: external-dns-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      spec:
+        forProvider:
+          policy: "{}"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: status.zoneId
+        strategy: string
+        string:
+          fmt: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "ChangeResourceRecordSets",
+                        "Effect": "Allow",
+                        "Action": "route53:ChangeResourceRecordSets",
+                        "Resource": "arn:aws:route53:::hostedzone/%s"
+                    },
+                    {
+                        "Sid": "ListResourceRecordSetsAndHostedZones",
+                        "Effect": "Allow",
+                        "Action": [
+                            "route53:ListResourceRecordSets",
+                            "route53:ListHostedZones"
+                        ],
+                        "Resource": "*"
+                    }
+                ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 # ########
 # # IAM Policy Attachments
@@ -2266,17 +3246,23 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
-          role: #patchme
+          roleRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.fargateExecRoleName
-      toFieldPath: spec.forProvider.role
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2288,17 +3274,23 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          role: #patchme
+          roleRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-fargate-cni'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.fargateExecRoleName
-      toFieldPath: spec.forProvider.role
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2310,17 +3302,23 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-          role: #patchme
+          roleRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-karpenter-eks-worker-node'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.karpenterClusterRoleName
-      toFieldPath: spec.forProvider.role
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2332,17 +3330,23 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-          role: #patchme
+          roleRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-karpenter-ec2-container-registry'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.karpenterClusterRoleName
-      toFieldPath: spec.forProvider.role
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2354,7 +3358,8 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
-          role: #patchme
+          roleRef:
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -2364,8 +3369,12 @@ spec:
         string:
           fmt: '%s-karpenter-ssm-managed-instance'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.karpenterClusterRoleName
-      toFieldPath: spec.forProvider.role
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2377,17 +3386,23 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          role: #patchme
+          roleRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-karpenter-cluster-cni'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.karpenterClusterRoleName
-      toFieldPath: spec.forProvider.role
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2398,21 +3413,32 @@ spec:
       kind: RolePolicyAttachment
       spec:
         forProvider:
-          policyArn: #patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          role: #patchme
+          policyArnRef:
+            name: #patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+          roleRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-karpenter-irsa-attachment'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.karpenterIRSAPolicyArn
-      toFieldPath: spec.forProvider.policyArn
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-irsa'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.karpenterIRSARoleName
-      toFieldPath: spec.forProvider.role
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2424,20 +3450,19 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-          roleSelector:
-            matchControllerRef: true
-      providerConfigRef:
-        policy:
-          resolve: "Always"
+          roleRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-controlplane'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
       transforms:
       - type: string
         string:
@@ -2453,20 +3478,22 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSServicePolicy
-          roleSelector:
-            matchControllerRef: true
+          roleRef:
+            name: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-service'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
       transforms:
       - type: string
         string:
@@ -2482,20 +3509,22 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-          roleSelector:
-            matchControllerRef: true
+          roleRef:
+            name: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-worker'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
       transforms:
       - type: string
         string:
@@ -2511,17 +3540,23 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          role: ""
+          roleRef:
+            name: #patchme
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-cni'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.vpcCniRoleName
-      toFieldPath: spec.forProvider.role
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-vpc-cni'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2533,20 +3568,22 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-          roleSelector:
-            matchControllerRef: true
+          roleRef:
+            name: #patch
       providerConfigRef:
         policy:
           resolve: "Always"
     patches:
-    - fromFieldPath: spec.id
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
           fmt: '%s-registry'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
       transforms:
       - type: string
         string:
@@ -2555,6 +3592,103 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: iamattachment-ebs-csi-driver
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
+          roleRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ebs-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ebs-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: iamattachment-efs-csi-driver
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArnRef: #patchme
+          roleRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    
+  - name: iamattachment-external-dns
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArnRef: #patchme
+          roleRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 #####
 # ArgoCD
@@ -2584,17 +3718,21 @@ spec:
         providerConfigRef:
           name: kubernetes-provider
     patches:
-      - fromFieldPath: spec.id
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
         toFieldPath: metadata.name
-      - fromFieldPath: spec.id
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
         toFieldPath: spec.forProvider.manifest.metadata.name
         transforms:
           - type: string
             string:
               fmt: "%s-argocd-cluster-secret"
-      - fromFieldPath: spec.id
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
         toFieldPath: spec.forProvider.manifest.stringData.name
-      - fromFieldPath: status.clusterEndpoint
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.clusterEndpoint
         toFieldPath: spec.forProvider.manifest.stringData.server
       - type: CombineFromComposite
         combine:
@@ -2618,3 +3756,72 @@ spec:
         toFieldPath: spec.forProvider.manifest.stringData.config
         policy:
           fromFieldPath: Required
+#####
+# Route53
+#####
+  - name: route53-zone
+    base:
+      apiVersion: route53.aws.upbound.io/v1beta1
+      kind: Zone
+      spec:
+        forProvider:
+          name: #patchme
+          config:
+            comment: #patchme
+            privateZone: false
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s.ubix.io"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.config.comment
+      transforms:
+        - type: string
+          string:
+            fmt: "%s.ubix.io-ZONE"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.nameServers
+      toFieldPath: status.zoneNameServers
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.zoneId
+      toFieldPath: status.zoneId
+
+  - name: route53-record
+    base:
+      apiVersion: route53.aws.upbound.io/v1beta1
+      kind: Record
+      spec:
+        forProvider:
+          name: #patchme
+          type: NS
+          ttl: 300
+          zoneId: {{ .Values.zoneId }}
+        providerConfigRef:
+          name: root
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.name
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.parameters.region
+        toFieldPath: spec.forProvider.region
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.zoneNameServers
+        toFieldPath: spec.forProvider.records
