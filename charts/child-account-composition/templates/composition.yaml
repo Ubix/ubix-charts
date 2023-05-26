@@ -2665,7 +2665,6 @@ spec:
         - fromFieldPath: status.clusterOIDC
         - fromFieldPath: status.clusterOIDC
         - fromFieldPath: status.clusterOIDC
-        - fromFieldPath: status.clusterOIDC
         strategy: string
         string:
           fmt: |
@@ -2681,9 +2680,11 @@ spec:
                   "Action": "sts:AssumeRoleWithWebIdentity",
                   "Condition": {
                     "StringEquals": {
-                        "%s:sub": "system:serviceaccount:addons:efs-csi-controller-sa",
-                        "%s:sub": "system:serviceaccount:addons:efs-csi-node-sa",
-                        "%s:aud": "sts.amazonaws.com"
+                        "%s:aud": "sts.amazonaws.com",
+                        "%s:sub": [
+                          "system:serviceaccount:addons:efs-csi-controller-sa",
+                          "system:serviceaccount:addons:efs-csi-node-sa"
+                        ]
                     }
                   }
                 }
