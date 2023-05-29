@@ -947,6 +947,46 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: efs-security-group-rule-egress
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          cidrBlocks:
+          - 0.0.0.0/0
+          description: Allow egress from the mount targets
+          ipv6CidrBlocks:
+          - ::/0
+          fromPort: 0
+          protocol: "-1"
+          toPort: 0
+          type: egress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-efs-egress'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 ##
 # End EKS Security Group
 ##
@@ -2105,7 +2145,7 @@ spec:
         forProvider:
           region: #patchme
           securityGroupsRefs:
-            name: #patchme
+            - name: #patchme
         fileSystemIdRef:
           name: #patchme
         subnetIdRef:
@@ -2154,7 +2194,7 @@ spec:
         forProvider:
           region: #patchme
           securityGroupsRefs:
-            name: #patchme
+            - name: #patchme
         fileSystemIdRef:
           name: #patchme
         subnetIdRef:
@@ -2203,7 +2243,7 @@ spec:
         forProvider:
           region: #patchme
           securityGroupsRefs:
-            name: #patchme
+            - name: #patchme
         fileSystemIdRef:
           name: #patchme
         subnetIdRef:
