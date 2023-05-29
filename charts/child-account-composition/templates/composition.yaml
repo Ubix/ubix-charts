@@ -910,7 +910,7 @@ spec:
         forProvider:
           description: "Allow access from eks nodes to nfs port 2049."
           fromPort: 2049
-          protocol: nfs
+          protocol: tcp
           toPort: 2049
           type: ingress
           region: #patchme
