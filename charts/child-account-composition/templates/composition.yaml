@@ -4011,7 +4011,7 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.artifactStoreBucketNameBucketName
+      toFieldPath: status.artifactStoreBucketName
 
   - name: artifact-store-bucket-policies
     base:
@@ -4037,7 +4037,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.artifactStoreBucketNameBucketName
+      fromFieldPath: spec.status.artifactStoreBucketName
       toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -4064,7 +4064,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.artifactStoreBucketNameBucketName
+      fromFieldPath: spec.status.artifactStoreBucketName
       toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -4106,7 +4106,7 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.artifactStoreBucketNameBucketName
+      toFieldPath: status.clientDevBucketName
 
   - name: client-dev-bucket-policies
     base:
@@ -4132,7 +4132,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.artifactStoreBucketNameBucketName
+      fromFieldPath: spec.status.clientDevBucketName
       toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -4159,7 +4159,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.artifactStoreBucketNameBucketName
+      fromFieldPath: spec.status.clientDevBucketName
       toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
