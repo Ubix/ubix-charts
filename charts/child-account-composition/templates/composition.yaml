@@ -861,6 +861,92 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: efs-security-group
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroup
+      spec:
+        forProvider:
+          tags:
+            karpenter.sh/discovery: #patchme
+          description: Security group for all EFS mount targets
+          name: #patchme
+          region: #patchme
+          vpcIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-efs-sg'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+      transforms:
+      - string:
+          fmt: '%s-efs-sg'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.efsSecurityGroupID
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: efs-security-group-ingress
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: "Allow access from eks nodes to nfs port 2049."
+          fromPort: 2049
+          protocol: nfs
+          toPort: 2049
+          type: ingress
+          region: #patchme
+          securityGroupIdRef:
+            name: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-2049'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 ##
 # End EKS Security Group
 ##
