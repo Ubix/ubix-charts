@@ -2890,7 +2890,19 @@ spec:
           crossplane.io/external-name: client-dev-s3-full-access
       spec:
         forProvider:
-          policy: |
+          policy: #patchme
+    patches:
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: spec.id
+        - fromFieldPath: status.id
+        - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: |
               {
                   "Statement": [
                       {
@@ -2899,14 +2911,13 @@ spec:
                           ],
                           "Effect": "Allow",
                           "Resource": [
-                              "arn:aws:s3:::client-dev-backoffice-1",
-                              "arn:aws:s3:::client-dev-backoffice-1/*"
+                              "arn:aws:s3:::client-dev-%s-%s",
+                              "arn:aws:s3:::client-dev-%s-%s/*"
                           ]
                       }
                   ],
                   "Version": "2012-10-17"
               }
-    patches:
       - fromFieldPath: spec.id
         toFieldPath: metadata.name
         transforms:
@@ -2929,7 +2940,19 @@ spec:
           crossplane.io/external-name: artifact-store-s3-full-access
       spec:
         forProvider:
-          policy: |
+          policy: #patchme
+    patches:
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: spec.id
+        - fromFieldPath: status.id
+        - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: |
               {
                   "Statement": [
                       {
@@ -2938,14 +2961,13 @@ spec:
                           ],
                           "Effect": "Allow",
                           "Resource": [
-                              "arn:aws:s3:::artifact-store.backoffice.ubix.io",
-                              "arn:aws:s3:::artifact-store.backoffice.ubix.io/*"
+                              "arn:aws:s3:::artifact-store-%s-%s",
+                              "arn:aws:s3:::artifact-store-%s-%s/*"
                           ]
                       }
                   ],
                   "Version": "2012-10-17"
               }
-    patches:
       - fromFieldPath: spec.id
         toFieldPath: metadata.name
         transforms:
@@ -3948,3 +3970,197 @@ spec:
       - type: FromCompositeFieldPath
         fromFieldPath: status.zoneNameServers
         toFieldPath: spec.forProvider.records
+
+#####
+# S3
+#####
+ 
+  - name: artifact-store-bucket
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          region: #patchme
+    patches:
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-artifact-store"
+      toFieldPath: metadata.name
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: "artifact-store-%s-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.artifactStoreBucketNameBucketName
+
+  - name: artifact-store-bucket-policies
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPublicAccessBlock
+      spec:
+        forProvider:
+          blockPublicAcls: true
+          blockPublicPolicy: true
+          ignorePublicAcls: true
+          restrictPublicBuckets: true
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-artifact-store'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.artifactStoreBucketNameBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: artifact-store-bucket-acl
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketACL
+      spec:
+        forProvider:
+          acl: private
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-artifact-store'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.artifactStoreBucketNameBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+ 
+  - name: client-dev-bucket
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          region: #patchme
+    patches:
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-client-dev"
+      toFieldPath: metadata.name
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: "client-dev-%s-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.artifactStoreBucketNameBucketName
+
+  - name: client-dev-bucket-policies
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPublicAccessBlock
+      spec:
+        forProvider:
+          blockPublicAcls: true
+          blockPublicPolicy: true
+          ignorePublicAcls: true
+          restrictPublicBuckets: true
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-client-dev'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.artifactStoreBucketNameBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: client-dev-bucket-acl
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketACL
+      spec:
+        forProvider:
+          acl: private
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-client-dev'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.artifactStoreBucketNameBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
