@@ -2177,7 +2177,7 @@ spec:
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.securityGroupsRefs.name
+      toFieldPath: spec.forProvider.securityGroupsRefs[0].name
       transforms:
       - type: string
         string:
@@ -2226,7 +2226,7 @@ spec:
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.securityGroupsRefs.name
+      toFieldPath: spec.forProvider.securityGroupsRefs[0].name
       transforms:
       - type: string
         string:
@@ -2275,7 +2275,7 @@ spec:
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.securityGroupsRefs.name
+      toFieldPath: spec.forProvider.securityGroupsRefs[0].name
       transforms:
       - type: string
         string:
