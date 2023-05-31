@@ -2881,13 +2881,13 @@ spec:
 # # IAM Policies
 # ########
 
-  - name: client-dev-s3-policy
+  - name: ingestion-artifacts-s3-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
       metadata:
         annotations:
-          crossplane.io/external-name: client-dev-s3-full-access
+          crossplane.io/external-name: ingestion-artifacts-s3-full-access
       spec:
         forProvider:
           policy: #patchme
@@ -2911,8 +2911,8 @@ spec:
                           ],
                           "Effect": "Allow",
                           "Resource": [
-                              "arn:aws:s3:::client-dev-%s-%s",
-                              "arn:aws:s3:::client-dev-%s-%s/*"
+                              "arn:aws:s3:::ingestion-artifacts-%s-%s",
+                              "arn:aws:s3:::ingestion-artifacts-%s-%s/*"
                           ]
                       }
                   ],
@@ -2923,21 +2923,21 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-client-dev-s3-full-access"
+              fmt: "%s-ingestion-artifacts-s3-full-access"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.clientDevS3PolicyArn
+        toFieldPath: status.ingestionArtifactsS3PolicyArn
 
-  - name: artifact-store-s3-policy
+  - name: execution-artifacts-s3-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
       metadata:
         annotations:
-          crossplane.io/external-name: artifact-store-s3-full-access
+          crossplane.io/external-name: execution-artifacts-s3-full-access
       spec:
         forProvider:
           policy: #patchme
@@ -2961,8 +2961,8 @@ spec:
                           ],
                           "Effect": "Allow",
                           "Resource": [
-                              "arn:aws:s3:::artifact-store-%s-%s",
-                              "arn:aws:s3:::artifact-store-%s-%s/*"
+                              "arn:aws:s3:::execution-artifacts-%s-%s",
+                              "arn:aws:s3:::execution-artifacts-%s-%s/*"
                           ]
                       }
                   ],
@@ -2973,13 +2973,63 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-artifact-store-s3-full-access"
+              fmt: "%s-execution-artifacts-s3-full-access"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.artifactStoreS3PolicyArn
+        toFieldPath: status.executionArtifactsS3PolicyArn
+
+  - name: mlflow-artifacts-s3-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        annotations:
+          crossplane.io/external-name: mlflow-artifacts-s3-full-access
+      spec:
+        forProvider:
+          policy: #patchme
+    patches:
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: spec.id
+        - fromFieldPath: status.id
+        - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: |
+              {
+                  "Statement": [
+                      {
+                          "Action": [
+                              "s3:*"
+                          ],
+                          "Effect": "Allow",
+                          "Resource": [
+                              "arn:aws:s3:::mlflow-artifacts-%s-%s",
+                              "arn:aws:s3:::mlflow-artifacts-%s-%s/*"
+                          ]
+                      }
+                  ],
+                  "Version": "2012-10-17"
+              }
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-mlflow-artifacts-s3-full-access"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.mlflowArtifactsS3PolicyArn
 
   - name: karpenter-irsa-policy
     base:
@@ -3233,7 +3283,7 @@ spec:
 # # IAM Policy Attachments
 # ########
 
-  - name: mlflow-client-dev-policy-attachment
+  - name: mlflow-artifacts-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -3247,9 +3297,9 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-mlflow-client-dev"
+              fmt: "%s-mlflow-artifacts"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.clientDevS3PolicyArn
+        fromFieldPath: status.mlflowArtifactsS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
         fromFieldPath: status.mlflowRoleName
@@ -3258,7 +3308,7 @@ spec:
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
 
-  - name: data-service-client-dev-policy-attachment
+  - name: data-service-ingestion-artifacts-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -3272,9 +3322,9 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-data-service-client-dev"
+              fmt: "%s-data-service-ingestion-artifacts"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.clientDevS3PolicyArn
+        fromFieldPath: status.ingestionArtifactsS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
         fromFieldPath: status.dataServiceRoleName
@@ -3283,7 +3333,7 @@ spec:
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
 
-  - name: data-service-artifact-store-policy-attachment
+  - name: data-service-ingestion-artifacts-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -3297,9 +3347,9 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-data-service-artifact-store"
+              fmt: "%s-data-service-ingestion-artifacts"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.artifactStoreS3PolicyArn
+        fromFieldPath: status.ingestionArtifactsS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
         fromFieldPath: status.dataServiceRoleName
@@ -3309,7 +3359,7 @@ spec:
         toFieldPath: spec.providerConfigRef.name
 
 
-  - name: data-flow-listener-client-dev-policy-attachment
+  - name: data-flow-listener-ingestion-artifacts-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -3323,9 +3373,9 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-data-flow-listener-client-dev"
+              fmt: "%s-data-flow-listener-ingestion-artifacts"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.clientDevS3PolicyArn
+        fromFieldPath: status.ingestionArtifactsS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
         fromFieldPath: status.dataFlowListenerRoleName
@@ -3334,7 +3384,7 @@ spec:
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
 
-  - name: data-flow-listener-artifact-store-policy-attachment
+  - name: data-flow-listener-execution-artifacts-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -3348,9 +3398,9 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-data-flow-listener-artifact-store"
+              fmt: "%s-data-flow-listener-execution-artifacts"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.artifactStoreS3PolicyArn
+        fromFieldPath: status.ingestionArtifactsS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
         fromFieldPath: status.dataFlowListenerRoleName
@@ -3359,7 +3409,7 @@ spec:
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
 
-  - name: exec-service-python-artifact-store-policy-attachment
+  - name: exec-service-python-execution-artifacts-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -3373,9 +3423,9 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-exec-service-python-artifact-store"
+              fmt: "%s-exec-service-python-execution-artifacts"
       - type: FromCompositeFieldPath
-        fromFieldPath: status.artifactStoreS3PolicyArn
+        fromFieldPath: status.executionArtifactsS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
       - type: FromCompositeFieldPath
         fromFieldPath: status.execServicePythonRoleName
@@ -3975,7 +4025,7 @@ spec:
 # S3
 #####
  
-  - name: artifact-store-bucket
+  - name: execution-artifacts-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: Bucket
@@ -3992,7 +4042,7 @@ spec:
           - fromFieldPath: status.id
         strategy: string
         string:
-          fmt: "%s-artifact-store"
+          fmt: "%s-execution-artifacts"
       toFieldPath: metadata.name
     - type: CombineFromComposite
       combine:
@@ -4001,7 +4051,7 @@ spec:
           - fromFieldPath: spec.id
         strategy: string
         string:
-          fmt: "artifact-store-%s-%s"
+          fmt: "execution-artifacts-%s-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4011,9 +4061,9 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.artifactStoreBucketName
+      toFieldPath: status.executionArtifactsBucketName
 
-  - name: artifact-store-bucket-policies
+  - name: execution-artifacts-bucket-policies
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
@@ -4032,18 +4082,18 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-artifact-store'
+          fmt: '%s-execution-artifacts'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.artifactStoreBucketName
+      fromFieldPath: spec.status.executionArtifactsBucketName
       toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: artifact-store-bucket-acl
+  - name: execution-artifacts-bucket-acl
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketACL
@@ -4059,18 +4109,18 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-artifact-store'
+          fmt: '%s-execution-artifacts'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.artifactStoreBucketName
+      fromFieldPath: spec.status.executionArtifactsBucketName
       toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
  
-  - name: client-dev-bucket
+  - name: ingestion-artifacts-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: Bucket
@@ -4087,7 +4137,7 @@ spec:
           - fromFieldPath: status.id
         strategy: string
         string:
-          fmt: "%s-client-dev"
+          fmt: "%s-ingestion-artifacts"
       toFieldPath: metadata.name
     - type: CombineFromComposite
       combine:
@@ -4096,7 +4146,7 @@ spec:
           - fromFieldPath: spec.id
         strategy: string
         string:
-          fmt: "client-dev-%s-%s"
+          fmt: "ingestion-artifacts-%s-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4106,9 +4156,9 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.clientDevBucketName
+      toFieldPath: status.ingestionArtifactsBucketName
 
-  - name: client-dev-bucket-policies
+  - name: ingestion-artifacts-bucket-policies
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
@@ -4127,18 +4177,18 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-client-dev'
+          fmt: '%s-ingestion-artifacts'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.clientDevBucketName
+      fromFieldPath: spec.status.ingestionArtifactsBucketName
       toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: client-dev-bucket-acl
+  - name: ingestion-artifacts-bucket-acl
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketACL
@@ -4154,12 +4204,107 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-client-dev'
+          fmt: '%s-ingestion-artifacts'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.clientDevBucketName
+      fromFieldPath: spec.status.ingestionArtifactsBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: mlflow-artifacts-bucket
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          region: #patchme
+    patches:
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-mlflow-artifacts"
+      toFieldPath: metadata.name
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: "mlflow-artifacts-%s-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.mlflowArtifactsBucketName
+
+  - name: mlflow-artifacts-bucket-policies
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPublicAccessBlock
+      spec:
+        forProvider:
+          blockPublicAcls: true
+          blockPublicPolicy: true
+          ignorePublicAcls: true
+          restrictPublicBuckets: true
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-mlflow-artifacts'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.mlflowArtifactsBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: mlflow-artifacts-bucket-acl
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketACL
+      spec:
+        forProvider:
+          acl: private
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-mlflow-artifacts'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.mlflowArtifactsBucketName
       toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id

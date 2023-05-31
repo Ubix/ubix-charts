@@ -196,10 +196,13 @@ spec:
               execServicePythonRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
-              clientDevS3PolicyArn:
+              executionArtifactsS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
-              artifactStoreS3PolicyArn:
+              ingestionArtifactsS3PolicyArn:
+                description: Policy to give s3 access to the cluster
+                type: string
+              mlflowArtifactsS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
               externalDnsRoleArn:
@@ -214,10 +217,13 @@ spec:
                 items:
                   type: string
                 default: []
-              artifactStoreBucketName:
+              ingestionArtifactsBucketName:
                 description: S3 Bucket for Cloudspace apps
                 type: string
-              clientDevBucketName:
+              mlflowArtifactsBucketName:
+                description: S3 Bucket for Cloudspace apps
+                type: string
+              executionArtifactsBucketName:
                 description: S3 Bucket for Cloudspace apps
                 type: string
     additionalPrinterColumns:
