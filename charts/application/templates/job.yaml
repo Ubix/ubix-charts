@@ -1,0 +1,83 @@
+{{- if .Values.additionalJobs.enabled }}
+{{- range $name, $job := .Values.additionalJobs.jobs }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+{{ include "application.labels.application" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+{{- if $job.additionalLabels }}
+{{ $job.additionalLabels | indent 4 }}
+{{- end }}
+  name: {{ $name }}
+  namespace: {{ template "application.namespace" $ }}
+{{- if $job.annotations }}
+  annotations:
+{{ toYaml $job.annotations | indent 4 }}
+{{- end }}
+spec:
+  template:
+    metadata:
+      labels:
+{{ include "application.labels.application" $ | indent 8 }}
+{{ include "application.labels.chart" $ | indent 8 }}
+    spec:
+{{- if $job.serviceAccount }}
+      serviceAccountName: {{ $job.serviceAccount }}
+{{- end }}
+      restartPolicy: {{ $job.restartPolicy | default "OnFailure" }}
+{{- if $job.imagePullSecrets}}
+      imagePullSecrets: 
+{{ toYaml $job.imagePullSecrets | indent 8 }}
+{{- end }}
+{{- with $job.volumes }}
+      volumes:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      containers:
+{{- range $containerName, $container := $job.containers }}
+        - name: {{ $containerName }}
+          image: "{{ $container.image.repository }}:{{ $container.image.tag }}"
+{{- if $container.imagePullPolicy }}
+          imagePullPolicy: {{ $container.imagePullPolicy }}
+{{- end }}
+{{- with $container.env }}
+          env:
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- with $container.envFrom }}
+          envFrom:
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- with $container.command }}
+          command:
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- with $container.args }}
+          args:
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- with $container.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- with $container.volumeMounts }}
+          volumeMounts:
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- end }}
+{{- with $job.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with $job.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with $job.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- end }}
+{{- end }}
