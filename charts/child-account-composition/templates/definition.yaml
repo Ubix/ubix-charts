@@ -139,6 +139,9 @@ spec:
               nodeSecurityGroupID:
                 description: ID of the Security group for all EKS nodes in the cluster
                 type: string
+              efsSecurityGroupID:
+                description: ID of the Security group for all EFS mount targets
+                type: string
               clusterName:
                 description: The name of the cluster
                 type: string
