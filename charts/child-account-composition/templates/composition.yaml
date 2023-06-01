@@ -3359,31 +3359,6 @@ spec:
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
 
-  - name: data-flow-listener-execution-artifacts-policy-attachment
-    base:
-      apiVersion: iam.aws.upbound.io/v1beta1
-      kind: RolePolicyAttachment
-      spec:
-        forProvider:
-          policyArn: #patchme
-          role: #patchme
-    patches:
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-data-flow-listener-execution-artifacts"
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.ingestionArtifactsS3PolicyArn
-        toFieldPath: spec.forProvider.policyArn
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.dataFlowListenerRoleName
-        toFieldPath: spec.forProvider.role
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
-
   - name: exec-service-python-execution-artifacts-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
