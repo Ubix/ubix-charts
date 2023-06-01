@@ -2903,33 +2903,34 @@ spec:
         strategy: string
         string:
           fmt: |
-              {
-                  "Statement": [
-                      {
-                          "Action": [
-                              "s3:*"
-                          ],
-                          "Effect": "Allow",
-                          "Resource": [
-                              "arn:aws:s3:::ingestion-artifacts-%s-%s",
-                              "arn:aws:s3:::ingestion-artifacts-%s-%s/*"
-                          ]
-                      }
-                  ],
-                  "Version": "2012-10-17"
-              }
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-ingestion-artifacts-s3-full-access"
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
-      - type: ToCompositeFieldPath
-        fromFieldPath: status.atProvider.id
-        toFieldPath: status.ingestionArtifactsS3PolicyArn
+            {
+                "Statement": [
+                    {
+                        "Sid": "",
+                        "Action": [
+                            "s3:*"
+                        ],
+                        "Effect": "Allow",
+                        "Resource": [
+                            "arn:aws:s3:::ingestion-artifacts-%s-%s",
+                            "arn:aws:s3:::ingestion-artifacts-%s-%s/*"
+                        ]
+                    }
+                ],
+                "Version": "2012-10-17"
+            }
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-ingestion-artifacts-s3-full-access"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.ingestionArtifactsS3PolicyArn
 
   - name: execution-artifacts-s3-policy
     base:
@@ -2968,18 +2969,18 @@ spec:
                   ],
                   "Version": "2012-10-17"
               }
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-execution-artifacts-s3-full-access"
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
-      - type: ToCompositeFieldPath
-        fromFieldPath: status.atProvider.id
-        toFieldPath: status.executionArtifactsS3PolicyArn
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-execution-artifacts-s3-full-access"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.executionArtifactsS3PolicyArn
 
   - name: mlflow-artifacts-s3-policy
     base:
@@ -2992,32 +2993,32 @@ spec:
         forProvider:
           policy: #patchme
     patches:
-    - type: CombineFromComposite
-      toFieldPath: spec.forProvider.policy
-      combine:
-        variables:
-        - fromFieldPath: status.id
-        - fromFieldPath: spec.id
-        - fromFieldPath: status.id
-        - fromFieldPath: spec.id
-        strategy: string
-        string:
-          fmt: |
-              {
-                  "Statement": [
-                      {
-                          "Action": [
-                              "s3:*"
-                          ],
-                          "Effect": "Allow",
-                          "Resource": [
-                              "arn:aws:s3:::mlflow-artifacts-%s-%s",
-                              "arn:aws:s3:::mlflow-artifacts-%s-%s/*"
-                          ]
-                      }
-                  ],
-                  "Version": "2012-10-17"
-              }
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.policy
+        combine:
+          variables:
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
+          strategy: string
+          string:
+            fmt: |
+                {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "s3:*"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": [
+                                "arn:aws:s3:::mlflow-artifacts-%s-%s",
+                                "arn:aws:s3:::mlflow-artifacts-%s-%s/*"
+                            ]
+                        }
+                    ],
+                    "Version": "2012-10-17"
+                }
       - fromFieldPath: spec.id
         toFieldPath: metadata.name
         transforms:
@@ -3332,32 +3333,6 @@ spec:
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
-
-  - name: data-service-ingestion-artifacts-policy-attachment
-    base:
-      apiVersion: iam.aws.upbound.io/v1beta1
-      kind: RolePolicyAttachment
-      spec:
-        forProvider:
-          policyArn: #patchme
-          role: #patchme
-    patches:
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-data-service-ingestion-artifacts"
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.ingestionArtifactsS3PolicyArn
-        toFieldPath: spec.forProvider.policyArn
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.dataServiceRoleName
-        toFieldPath: spec.forProvider.role
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
-
 
   - name: data-flow-listener-ingestion-artifacts-policy-attachment
     base:
@@ -4042,7 +4017,7 @@ spec:
           - fromFieldPath: status.id
         strategy: string
         string:
-          fmt: "%s-execution-artifacts"
+          fmt: "execution-artifacts-%s"
       toFieldPath: metadata.name
     - type: CombineFromComposite
       combine:
@@ -4082,7 +4057,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-execution-artifacts'
+          fmt: 'execution-artifacts-bucket-policy-%s'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4109,7 +4084,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-execution-artifacts'
+          fmt: 'execution-artifacts-bucket-acl-%s'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4137,7 +4112,7 @@ spec:
           - fromFieldPath: status.id
         strategy: string
         string:
-          fmt: "%s-ingestion-artifacts"
+          fmt: "ingestion-artifacts-%s"
       toFieldPath: metadata.name
     - type: CombineFromComposite
       combine:
@@ -4177,7 +4152,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-ingestion-artifacts'
+          fmt: 'ingestion-artifacts-bucket-policy-%s'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4204,7 +4179,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-ingestion-artifacts'
+          fmt: 'ingestion-artifacts-bucket-acl-%s'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4232,7 +4207,7 @@ spec:
           - fromFieldPath: status.id
         strategy: string
         string:
-          fmt: "%s-mlflow-artifacts"
+          fmt: "mlflow-artifacts-%s"
       toFieldPath: metadata.name
     - type: CombineFromComposite
       combine:
@@ -4272,7 +4247,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-mlflow-artifacts'
+          fmt: 'mlflow-artifacts-bucket-policy-%s'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4299,7 +4274,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-mlflow-artifacts'
+          fmt: 'mlflow-artifacts-bucket-acl-%s'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
