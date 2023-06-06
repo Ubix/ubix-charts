@@ -3924,7 +3924,8 @@ spec:
       kind: RolePolicyAttachment
       spec:
         forProvider:
-          policyArnRef: #patchme
+          policyArnRef: 
+            name: #patchme
           roleRef:
             name: #patchme
     patches:
