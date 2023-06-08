@@ -190,6 +190,9 @@ spec:
               mlflowRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
+              postgresOperatorRoleName:
+                description: Role to give s3 access to the cluster
+                type: string
               dataServiceRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
@@ -206,6 +209,9 @@ spec:
                 description: Policy to give s3 access to the cluster
                 type: string
               mlflowArtifactsS3PolicyArn:
+                description: Policy to give s3 access to the cluster
+                type: string
+              postgresOperatorBackupsS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
               externalDnsRoleArn:
@@ -228,6 +234,9 @@ spec:
                 type: string
               executionArtifactsBucketName:
                 description: S3 Bucket for Cloudspace apps
+                type: string
+              postgresBackupsBucketName:
+                description: S3 Bucket for Postgres backups
                 type: string
     additionalPrinterColumns:
     - name: AWSAccountID
