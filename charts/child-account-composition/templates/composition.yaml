@@ -4440,10 +4440,11 @@ spec:
       combine:
         variables:
           - fromFieldPath: status.id
+          - fromFieldPath: spec.parameters.region
           - fromFieldPath: spec.id
         strategy: string
         string:
-          fmt: "postgres-backups-%s-%s"
+          fmt: "postgres-backups-%s-%s-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
