@@ -190,9 +190,6 @@ spec:
               mlflowRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
-              postgresOperatorRoleName:
-                description: Role to give s3 access to the cluster
-                type: string
               dataServiceRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
@@ -209,9 +206,6 @@ spec:
                 description: Policy to give s3 access to the cluster
                 type: string
               mlflowArtifactsS3PolicyArn:
-                description: Policy to give s3 access to the cluster
-                type: string
-              postgresOperatorBackupsS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
               externalDnsRoleArn:
