@@ -229,6 +229,9 @@ spec:
               executionArtifactsBucketName:
                 description: S3 Bucket for Cloudspace apps
                 type: string
+              postgresBackupsBucketName:
+                description: S3 Bucket for Postgres backups
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string

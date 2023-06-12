@@ -4414,3 +4414,101 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
+  - name: postgres-backups-bucket
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          region: #patchme
+    patches:
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.parameters.region
+          - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: "postgres-backups-%s-%s-%s"
+      toFieldPath: metadata.name
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.parameters.region
+          - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: "postgres-backups-%s-%s-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.postgresBackupsBucketName
+
+  - name: postgres-backups-bucket-policies
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPublicAccessBlock
+      spec:
+        forProvider:
+          blockPublicAcls: true
+          blockPublicPolicy: true
+          ignorePublicAcls: true
+          restrictPublicBuckets: true
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'postgres-backups-bucket-policy-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.postgresBackupsBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: postgres-backups-bucket-acl
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketACL
+      spec:
+        forProvider:
+          acl: private
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'execution-artifacts-bucket-acl-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.postgresBackupsBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
