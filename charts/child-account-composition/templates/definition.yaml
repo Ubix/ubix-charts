@@ -190,6 +190,9 @@ spec:
               mlflowRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
+              postgresOperatorRoleName:
+                description: Role that makes sure Postgres can send compressed WAL files to the given S3 bucket
+                type: string
               dataServiceRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
@@ -207,6 +210,9 @@ spec:
                 type: string
               mlflowArtifactsS3PolicyArn:
                 description: Policy to give s3 access to the cluster
+                type: string
+              postgresOperatorS3PolicyArn:
+                description: Policy to give s3 access to the cluster, bucket that is used for postgres s3 backups
                 type: string
               externalDnsRoleArn:
                 description: Policy to allow external dns to work
