@@ -1,0 +1,17 @@
+apiVersion: v2
+appVersion: "1.0"
+dependencies:
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - bitnami-common
+    version: 2.1.2
+  - condition: postgresql.enabled
+    name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 11.8.1
+name: data-lineage
+sources:
+  - https://github.com/MarquezProject/marquez
+  - https://marquezproject.github.io/marquez/
+version: 0.35.0
