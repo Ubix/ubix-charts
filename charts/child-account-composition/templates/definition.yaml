@@ -238,6 +238,9 @@ spec:
               postgresBackupsBucketName:
                 description: S3 Bucket for Postgres backups
                 type: string
+              eksKmsArn:
+                description: EKS KMS key
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string

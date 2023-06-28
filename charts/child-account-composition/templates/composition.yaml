@@ -1768,6 +1768,10 @@ spec:
                 - name: #patchme
           roleArnSelector:
             matchControllerRef: true
+          encryptionConfig:
+            provider:
+              keyArn: #patchme
+            resources: 'secrets'
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -1860,6 +1864,9 @@ spec:
     - fromConnectionSecretKey: kubeconfig
     - fromConnectionSecretKey: kubeconfig
       name: value
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.eksKmsArn
+      toFieldPath: spec.forProvider.encryptionConfig.provider.keyArn
 
   - name: identity-provider
     base:
@@ -2283,6 +2290,33 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name      
+
+  - name: eks-kms-key
+    base:
+      apiVersion: kms.aws.crossplane.io/v1alpha1
+      kind: Key
+      spec:
+        forProvider:
+          #enableKeyRotation: true
+          #policy: |-
+          region: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-eks-kms-key'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.eksKmsArn
 
 # ########
 # # IAM Instance Profiles
