@@ -1867,6 +1867,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.status.eksKmsArn
       toFieldPath: spec.forProvider.encryptionConfig.provider.keyArn
+      policy:
+        fromFieldPath: Required
 
   - name: identity-provider
     base:
