@@ -10,7 +10,7 @@ metadata:
 {{- if $job.additionalLabels }}
 {{ $job.additionalLabels | indent 4 }}
 {{- end }}
-  name: {{ $name }}
+  name: {{ template "application.name" $ }}-{{ $name }}
   namespace: {{ template "application.namespace" $ }}
 {{- if $job.annotations }}
   annotations:
