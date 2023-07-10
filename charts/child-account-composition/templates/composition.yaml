@@ -2320,6 +2320,33 @@ spec:
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.eksKmsArn
 
+  - name: ebs-kms-key
+    base:
+      apiVersion: kms.aws.crossplane.io/v1alpha1
+      kind: Key
+      spec:
+        forProvider:
+          #enableKeyRotation: true
+          #policy: |-
+          region: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ebs-kms-key'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.ebsKmsArn
+
 # ########
 # # IAM Instance Profiles
 # ########

@@ -241,6 +241,9 @@ spec:
               eksKmsArn:
                 description: EKS KMS key
                 type: string
+              ebsKmsArn:
+                description: EBS csi driver KMS key
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
