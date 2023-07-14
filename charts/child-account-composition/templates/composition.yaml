@@ -1909,6 +1909,11 @@ spec:
       - type: string
         string:
           fmt: '%s-cluster'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.status.eksKmsArn
+      toFieldPath: spec.forProvider.encryptionConfig.provider.keyArn
+      policy:
+        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
@@ -1953,11 +1958,6 @@ spec:
     - fromConnectionSecretKey: kubeconfig
     - fromConnectionSecretKey: kubeconfig
       name: value
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.eksKmsArn
-      toFieldPath: spec.forProvider.encryptionConfig.provider.keyArn
-      policy:
-        fromFieldPath: Required
 
   - name: identity-provider
     base:
