@@ -1770,9 +1770,10 @@ spec:
           roleArnSelector:
             matchControllerRef: true
           encryptionConfig:
-            provider:
-              keyArn: #patchme
-            resources: 'secrets'
+            - provider:
+              - keyArn: #patchme
+            - resources:
+              - secrets
       providerConfigRef:
         policy:
           resolve: "Always"
