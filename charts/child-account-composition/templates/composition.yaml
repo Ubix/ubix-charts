@@ -2404,7 +2404,7 @@ spec:
 
   - name: eks-kms-key
     base:
-      apiVersion: kms.aws.crossplane.io/v1alpha1
+      apiVersion: kms.aws.upbound.io/v1beta1
       kind: Key
       spec:
         forProvider:
@@ -2431,7 +2431,7 @@ spec:
 
   - name: ebs-kms-key
     base:
-      apiVersion: kms.aws.crossplane.io/v1alpha1
+      apiVersion: kms.aws.upbound.io/v1beta1
       kind: Key
       spec:
         forProvider:
