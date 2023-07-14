@@ -87,16 +87,12 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: metadata.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: metadata.labels
       toFieldPath: metadata.labels
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.assumeRoleChain[0].roleARN
-      policy:
-        fromFieldPath: Required
       transforms:
         - type: string
           string:
@@ -120,8 +116,6 @@ spec:
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
-      policy:
-        fromFieldPath: Required
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
@@ -174,8 +168,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-rule-egress
     base:
@@ -216,8 +208,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-ingress-self
     base:
@@ -263,8 +253,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-ingress-cluster
     base:
@@ -311,8 +299,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: cluster-security-group
     base:
@@ -352,8 +338,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: cluster-security-group-rule-ingress
     base:
@@ -399,8 +383,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: cluster-security-group-rule-egress-api-server-to-pods
     base:
@@ -446,8 +428,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: cluster-security-group-rule-egress-ephemeral-ports
     base:
@@ -493,8 +473,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: cluster-primary-security-group-rule-dns-tcp
     base:
@@ -525,8 +503,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterPrimarySecurityGroupId
       toFieldPath: spec.forProvider.securityGroupId
-      policy:
-        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
@@ -537,8 +513,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: cluster-primary-security-group-rule-dns-udp
     base:
@@ -569,8 +543,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterPrimarySecurityGroupId
       toFieldPath: spec.forProvider.securityGroupId
-      policy:
-        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
@@ -581,8 +553,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-rule-ingress-efs
     base:
@@ -621,8 +591,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-ingress-cluster-4443
     base:
@@ -668,8 +636,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-ingress-cluster-6443
     base:
@@ -715,8 +681,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-ingress-cluster-8443
     base:
@@ -762,8 +726,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-ingress-cluster-9443
     base:
@@ -809,8 +771,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-ingress-cluster-10260
     base:
@@ -856,8 +816,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: node-security-group-ingress-cluster-10250
     base:
@@ -903,8 +861,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: efs-security-group
     base:
@@ -946,8 +902,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: efs-security-group-ingress
     base:
@@ -993,8 +947,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: efs-security-group-rule-egress
     base:
@@ -1035,8 +987,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
 ##
 # End EKS Security Group
@@ -1083,8 +1033,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.publicSubnet1aID
@@ -1130,8 +1078,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.publicSubnet1bID
@@ -1177,8 +1123,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.publicSubnet1cID
@@ -1226,8 +1170,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.privateSubnet1aID
@@ -1275,8 +1217,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.privateSubnet1bID
@@ -1324,8 +1264,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.privateSubnet1cID
@@ -1352,8 +1290,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.natGatewayEIPID
@@ -1397,8 +1333,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.natGatewayID
@@ -1428,8 +1362,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.internetGatewayID
@@ -1463,8 +1395,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.publicRouteTableID
@@ -1498,8 +1428,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.privateRouteTableID
@@ -1539,8 +1467,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: private-route
     base:
@@ -1582,8 +1508,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: private-route-table-assossiation-1a
     base:
@@ -1624,8 +1548,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: private-route-table-assossiation-1b
     base:
@@ -1666,8 +1588,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: private-route-table-assossiation-1c
     base:
@@ -1706,8 +1626,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: public-route-table-assossiation-1a
     base:
@@ -1748,8 +1666,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: public-route-table-assossiation-1b
     base:
@@ -1790,8 +1706,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: public-route-table-assossiation-1c
     base:
@@ -1832,8 +1746,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
 # ########
 # # EKS Cluster and related resources
@@ -1912,8 +1824,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.status.eksKmsArn
       toFieldPath: spec.forProvider.encryptionConfig.provider.keyArn
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
@@ -1978,8 +1888,6 @@ spec:
       - type: string
         string:
           fmt: "https://%s"
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -2029,8 +1937,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.subnetIdRefs[0].name
@@ -2095,8 +2001,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.subnetIdRefs[0].name
@@ -2154,8 +2058,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: vpc-cni-addon
     base:
@@ -2188,8 +2090,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: kube-proxy-addon
     base:
@@ -2222,8 +2122,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: efs
     base:
@@ -2246,8 +2144,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: efs-access-point-1a
     base:
@@ -2297,8 +2193,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: efs-access-point-1b
     base:
@@ -2348,8 +2242,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: efs-access-point-1c
     base:
@@ -2399,8 +2291,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: eks-kms-key
     base:
@@ -2486,8 +2376,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
 # ########
 # # IAM Roles
@@ -2829,8 +2717,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: fargate-profile-role
     base:
@@ -2863,8 +2749,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.fargateExecRoleArn
@@ -2890,12 +2774,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.assumeRolePolicy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
         - fromFieldPath: status.id
@@ -2962,8 +2842,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.karpenterClusterRoleArn
@@ -2989,12 +2867,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.assumeRolePolicy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
         - fromFieldPath: status.id
@@ -3074,8 +2948,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamrole-nodegroup
     base:
@@ -3121,8 +2993,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamrole-ebs-csi-driver
     base:
@@ -3142,12 +3012,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.assumeRolePolicy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
         - fromFieldPath: status.id
@@ -3202,12 +3068,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.assumeRolePolicy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
         - fromFieldPath: status.id
@@ -3265,12 +3127,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.assumeRolePolicy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
         - fromFieldPath: status.id
@@ -3326,8 +3184,6 @@ spec:
     patches:
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
         - fromFieldPath: status.id
@@ -3363,8 +3219,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.postgresOperatorS3PolicyArn
@@ -3382,8 +3236,6 @@ spec:
     patches:
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
         - fromFieldPath: status.id
@@ -3418,8 +3270,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.ingestionArtifactsS3PolicyArn
@@ -3437,8 +3287,6 @@ spec:
     patches:
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
         - fromFieldPath: status.id
@@ -3472,8 +3320,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.executionArtifactsS3PolicyArn
@@ -3549,8 +3395,6 @@ spec:
           fmt: '%s-karpenter-irsa'
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.clusterName
@@ -3659,8 +3503,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.karpenterIRSAPolicyArn
@@ -3732,8 +3574,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: external-dns-policy
     base:
@@ -3752,8 +3592,6 @@ spec:
           fmt: '%s-external-dns'
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.zoneId
@@ -3783,8 +3621,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
 # ########
 # # IAM Policy Attachments
@@ -3972,8 +3808,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: fargate-cni-policy-attachment
     base:
@@ -4002,8 +3836,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: karpenter-eks-worker-policy
     base:
@@ -4032,8 +3864,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: karpenter-ec2-container-registry-policy
     base:
@@ -4062,8 +3892,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: karpenter-ssm-managed-instance-policy
     base:
@@ -4092,8 +3920,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: karpenter-cni-policy
     base:
@@ -4122,8 +3948,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: karpenter-irsa-policy-attachment
     base:
@@ -4160,8 +3984,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamattachment-controlplane
     base:
@@ -4190,8 +4012,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamattachment-service
     base:
@@ -4223,8 +4043,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamattachment-worker
     base:
@@ -4256,8 +4074,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamattachment-cni
     base:
@@ -4286,8 +4102,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamattachment-registry
     base:
@@ -4319,8 +4133,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamattachment-ebs-csi-driver
     base:
@@ -4349,8 +4161,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamattachment-efs-csi-driver
     base:
@@ -4387,8 +4197,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: iamattachment-external-dns
     base:
@@ -4425,8 +4233,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
 #####
 # ArgoCD
@@ -4535,8 +4341,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.nameServers
       toFieldPath: status.zoneNameServers
@@ -4588,8 +4392,6 @@ spec:
           region: #patchme
     patches:
     - type: CombineFromComposite
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.id
@@ -4598,8 +4400,6 @@ spec:
           fmt: "execution-artifacts-%s"
       toFieldPath: metadata.name
     - type: CombineFromComposite
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.id
@@ -4614,8 +4414,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.executionArtifactsBucketName
@@ -4649,8 +4447,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: execution-artifacts-bucket-acl
     base:
@@ -4678,8 +4474,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: ingestion-artifacts-bucket
     base:
@@ -4693,8 +4487,6 @@ spec:
           region: #patchme
     patches:
     - type: CombineFromComposite
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.id
@@ -4703,8 +4495,6 @@ spec:
           fmt: "ingestion-artifacts-%s"
       toFieldPath: metadata.name
     - type: CombineFromComposite
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.id
@@ -4719,8 +4509,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.ingestionArtifactsBucketName
@@ -4754,8 +4542,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: ingestion-artifacts-bucket-acl
     base:
@@ -4783,8 +4569,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: mlflow-artifacts-bucket
     base:
@@ -4798,8 +4582,6 @@ spec:
           region: #patchme
     patches:
     - type: CombineFromComposite
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.id
@@ -4808,8 +4590,6 @@ spec:
           fmt: "mlflow-artifacts-%s"
       toFieldPath: metadata.name
     - type: CombineFromComposite
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.id
@@ -4824,8 +4604,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.mlflowArtifactsBucketName
@@ -4859,8 +4637,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: mlflow-artifacts-bucket-acl
     base:
@@ -4888,8 +4664,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: postgres-backups-bucket
     base:
@@ -4903,8 +4677,6 @@ spec:
           region: #patchme
     patches:
     - type: CombineFromComposite
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.id
@@ -4915,8 +4687,6 @@ spec:
           fmt: "postgres-backups-%s-%s-%s"
       toFieldPath: metadata.name
     - type: CombineFromComposite
-      policy:
-        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.id
@@ -4932,8 +4702,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.postgresBackupsBucketName
@@ -4967,8 +4735,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
 
   - name: postgres-backups-bucket-acl
     base:
@@ -4996,5 +4762,3 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-      policy:
-        fromFieldPath: Required
