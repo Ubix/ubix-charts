@@ -1823,7 +1823,7 @@ spec:
         string:
           fmt: '%s-cluster'
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.status.eksKmsArn
+      fromFieldPath: status.eksKmsArn
       toFieldPath: spec.forProvider.encryptionConfig[0].provider[0].keyArn
     - type: ToCompositeFieldPath
       fromFieldPath: spec.claimRef.namespace
