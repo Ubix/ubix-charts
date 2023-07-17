@@ -1771,9 +1771,9 @@ spec:
             matchControllerRef: true
           encryptionConfig:
             - provider:
-                keyArn: #patchme
-            - resources:
-              - secrets
+                - keyArn: #patchme
+              resources:
+                - secrets
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -1824,7 +1824,7 @@ spec:
           fmt: '%s-cluster'
     - type: FromCompositeFieldPath
       fromFieldPath: status.eksKmsArn
-      toFieldPath: spec.forProvider.encryptionConfig[0].provider.keyArn
+      toFieldPath: spec.forProvider.encryptionConfig[0].provider[0].keyArn
     - type: ToCompositeFieldPath
       fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
