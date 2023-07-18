@@ -43,6 +43,8 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
+      policy:
+        fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
@@ -1939,8 +1941,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-      policy:
-        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
