@@ -1825,9 +1825,13 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.eksKmsArn
       toFieldPath: spec.forProvider.encryptionConfig[0].provider[0].keyArn
+      policy:
+          fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
+      policy:
+          fromFieldPath: Required
     - type: ToCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
