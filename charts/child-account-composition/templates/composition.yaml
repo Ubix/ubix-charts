@@ -1771,7 +1771,7 @@ spec:
             matchControllerRef: true
           encryptionConfig:
             - provider:
-                - keyArn: #patchme
+                - keyArn: patchme
               resources:
                 - secrets
       providerConfigRef:
