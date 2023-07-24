@@ -105,7 +105,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - type: FromCompositeFiledPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
