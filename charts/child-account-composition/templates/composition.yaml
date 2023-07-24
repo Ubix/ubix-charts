@@ -24,6 +24,7 @@ spec:
           email: awsaccountadmin+crossplane.customername@ubixlabs.com
           name: crossplanecreated
           parentId: ou-8jat-sv0412tm
+          region: #patchme
         providerConfigRef:
           name: root
         deletionPolicy: Orphan
