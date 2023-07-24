@@ -28,6 +28,9 @@ spec:
           name: root
         deletionPolicy: Orphan
     patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
     - type: ToCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
