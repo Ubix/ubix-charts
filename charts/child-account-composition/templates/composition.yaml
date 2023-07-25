@@ -32,19 +32,19 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.email
       toFieldPath: spec.forProvider.email
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.name
       toFieldPath: spec.forProvider.name
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.parentId
       toFieldPath: spec.forProvider.parentId
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: ToCompositeFieldPath
@@ -81,7 +81,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: metadata.name
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: metadata.labels
       toFieldPath: metadata.labels
     - type: FromCompositeFieldPath
