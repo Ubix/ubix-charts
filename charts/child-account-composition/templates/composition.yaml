@@ -1862,17 +1862,17 @@ spec:
           thumbprintList:
             - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280 # this is the sts static thumbprint
     patches:
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: status.clusterOIDC
       toFieldPath: spec.forProvider.url
       transforms:
       - type: string
         string:
           fmt: "https://%s"
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
