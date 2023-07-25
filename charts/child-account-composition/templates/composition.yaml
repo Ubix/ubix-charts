@@ -1812,7 +1812,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.eksKmsArn
       toFieldPath: spec.forProvider.encryptionConfig[0].provider[0].keyArn
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
       transforms:
