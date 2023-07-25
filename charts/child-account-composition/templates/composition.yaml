@@ -32,19 +32,19 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.email
       toFieldPath: spec.forProvider.email
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.name
       toFieldPath: spec.forProvider.name
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.parentId
       toFieldPath: spec.forProvider.parentId
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: ToCompositeFieldPath
@@ -81,7 +81,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: metadata.name
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: metadata.labels
       toFieldPath: metadata.labels
     - type: FromCompositeFieldPath
@@ -1812,7 +1812,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.eksKmsArn
       toFieldPath: spec.forProvider.encryptionConfig[0].provider[0].keyArn
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
       transforms:
@@ -1862,17 +1862,17 @@ spec:
           thumbprintList:
             - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280 # this is the sts static thumbprint
     patches:
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: status.clusterOIDC
       toFieldPath: spec.forProvider.url
       transforms:
       - type: string
         string:
           fmt: "https://%s"
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - type: ToCompositeFieldPath
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
