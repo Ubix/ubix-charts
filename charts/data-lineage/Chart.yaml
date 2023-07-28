@@ -14,4 +14,4 @@ name: data-lineage
 sources:
   - https://github.com/MarquezProject/marquez
   - https://marquezproject.github.io/marquez/
-version: 0.35.0
+version: 0.35.1
