@@ -1019,6 +1019,27 @@ entries:
   data-lineage:
   - apiVersion: v2
     appVersion: "1.0"
+    created: "2023-07-28T11:45:42.846058426Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.1.2
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.8.1
+    digest: c05aa2f0e2a162b4728be2d65ead5a47c9485ac74d9c14d240179ca1b379634f
+    name: data-lineage
+    sources:
+    - https://github.com/MarquezProject/marquez
+    - https://marquezproject.github.io/marquez/
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/data-lineage-0.35.1/data-lineage-0.35.1.tgz
+    version: 0.35.1
+  - apiVersion: v2
+    appVersion: "1.0"
     created: "2023-06-16T15:14:52.753777342Z"
     dependencies:
     - name: common
@@ -1154,4 +1175,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/master_account-0.1.0/master_account-0.1.0.tgz
     version: 0.1.0
-generated: "2023-07-25T10:23:26.609219217Z"
+generated: "2023-07-28T11:45:42.846460328Z"
