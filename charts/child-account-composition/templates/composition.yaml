@@ -23,7 +23,7 @@ spec:
         forProvider:
           email: awsaccountadmin+crossplane.customername@ubixlabs.com
           name: crossplanecreated
-          parentId: #patchme
+          parentId: {{ .Values.parentId }}
           region: #patchme
         providerConfigRef:
           name: root
