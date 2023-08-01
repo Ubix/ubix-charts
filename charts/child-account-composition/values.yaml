@@ -1,2 +1,3 @@
 backofficeArgocdRoleArn: arn:aws:iam::882490700787:role/argocd-server
 zoneId: "Z2FIL4FICDFU9O" # Add Parent Zone ID
+parentId: "ou-8jat-sv0412tm" # Add Parent OU ID
