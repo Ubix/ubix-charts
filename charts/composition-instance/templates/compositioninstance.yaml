@@ -3,13 +3,13 @@ kind: ChildAccountClaim
 metadata:
   name: {{ .Values.metadata.name }}
   labels:
-    provider: provider-aws
+    provider: upbound-provider-family-aws
     name: childaccount
 spec:
   id: {{ .Values.spec.id }}
   compositionSelector:
     matchLabels:
-      provider: provider-aws
+      provider: upbound-provider-family-aws
       name: childaccount
   parameters:
     email: awsaccountadmin+{{ .Values.spec.parameters.name }}@ubixlabs.com
