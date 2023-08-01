@@ -3,7 +3,7 @@ kind: Composition
 metadata:
   name: childaccount
   labels:
-      provider: provider-aws
+      provider: upbound-provider-family-aws
       name: childaccount
 spec:
   compositeTypeRef:
@@ -71,7 +71,7 @@ spec:
       metadata:
         #name: crossplane-test-pconfig
         labels:
-          provider: provider-aws
+          provider: upbound-provider-family-aws
           name: childaccount
       spec:
         #assumeRoleARN: "arn:aws:iam::798374069605:role/OrganizationAccountAccessRole"
