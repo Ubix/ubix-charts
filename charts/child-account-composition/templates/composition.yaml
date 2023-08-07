@@ -2744,7 +2744,7 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
-       metadata:
+      metadata:
         annotations:
           crossplane.io/external-name: karpenter-irsa-role
       spec:
@@ -4391,13 +4391,13 @@ spec:
       fromFieldPath: spec.id
       transform:
       - type: string
-          fmt: "%s-execution-artifacts"
+        fmt: "%s-execution-artifacts"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       transforms:
       - type: string
-          fmt: "execution-artifacts-%s"
+        fmt: "execution-artifacts-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4481,13 +4481,13 @@ spec:
       fromFieldPath: spec.id
       transform:
       - type: string
-          fmt: "%s-ingestion-artifacts"
+        fmt: "%s-ingestion-artifacts"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       transforms:
       - type: string
-          fmt: "ingestion-artifacts-%s"
+        fmt: "ingestion-artifacts-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4571,13 +4571,13 @@ spec:
       fromFieldPath: spec.id
       transform:
       - type: string
-          fmt: "%s-mlflow-artifacts"
+        fmt: "%s-mlflow-artifacts"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       transforms:
       - type: string
-          fmt: "mlflow-artifacts-%s"
+        fmt: "mlflow-artifacts-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4608,7 +4608,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-mlflow-artifacts-bucket-policy'
+        fmt: '%s-mlflow-artifacts-bucket-policy'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4661,13 +4661,13 @@ spec:
       fromFieldPath: spec.id
       transform:
       - type: string
-          fmt: "%s-postgres-backups"
+        fmt: "%s-postgres-backups"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       transforms:
       - type: string
-          fmt: "postgres-backups-%s"
+        fmt: "postgres-backups-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4698,7 +4698,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-postgres-backups-bucket-policy'
+        fmt: '%s-postgres-backups-bucket-policy'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4725,7 +4725,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-postgres-backups-bucket-acl'
+        fmt: '%s-postgres-backups-bucket-acl'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
