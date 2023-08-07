@@ -4389,7 +4389,7 @@ spec:
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      transform:
+      transforms:
       - type: string
         string:
           fmt: "%s-execution-artifacts"
@@ -4481,9 +4481,10 @@ spec:
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      transform:
+      transforms:
       - type: string
-        fmt: "%s-ingestion-artifacts"
+        string:
+          fmt: "%s-ingestion-artifacts"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -4572,9 +4573,10 @@ spec:
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      transform:
+      transforms:
       - type: string
-        fmt: "%s-mlflow-artifacts"
+        string:
+          fmt: "%s-mlflow-artifacts"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -4663,9 +4665,10 @@ spec:
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      transform:
+      transforms:
       - type: string
-        fmt: "%s-postgres-backups"
+        string:
+          fmt: "%s-postgres-backups"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
