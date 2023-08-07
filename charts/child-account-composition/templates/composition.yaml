@@ -4391,13 +4391,15 @@ spec:
       fromFieldPath: spec.id
       transform:
       - type: string
-        fmt: "%s-execution-artifacts"
+        string:
+          fmt: "%s-execution-artifacts"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       transforms:
-      - type: string
-        fmt: "execution-artifacts-%s"
+        - type: string
+          string:
+            fmt: "execution-artifacts-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4426,9 +4428,9 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-      - type: string
-        string:
-          fmt: '%s-execution-artifacts-bucket-policy'
+        - type: string
+          string:
+            fmt: '%s-execution-artifacts-bucket-policy'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4453,9 +4455,9 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-      - type: string
-        string:
-          fmt: 'execution-artifacts-bucket-acl-%s'
+        - type: string
+          string:
+            fmt: 'execution-artifacts-bucket-acl-%s'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4486,8 +4488,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       transforms:
-      - type: string
-        fmt: "ingestion-artifacts-%s"
+        - type: string
+          string:
+            fmt: "ingestion-artifacts-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4516,9 +4519,9 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-      - type: string
-        string:
-          fmt: '%s-ingestion-artifacts-bucket-policy'
+        - type: string
+          string:
+            fmt: '%s-ingestion-artifacts-bucket-policy'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4543,9 +4546,9 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-      - type: string
-        string:
-          fmt: '%s-ingestion-artifacts-bucket-acl'
+        - type: string
+          string:
+            fmt: '%s-ingestion-artifacts-bucket-acl'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4576,8 +4579,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       transforms:
-      - type: string
-        fmt: "mlflow-artifacts-%s"
+        - type: string
+          string:
+            fmt: "mlflow-artifacts-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4606,9 +4610,9 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-      - type: string
-        string:
-        fmt: '%s-mlflow-artifacts-bucket-policy'
+        - type: string
+          string:
+            fmt: '%s-mlflow-artifacts-bucket-policy'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4633,9 +4637,9 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-      - type: string
-        string:
-          fmt: '%s-mlflow-artifacts-bucket-acl'
+        - type: string
+          string:
+            fmt: '%s-mlflow-artifacts-bucket-acl'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4667,7 +4671,8 @@ spec:
       fromFieldPath: status.id
       transforms:
       - type: string
-        fmt: "postgres-backups-%s"
+        string:
+          fmt: "postgres-backups-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -4696,9 +4701,9 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-      - type: string
-        string:
-        fmt: '%s-postgres-backups-bucket-policy'
+        - type: string
+          string:
+            fmt: '%s-postgres-backups-bucket-policy'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -4723,9 +4728,9 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-      - type: string
-        string:
-        fmt: '%s-postgres-backups-bucket-acl'
+        - type: string
+          string:
+            fmt: '%s-postgres-backups-bucket-acl'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
