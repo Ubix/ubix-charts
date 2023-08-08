@@ -2428,7 +2428,9 @@ spec:
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: mlflow
+          crossplane.io/external-name: mlflow-role
+        labels:
+          role: mlflow-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -2488,7 +2490,7 @@ spec:
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: data-service
+          crossplane.io/external-name: data-service-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -2548,7 +2550,7 @@ spec:
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: dataflow-listener
+          crossplane.io/external-name: dataflow-listener-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -2802,6 +2804,11 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: karpenter-cluster-role
+        labels:
+          role: karpenter-cluster-role
       spec:
         forProvider:
           assumeRolePolicy: |
@@ -2840,6 +2847,11 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: vpc-cni-role
+        labels:
+          role: vpc-cni-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -2895,6 +2907,11 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: controlplane-role
+        labels:
+          role: controlplane-role
       spec:
         forProvider:
           assumeRolePolicy: |
@@ -2926,13 +2943,6 @@ spec:
         string:
           fmt: '%s-controlplane'
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.labels.role
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-controlplane'
-    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
@@ -2940,6 +2950,11 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: nodegroup
+        labels:
+          role: nodegroup
       spec:
         forProvider:
           assumeRolePolicy: |
@@ -2971,13 +2986,6 @@ spec:
         string:
           fmt: '%s-nodegroup'
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.labels.role
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-nodegroup'
-    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
@@ -2985,6 +2993,11 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: ebs-csi-driver-role
+        labels:
+          role: ebs-csi-driver-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -3029,18 +3042,16 @@ spec:
                 }
               ]
             }
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.labels.role
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-ebs-csi-driver'
 
   - name: iamrole-efs-csi-driver
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: efs-csi-driver-role
+        labels:
+          role: efs-csi-driver-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -3088,18 +3099,16 @@ spec:
                 }
               ]
             }
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.labels.role
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-efs-csi-driver'
 
   - name: iamrole-external-dns
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: external-dns-role
+        labels:
+          role: external-dns-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -3144,13 +3153,6 @@ spec:
                 }
               ]
             }
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.labels.role
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-external-dns'
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.externalDnsRoleArn
@@ -4134,6 +4136,9 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
+      metadata:
+        annotations:
+          crossplane.io/external-name: ebs-csi-driver
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
@@ -4162,6 +4167,9 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
+      metadata:
+        annotations:
+          crossplane.io/external-name: efs-csi-driver
       spec:
         forProvider:
           policyArnRef:
