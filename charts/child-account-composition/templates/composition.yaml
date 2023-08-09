@@ -1763,8 +1763,6 @@ spec:
                 - name: #patchme
           roleArnSelector:
             matchControllerRef: true
-            matchControllerLabels:
-              role: controlplane-role
           encryptionConfig:
             - provider:
                 - keyArn: patchme
@@ -1814,6 +1812,13 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.eksKmsArn
       toFieldPath: spec.forProvider.encryptionConfig[0].provider[0].keyArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.clusterName
@@ -2891,8 +2896,6 @@ spec:
       metadata:
         annotations:
           crossplane.io/external-name: controlplane-role
-        labels:
-          role: controlplane-role
       spec:
         forProvider:
           assumeRolePolicy: |
@@ -2919,6 +2922,13 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
       transforms:
       - type: string
         string:
@@ -3768,7 +3778,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
           roleRef:
-            name: fargate-profile-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3778,8 +3788,17 @@ spec:
         string:
           fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: fargate-cni-policy-attachment
     base:
@@ -3789,7 +3808,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           roleRef:
-            name: fargate-profile-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3799,8 +3818,17 @@ spec:
         string:
           fmt: '%s-fargate-cni'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: karpenter-eks-worker-policy
     base:
@@ -3810,7 +3838,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
           roleRef:
-            name: karpenter-cluster-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3820,8 +3848,17 @@ spec:
         string:
           fmt: '%s-karpenter-eks-worker-node'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: karpenter-ec2-container-registry-policy
     base:
@@ -3831,7 +3868,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
           roleRef:
-            name: karpenter-cluster-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3841,8 +3878,17 @@ spec:
         string:
           fmt: '%s-karpenter-ec2-container-registry'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: karpenter-ssm-managed-instance-policy
     base:
@@ -3852,7 +3898,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
           roleRef:
-            name: karpenter-cluster-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3862,8 +3908,17 @@ spec:
         string:
           fmt: '%s-karpenter-ssm-managed-instance'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: karpenter-cni-policy
     base:
@@ -3873,7 +3928,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           roleRef:
-            name: karpenter-cluster-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3883,8 +3938,17 @@ spec:
         string:
           fmt: '%s-karpenter-cluster-cni'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: karpenter-irsa-policy-attachment
     base:
@@ -3893,9 +3957,9 @@ spec:
       spec:
         forProvider:
           policyArnRef:
-            name: karpenter-irsa-policy
+            name: #patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           roleRef:
-            name: karpenter-irsa-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3905,8 +3969,24 @@ spec:
         string:
           fmt: '%s-karpenter-irsa-attachment'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-irsa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: iamattachment-controlplane
     base:
@@ -3916,7 +3996,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
           roleRef:
-            name: controlplane-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3926,8 +4006,17 @@ spec:
         string:
           fmt: '%s-controlplane'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: iamattachment-service
     base:
@@ -3937,7 +4026,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSServicePolicy
           roleRef:
-            name: controlplane-role
+            name: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -3950,8 +4039,17 @@ spec:
         string:
           fmt: '%s-service'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: iamattachment-worker
     base:
@@ -3961,7 +4059,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
           roleRef:
-            name: nodegroup-role
+            name: #patchme
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -3974,8 +4072,17 @@ spec:
         string:
           fmt: '%s-worker'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: iamattachment-cni
     base:
@@ -3985,7 +4092,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           roleRef:
-            name: vpc-cni-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3995,8 +4102,17 @@ spec:
         string:
           fmt: '%s-cni'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-vpc-cni'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: iamattachment-registry
     base:
@@ -4006,7 +4122,7 @@ spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
           roleRef:
-            name: nodegroup-role
+            name: #patch
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -4019,21 +4135,27 @@ spec:
         string:
           fmt: '%s-registry'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: iamattachment-ebs-csi-driver
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
-      metadata:
-        annotations:
-          crossplane.io/external-name: ebs-csi-driver
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
           roleRef:
-            name: ebs-csi-driver-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -4043,22 +4165,28 @@ spec:
         string:
           fmt: '%s-ebs-csi-driver'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ebs-csi-driver'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: iamattachment-efs-csi-driver
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
-      metadata:
-        annotations:
-          crossplane.io/external-name: efs-csi-driver
       spec:
         forProvider:
           policyArnRef:
-            name: efs-csi-driver-policy
+            name: #patchme
           roleRef:
-            name: efs-csi-driver-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -4068,8 +4196,24 @@ spec:
         string:
           fmt: '%s-efs-csi-driver'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-csi'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
   - name: iamattachment-external-dns
     base:
@@ -4078,9 +4222,9 @@ spec:
       spec:
         forProvider:
           policyArnRef:
-            name: external-dns-policy
+            name: #patchme
           roleRef:
-            name: external-dns-role
+            name: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -4090,8 +4234,24 @@ spec:
         string:
           fmt: '%s-external-dns'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
 #####
 # ArgoCD
