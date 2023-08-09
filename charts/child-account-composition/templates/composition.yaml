@@ -1886,7 +1886,7 @@ spec:
           clusterNameRef:
             name: #patchme
           podExecutionRoleArnRef:
-            name: fargate-profile-role 
+            name: #patchme
           region: #patchme
           selector:
             - namespace: karpenter
@@ -1905,6 +1905,13 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.clusterNameRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.podExecutionRoleArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1943,7 +1950,7 @@ spec:
           clusterNameRef:
             name: #patchme
           podExecutionRoleArnRef:
-            name: fargate-profile-role
+            name: #patchme
           region: #patchme
           selector:
             - namespace: kube-system
@@ -1962,6 +1969,13 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.clusterNameRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.podExecutionRoleArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-fargate-execution'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
