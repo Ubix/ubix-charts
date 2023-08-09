@@ -1764,7 +1764,7 @@ spec:
           roleArnSelector:
             matchControllerRef: true
             matchControllerLabels:
-              role: nodegroup-role
+              role: controlplane-role
           encryptionConfig:
             - provider:
                 - keyArn: patchme
