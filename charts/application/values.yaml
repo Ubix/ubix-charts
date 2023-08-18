@@ -545,7 +545,7 @@ secret:
 ##########################################################
 serviceMonitor:
   enabled: true
-  
+  #namespace: default
   # Additional labels
   additionalLabels:
     # key: value
@@ -557,6 +557,7 @@ serviceMonitor:
   # namespaceSelector:
   #   any: true
   #jobLabel: app
+  
 
   # List of the endpoints of service from which prometheus will scrape data
   # namespaceSelector:
