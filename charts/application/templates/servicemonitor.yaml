@@ -21,9 +21,18 @@ spec:
   selector:
     matchLabels:
       app: {{ template "application.name" . }}
+  {{- if .Values.serviceMonitor.jobLabel }}
+  jobLabel: {{ .Values.serviceMonitor.jobLabel }}
+  {{- else }}
+  jobLabel: app
+  {{- end }}
   namespaceSelector:
+    {{- if .Values.serviceMonitor.namespaceSelector }}
+    {{ toYaml .Values.serviceMonitor.namespaceSelector }}
+    {{- else }}
     matchNames:
     - {{ .Release.Namespace }}
+    {{- end }}
   endpoints:
 {{ toYaml .Values.serviceMonitor.endpoints | indent 4 }}
 {{- end }}
