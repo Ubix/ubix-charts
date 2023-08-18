@@ -19,7 +19,7 @@ appVersion: "{{ .Values.deployment.image.tag | trunc 63 | trimSuffix "-" -}}"
 group: {{ .Values.labels.group }}
 team: {{ .Values.labels.team }}
 chart: "{{ .Chart.Name }}"
-release: {{ .Release.Name | quote }}
+releaseName: {{ .Release.Name | quote }}
 heritage: {{ .Release.Service | quote }}
 {{- end -}}
 {{/*
