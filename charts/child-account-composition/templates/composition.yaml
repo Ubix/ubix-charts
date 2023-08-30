@@ -3389,18 +3389,7 @@ spec:
           crossplane.io/external-name: AmazonEKS_AWS_Load_Balancer_Controller
       spec:
         forProvider:
-          policy: #patchme
-    patches:
-      - type: CombineFromComposite
-        toFieldPath: spec.forProvider.policy
-        policy:
-          fromFieldPath: Required
-        combine:
-          variables:
-          - fromFieldPath: status.id
-          strategy: string
-          string:
-            fmt: |
+          policy: |
                 {
                     "Statement": [
                         {
@@ -3624,6 +3613,7 @@ spec:
                     ],
                     "Version": "2012-10-17"
                 }
+    patches:
       - fromFieldPath: spec.id
         toFieldPath: metadata.name
         transforms:
