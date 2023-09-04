@@ -5123,3 +5123,77 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
+###
+# ACM DNS configuration
+###
+
+  - name: child-account-acm-certificate
+    base:
+      apiVersion: acm.aws.upbound.io/v1beta1
+      kind: Certificate
+      metadata:
+        labels:
+          child-account-acm-certificate: #patched
+      spec:
+        forProvider:
+          region: #patched
+          domainName: #patched
+          validationMethod: DNS
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-child-account-acm-certificate'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.domainName
+      transforms:
+        - type: string
+          string:
+            fmt: '*.%s.ubix.io'
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.domainValidationOptions.resourceRecordValue
+      toFieldPath: status.ACMValidationRecordFqdns
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.ACMArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: child-account-acm-certificate-validation
+    base:
+      apiVersion: acm.aws.upbound.io/v1beta1
+      kind: CertificateValidation
+      spec:
+        forProvider:
+          region: #patched
+          certificateArn: #patched
+          validationRecordFqdns: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-child-account-acm-certificate'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.ACMValidationRecordFqdns
+      toFieldPath: spec.forProvider.validationRecordFqdns[0]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.ACMArn
+      toFieldPath: spec.forProvider.certificateArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
