@@ -5147,7 +5147,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: '%s-child-account-acm-certificate'
+            fmt: '%s-acm-certificate'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -5184,7 +5184,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: '%s-child-account-acm-certificate'
+            fmt: '%s-acm-certificate-validation'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -5207,6 +5207,13 @@ spec:
         forProvider:
           ttl: 300
     patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-cname-validation-record'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
