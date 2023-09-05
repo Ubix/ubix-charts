@@ -5159,7 +5159,7 @@ spec:
           string:
             fmt: '*.%s.ubix.io'
     - type: ToCompositeFieldPath
-      fromFieldPath: status.certificate.domainValidationOptions[0].resourceRecordValue
+      fromFieldPath: status.atProvider.domainValidationOptions[0].resourceRecordValue
       toFieldPath: status.ACMValidationRecordFqdns
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.arn
