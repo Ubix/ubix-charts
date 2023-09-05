@@ -5128,7 +5128,7 @@ spec:
 # ACM DNS configuration
 ###
 
-  - name: child-account-acm-certificate
+  - name: acm-certificate
     base:
       apiVersion: acm.aws.upbound.io/v1beta1
       kind: Certificate
@@ -5159,8 +5159,8 @@ spec:
           string:
             fmt: '*.%s.ubix.io'
     - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.domainValidationOptions[0].resourceRecordValue
-      toFieldPath: status.ACMValidationRecordFqdns
+      fromFieldPath: status.atProvider.domainValidationOptions
+      toFieldPath: status.certificate.domainValidationOptions
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.ACMArn
@@ -5168,7 +5168,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: child-account-acm-certificate-validation
+  - name: acm-certificate-validation
     base:
       apiVersion: acm.aws.upbound.io/v1beta1
       kind: CertificateValidation
@@ -5189,11 +5189,41 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.ACMValidationRecordFqdns
-      toFieldPath: spec.forProvider.validationRecordFqdns[0]
-    - type: FromCompositeFieldPath
       fromFieldPath: status.ACMArn
       toFieldPath: spec.forProvider.certificateArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: cname-validation-record
+    base:
+      apiVersion: route53.aws.upbound.io/v1beta1
+      kind: Record
+      metadata:
+        labels:
+          resource: Record
+          type: CNAME
+      spec:
+        forProvider:
+          ttl: 300
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: status.zoneId
+      toFieldPath: spec.forProvider.zoneId
+    - fromFieldPath: status.certificate.domainValidationOptions[0].resourceRecordName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.name
+    - fromFieldPath: status.certificate.domainValidationOptions[0].resourceRecordValue
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.records[0]
+    - fromFieldPath: status.certificate.domainValidationOptions[0].resourceRecordType
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.type
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
