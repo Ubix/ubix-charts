@@ -5159,8 +5159,14 @@ spec:
           string:
             fmt: '*.%s.ubix.io'
     - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.domainValidationOptions
-      toFieldPath: status.certificate.domainValidationOptions
+      fromFieldPath: status.atProvider.domainValidationOptions[0].resourceRecordName
+      toFieldPath: status.ACMresourceRecordName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.domainValidationOptions[0].resourceRecordValue
+      toFieldPath: status.ACMresourceRecordValue
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.domainValidationOptions[0].resourceRecordType
+      toFieldPath: status.ACMresourceRecordType
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.ACMArn
@@ -5219,15 +5225,15 @@ spec:
       toFieldPath: spec.forProvider.region
     - fromFieldPath: status.zoneId
       toFieldPath: spec.forProvider.zoneId
-    - fromFieldPath: status.certificate.domainValidationOptions[0].resourceRecordName
+    - fromFieldPath: status.ACMresourceRecordName
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.name
-    - fromFieldPath: status.certificate.domainValidationOptions[0].resourceRecordValue
+    - fromFieldPath: status.ACMresourceRecordValue
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.records[0]
-    - fromFieldPath: status.certificate.domainValidationOptions[0].resourceRecordType
+    - fromFieldPath: status.ACMresourceRecordType
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.type
