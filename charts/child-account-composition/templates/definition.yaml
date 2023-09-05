@@ -250,9 +250,12 @@ spec:
               ebsKmsArn:
                 description: EBS csi driver KMS key
                 type: string
-              ACMValidationRecordFqdns:
-                description: List of FQDNs that implement the validation. Only valid for DNS validation method ACM certificates.
-                type: string
+              certificate:
+                description: Schema for the Certificates API. Requests and manages a certificate from Amazon Certificate Manager (ACM).
+                type: array
+                items:
+                  type: string
+                default: []
               ACMArn:
                 description: ARN of the certificate that is being validated.
                 type: string
