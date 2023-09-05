@@ -19,7 +19,7 @@ spec:
   eks:
     version: {{ quote .Values.spec.eks.version }}
     nodeSize: {{ .Values.spec.eks.nodeSize }}
-    minNodeCount: {{ .Values.spec.eks.nodeSize }}
+    minNodeCount: {{ .Values.spec.eks.minNodeCount }}
     maxNodeCount: {{ .Values.spec.eks.maxNodeCount }}
     desiredNodeCount: {{ .Values.spec.eks.desiredNodeCount }}
     diskSize: {{ .Values.spec.eks.diskSize }}
