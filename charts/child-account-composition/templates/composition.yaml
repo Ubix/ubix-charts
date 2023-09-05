@@ -3415,6 +3415,7 @@ spec:
                                 "elasticloadbalancing:DescribeLoadBalancerAttributes",
                                 "elasticloadbalancing:DescribeListeners",
                                 "elasticloadbalancing:DescribeListenerCertificates",
+                                "elasticloadbalancing:AddTags",
                                 "ec2:GetCoipPoolUsage",
                                 "ec2:DescribeVpcs",
                                 "ec2:DescribeVpcPeeringConnections",
@@ -5182,7 +5183,6 @@ spec:
         forProvider:
           region: #patched
           certificateArn: #patched
-          validationRecordFqdns: #patched
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
