@@ -5248,7 +5248,7 @@ spec:
 
   - name: waf-webacl
     base:
-      apiVersion: waf.aws.upbound.io/v1beta1
+      apiVersion: wafregional.aws.upbound.io/v1beta1
       kind: WebACL
       spec:
         forProvider:
