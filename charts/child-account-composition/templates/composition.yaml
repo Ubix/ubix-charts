@@ -5240,3 +5240,34 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
+
+###
+# Cybersecurity
+###
+
+  - name: waf-webacl
+    base:
+      apiVersion: waf.aws.upbound.io/v1beta1
+      kind: WebACL
+      spec:
+        forProvider:
+          defaultAction:
+          - type: "ALLOW"
+          metricName: "CloudspaceWAFAclMetrics"
+          name: "WAF-FOR-CLOUDSPACE"
+          region: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-waf-acl'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
