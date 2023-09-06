@@ -5254,8 +5254,8 @@ spec:
         forProvider:
           defaultAction:
           - type: "ALLOW"
-          metricName: "cloudspace-webacl"
-          name: "cloudspace-webacl"
+          metricName: "CloudspaceWAFAclMetrics"
+          name: "WAF-FOR-CLOUDSPACE"
           region: #patchme
     patches:
     - type: FromCompositeFieldPath
