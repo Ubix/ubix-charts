@@ -100,6 +100,16 @@ entries:
   child-account-composition:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-09-06T20:24:02.868623422Z"
+    description: XRD Child account Chart
+    digest: 9de9f278fdb2cdfe0b3010a27e8edae27067080f94a0907e0516b46f15e203ae
+    name: child-account-composition
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/child-account-composition-0.10.48/child-account-composition-0.10.48.tgz
+    version: 0.10.48
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-09-06T19:36:48.605489913Z"
     description: XRD Child account Chart
     digest: cb74cf61305284884f42484b517e36c39f3f5695252142a4bb69cbd7f04bb3c4
@@ -1469,4 +1479,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/master_account-0.1.0/master_account-0.1.0.tgz
     version: 0.1.0
-generated: "2023-09-06T19:36:48.60602052Z"
+generated: "2023-09-06T20:24:02.869050837Z"
