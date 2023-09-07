@@ -5201,46 +5201,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: cname-validation-record
-    base:
-      apiVersion: route53.aws.upbound.io/v1beta1
-      kind: Record
-      metadata:
-        labels:
-          resource: Record
-          type: CNAME
-      spec:
-        forProvider:
-          ttl: 300
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-cname-validation-record'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - fromFieldPath: status.zoneId
-      toFieldPath: spec.forProvider.zoneId
-    - fromFieldPath: status.ACMresourceRecordName
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.name
-    - fromFieldPath: status.ACMresourceRecordValue
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.records[0]
-    - fromFieldPath: status.ACMresourceRecordType
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.type
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
 ###
 # Cybersecurity
 ###
