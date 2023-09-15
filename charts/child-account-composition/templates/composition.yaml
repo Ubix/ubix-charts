@@ -3243,11 +3243,7 @@ spec:
       combine:
         variables:
         - fromFieldPath: status.id
-        - fromFieldPath: spec.parameters.region
-        - fromFieldPath: spec.id
         - fromFieldPath: status.id
-        - fromFieldPath: spec.parameters.region
-        - fromFieldPath: spec.id
         strategy: string
         string:
           fmt: |
@@ -3259,8 +3255,8 @@ spec:
                           ],
                           "Effect": "Allow",
                           "Resource": [
-                              "arn:aws:s3:::postgres-backups-%s-%s-%s",
-                              "arn:aws:s3:::postgres-backups-%s-%s-%s/*"
+                              "arn:aws:s3:::postgres-backups-%s",
+                              "arn:aws:s3:::postgres-backups-%s/*"
                           ]
                       }
                   ],
@@ -3295,9 +3291,7 @@ spec:
       combine:
         variables:
         - fromFieldPath: status.id
-        - fromFieldPath: spec.id
         - fromFieldPath: status.id
-        - fromFieldPath: spec.id
         strategy: string
         string:
           fmt: |
@@ -3310,8 +3304,8 @@ spec:
                         ],
                         "Effect": "Allow",
                         "Resource": [
-                            "arn:aws:s3:::ingestion-artifacts-%s-%s",
-                            "arn:aws:s3:::ingestion-artifacts-%s-%s/*"
+                            "arn:aws:s3:::ingestion-artifacts-%s",
+                            "arn:aws:s3:::ingestion-artifacts-%s/*"
                         ]
                     }
                 ],
@@ -3346,9 +3340,7 @@ spec:
       combine:
         variables:
         - fromFieldPath: status.id
-        - fromFieldPath: spec.id
         - fromFieldPath: status.id
-        - fromFieldPath: spec.id
         strategy: string
         string:
           fmt: |
@@ -3360,8 +3352,8 @@ spec:
                           ],
                           "Effect": "Allow",
                           "Resource": [
-                              "arn:aws:s3:::execution-artifacts-%s-%s",
-                              "arn:aws:s3:::execution-artifacts-%s-%s/*"
+                              "arn:aws:s3:::execution-artifacts-%s",
+                              "arn:aws:s3:::execution-artifacts-%s/*"
                           ]
                       }
                   ],
@@ -3649,9 +3641,7 @@ spec:
         combine:
           variables:
           - fromFieldPath: status.id
-          - fromFieldPath: spec.id
           - fromFieldPath: status.id
-          - fromFieldPath: spec.id
           strategy: string
           string:
             fmt: |
@@ -3663,8 +3653,8 @@ spec:
                             ],
                             "Effect": "Allow",
                             "Resource": [
-                                "arn:aws:s3:::mlflow-artifacts-%s-%s",
-                                "arn:aws:s3:::mlflow-artifacts-%s-%s/*"
+                                "arn:aws:s3:::mlflow-artifacts-%s",
+                                "arn:aws:s3:::mlflow-artifacts-%s/*"
                             ]
                         }
                     ],
