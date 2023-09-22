@@ -2484,6 +2484,192 @@ spec:
         fromFieldPath: status.atProvider.id
         toFieldPath: status.mlflowRoleName
 
+  - name: api-service-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: api-service-role
+        labels:
+          role: api-service-role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-api-service"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.assumeRolePolicy
+        policy:
+          fromFieldPath: Required
+        combine:
+          variables:
+            - fromFieldPath: status.id
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+          strategy: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                      "StringEquals": {
+                          "%s:sub": [
+                          "system:serviceaccount:data-tooling:api-service"],
+                          "%s:aud": "sts.amazonaws.com"
+                      }
+                    }
+                  }
+                ]
+              }
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.apiServiceRoleName
+
+  - name: data-service-external-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: data-service-external-role
+        labels:
+          role: data-service-external-role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-data-service-external"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.assumeRolePolicy
+        policy:
+          fromFieldPath: Required
+        combine:
+          variables:
+            - fromFieldPath: status.id
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+          strategy: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                      "StringEquals": {
+                          "%s:sub": [
+                          "system:serviceaccount:data-tooling:data-service-external"],
+                          "%s:aud": "sts.amazonaws.com"
+                      }
+                    }
+                  }
+                ]
+              }
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.dataServiceExternalRoleName
+
+  - name: data-lineage-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: data-lineage-role
+        labels:
+          role: data-lineage-role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-data-lineage"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.assumeRolePolicy
+        policy:
+          fromFieldPath: Required
+        combine:
+          variables:
+            - fromFieldPath: status.id
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+          strategy: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                      "StringEquals": {
+                          "%s:sub": [
+                          "system:serviceaccount:services:data-lineage"],
+                          "%s:aud": "sts.amazonaws.com"
+                      }
+                    }
+                  }
+                ]
+              }
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.dataLineageRoleName
+
   - name: load-balancer-controller-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -4056,6 +4242,37 @@ spec:
         policy:
           fromFieldPath: Required
 
+  - name: data-service-external-ingestion-artifacts-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-data-service-external-ingestion-artifacts"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.ingestionArtifactsS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.dataServiceExternalRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
   - name: data-flow-listener-ingestion-artifacts-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -4104,6 +4321,37 @@ spec:
               fmt: "%s-exec-service-python-execution-artifacts"
       - type: FromCompositeFieldPath
         fromFieldPath: status.executionArtifactsS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.execServicePythonRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: exec-service-python-mlflow-artifacts-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-exec-service-python-mlflow-artifacts"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.mlflowArtifactsS3PolicyArn
         toFieldPath: spec.forProvider.policyArn
         policy:
           fromFieldPath: Required
@@ -4600,6 +4848,130 @@ spec:
       toFieldPath: spec.providerConfigRef.name
       policy:
         fromFieldPath: Required
+
+  - name: api-service-execution-artifacts-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-api-service-execution-artifacts"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.executionArtifactsS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.apiServiceRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: api-service-mlflow-artifacts-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-api-service-mlflow-artifacts"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.mlflowArtifactsS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.apiServiceRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: data-lineage-execution-artifacts-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-data-lineage-execution-artifacts"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.executionArtifactsS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.dataLineageRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: data-lineage-ingestion-artifacts-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-data-lineage-ingestion-artifacts"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.ingestionArtifactsS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.dataLineageRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
 
 #####
 # ArgoCD

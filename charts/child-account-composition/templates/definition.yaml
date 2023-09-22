@@ -190,13 +190,22 @@ spec:
               mlflowRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
+              apiServiceRoleName:
+                description: Role to give s3 access to the cluster
+                type: string
               ALBRoleName:
                 description: Role to give load balancer controller access to the cluster
                 type: string
               postgresOperatorRoleName:
                 description: Role that makes sure Postgres can send compressed WAL files to the given S3 bucket
                 type: string
+              dataLineageRoleName:
+                description: Role to give s3 access to the cluster
+                type: string
               dataServiceRoleName:
+                description: Role to give s3 access to the cluster
+                type: string
+              dataServiceExternalRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
               dataFlowListenerRoleName:
