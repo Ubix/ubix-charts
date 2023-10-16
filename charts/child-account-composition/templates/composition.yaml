@@ -2411,7 +2411,7 @@ spec:
                     "Condition": {
                       "StringEquals": {
                           "%s:sub": [
-                          "system:serviceaccount:addons:postgres-operator"],
+                          "system:serviceaccount:databases:postgres-pod"],
                           "%s:aud": "sts.amazonaws.com"
                       }
                     }
