@@ -91,6 +91,8 @@ spec:
         - type: string
           string:
             fmt: "arn:aws:iam::%s:role/OrganizationAccountAccessRole"
+    readinessChecks:
+    - type: None
 
   - name: vpc
     base:
