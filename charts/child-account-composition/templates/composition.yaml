@@ -5215,32 +5215,32 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: execution-artifacts-bucket-acl
-    base:
-      apiVersion: s3.aws.upbound.io/v1beta1
-      kind: BucketACL
-      spec:
-        forProvider:
-          acl: private
-          bucket: #patched
-          region: #patched
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: 'execution-artifacts-bucket-acl-%s'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.executionArtifactsBucketName
-      toFieldPath: spec.forProvider.bucket
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: execution-artifacts-bucket-acl
+  #   base:
+  #     apiVersion: s3.aws.upbound.io/v1beta1
+  #     kind: BucketACL
+  #     spec:
+  #       forProvider:
+  #         acl: private
+  #         bucket: #patched
+  #         region: #patched
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: 'execution-artifacts-bucket-acl-%s'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.executionArtifactsBucketName
+  #     toFieldPath: spec.forProvider.bucket
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
   - name: ingestion-artifacts-bucket
     base:
@@ -5307,32 +5307,32 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: ingestion-artifacts-bucket-acl
-    base:
-      apiVersion: s3.aws.upbound.io/v1beta1
-      kind: BucketACL
-      spec:
-        forProvider:
-          acl: private
-          bucket: #patched
-          region: #patched
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-ingestion-artifacts-bucket-acl'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.ingestionArtifactsBucketName
-      toFieldPath: spec.forProvider.bucket
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: ingestion-artifacts-bucket-acl
+  #   base:
+  #     apiVersion: s3.aws.upbound.io/v1beta1
+  #     kind: BucketACL
+  #     spec:
+  #       forProvider:
+  #         acl: private
+  #         bucket: #patched
+  #         region: #patched
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: '%s-ingestion-artifacts-bucket-acl'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.ingestionArtifactsBucketName
+  #     toFieldPath: spec.forProvider.bucket
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
   - name: mlflow-artifacts-bucket
     base:
@@ -5399,32 +5399,32 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: mlflow-artifacts-bucket-acl
-    base:
-      apiVersion: s3.aws.upbound.io/v1beta1
-      kind: BucketACL
-      spec:
-        forProvider:
-          acl: private
-          bucket: #patched
-          region: #patched
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-mlflow-artifacts-bucket-acl'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.mlflowArtifactsBucketName
-      toFieldPath: spec.forProvider.bucket
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: mlflow-artifacts-bucket-acl
+  #   base:
+  #     apiVersion: s3.aws.upbound.io/v1beta1
+  #     kind: BucketACL
+  #     spec:
+  #       forProvider:
+  #         acl: private
+  #         bucket: #patched
+  #         region: #patched
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: '%s-mlflow-artifacts-bucket-acl'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.mlflowArtifactsBucketName
+  #     toFieldPath: spec.forProvider.bucket
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
   - name: postgres-backups-bucket
     base:
@@ -5491,32 +5491,32 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: postgres-backups-bucket-acl
-    base:
-      apiVersion: s3.aws.upbound.io/v1beta1
-      kind: BucketACL
-      spec:
-        forProvider:
-          acl: private
-          bucket: #patched
-          region: #patched
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-postgres-backups-bucket-acl'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.postgresBackupsBucketName
-      toFieldPath: spec.forProvider.bucket
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: postgres-backups-bucket-acl
+  #   base:
+  #     apiVersion: s3.aws.upbound.io/v1beta1
+  #     kind: BucketACL
+  #     spec:
+  #       forProvider:
+  #         acl: private
+  #         bucket: #patched
+  #         region: #patched
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: '%s-postgres-backups-bucket-acl'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.postgresBackupsBucketName
+  #     toFieldPath: spec.forProvider.bucket
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
 ###
 # ACM DNS configuration
