@@ -189,7 +189,8 @@ ingress:
   ## For a list of popular ingress controllers, please see
   ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
   ##
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
