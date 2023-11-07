@@ -103,6 +103,9 @@ spec:
               privateRouteTableID:
                 description: the private route table id
                 type: string
+              natGatewayIP:
+                description: Nat Gateway elastic ip
+                type: string
               natGatewayEIPID:
                 description: Nat Gateway elastic ip id
                 type: string
@@ -141,6 +144,9 @@ spec:
                 type: string
               efsSecurityGroupID:
                 description: ID of the Security group for all EFS mount targets
+                type: string
+              efsID:
+                description: ID of the EFS file system
                 type: string
               clusterName:
                 description: The name of the cluster

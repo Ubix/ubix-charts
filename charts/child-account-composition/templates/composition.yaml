@@ -1290,6 +1290,7 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.natGatewayEIPID
 
+
   - name: nat-gateway
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -1332,6 +1333,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.natGatewayID
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.publicIp
+      toFieldPath: status.natGatewayIP
 
   - name: internet-gateway
     base:
@@ -2127,6 +2131,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.efsID
 
   - name: efs-access-point-1a
     base:
