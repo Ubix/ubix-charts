@@ -235,9 +235,15 @@ spec:
           limits:
             memory: {{ .Values.deployment.resources.limits.memory }}
             cpu: {{ .Values.deployment.resources.limits.cpu }}
+        {{- range .Values.deployment.resources.limits.custom }}
+            {{ .name }}: {{ .value }}
+        {{- end }}
           requests:
             memory: {{ .Values.deployment.resources.requests.memory }}
             cpu: {{ .Values.deployment.resources.requests.cpu }}
+        {{- range .Values.deployment.resources.requests.custom }}
+            {{ .name }}: {{ .value }}
+        {{- end }}
         {{- if .Values.deployment.additionalContainers }}
 {{ toYaml .Values.deployment.additionalContainers | indent 6 }}
         {{- end }}
