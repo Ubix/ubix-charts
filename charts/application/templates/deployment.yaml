@@ -231,13 +231,7 @@ spec:
         {{- end }}
         {{- end }}
       {{- end }}
-        resources:
-          limits:
-            memory: {{ .Values.deployment.resources.limits.memory }}
-            cpu: {{ .Values.deployment.resources.limits.cpu }}
-          requests:
-            memory: {{ .Values.deployment.resources.requests.memory }}
-            cpu: {{ .Values.deployment.resources.requests.cpu }}
+        resources: {{ .Values.deployment.resources | toYaml | nindent 10 }}
         {{- if .Values.deployment.additionalContainers }}
 {{ toYaml .Values.deployment.additionalContainers | indent 6 }}
         {{- end }}
