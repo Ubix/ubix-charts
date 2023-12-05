@@ -1,0 +1,71 @@
+image:
+  repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
+  pullPolicy: Always
+  tag: account-provisioner-464
+
+nameOverride: ""
+fullnameOverride: ""
+namespace: ""
+
+eventBus:
+  replicas: 1
+
+eventSource:
+  amqpUrl: amqp://rabbitmq:5672
+  exchange: create-account
+  queue: create-account
+  routingKey: create-account
+  auth:
+    secretName: account-provisioner-envs
+    usernameKey: BROKER_USER
+    passwordKey: BROKER_PASSWORD
+
+sensor:
+  args:
+    - python
+    - main.py
+serviceAccount:
+  create: true
+  annotations: {}
+  additionalLabels: {}
+  name: ""
+
+configMaps:
+  enabled: true
+  additionalLabels: {}
+  annotations: {}
+  data:
+    envs:
+      BROKER_HOST: rabbitmq
+      BROKER_QUEUE: account-status
+      BROKER_EXCHANGE: account-status
+      BROKER_PORT: 5672
+      GITHUB_PEM_FILE_PATH: /usr/src/app/account-provisioner.pem
+      UBIX_DEPLOYEMNTS_REPO_OWNER: Ubix
+      UBIX_DEPLOYEMNTS_REPO: ubix-deployments
+      UBIX_CHILD_ACCOUNT_TEMPLATE_REPO: child-account-template
+      UBIX_CHILD_ACCOUNT_TEMPLATE_REPO_OWNER: Ubix
+      SSO_BASE_URL: https://sso.home-dev.ubix.io
+      BACKOFFICE_SUBDOMAIN: home-dev
+      ENV: NEW-DEV
+
+secrets:
+  enabled: true
+  additionalLabels: {}
+  annotations: {}
+  data:
+    envs:
+      BROKER_USER: "BROKER_USER"
+      BROKER_PASSWORD: "BROKER_PASSWORD"
+      GITHUB_INSTALLATION_ID: "GIT_INSTALLATION_ID"
+      GITHUB_APP_ID: "GIT_APP_ID"
+      THANOS_AWS_ACCESS_KEY: "AWS_ACCESS_KEY_ID"
+      THANOS_AWS_SECRET_KEY: "AWS_SECRET_ACCESS_KEY"
+      THANOS_BUCKET: "THANOS_BUCKET"
+      THANOS_BUCKET_ENDPOINT: "THANOS_BUCKET_ENDPOINT"
+    pem:
+      account-provisioner.pem: |-
+        -----BEGIN CERTIFICATE-----
+        SAMEPLECERTIFICATE
+        ...
+        -----END CERTIFICATE-----
