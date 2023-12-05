@@ -1,8 +1,3 @@
-image:
-  repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
-  pullPolicy: Always
-  tag: account-provisioner-464
-
 nameOverride: ""
 fullnameOverride: ""
 namespace: ""
@@ -21,9 +16,13 @@ eventSource:
     passwordKey: BROKER_PASSWORD
 
 sensor:
+  image:
+    repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
+    tag: account-provisioner-464
   args:
     - python
     - main.py
+
 serviceAccount:
   create: true
   annotations: {}

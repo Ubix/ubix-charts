@@ -8,7 +8,7 @@ spec:
   template:
     serviceAccountName: {{ include "account-provisioner.fullname" . }}
   dependencies:
-    - name: amqp-dependency
+    - name: {{ template "account-provisioner.fullname" $ }}-dependency
       eventSourceName: {{ include "account-provisioner.fullname" . }}
       eventName: create-account
   triggers:
@@ -35,7 +35,7 @@ spec:
                       parameters:
                         - name: message
                     container:
-                      image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+                      image: {{ .Values.sensor.image.repository }}:{{ .Values.sensor.image.tag }}
                       {{- with .Values.sensor.args}}
                       args:
                         {{- range . }}
@@ -63,7 +63,7 @@ spec:
                           secretName: {{ template "account-provisioner.fullname" $ }}-pem
           parameters:
             - src:
-                dependencyName: amqp-dependency
+                dependencyName: {{ template "account-provisioner.fullname" $ }}-dependency
                 dataKey: body
               dest: spec.arguments.parameters.0.value
 

@@ -15,7 +15,6 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-type: Opaque
 data:
   {{- range $key, $value := $configMapData }}
   {{ $key }}: {{ $value | quote }}
