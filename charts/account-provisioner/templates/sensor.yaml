@@ -45,6 +45,16 @@ spec:
                       env:
                         - name: PROVISION_MESSAGE
                           value: '{{`{{inputs.parameters.message}}`}}'
+                        - name: BROKER_USER
+                          valueFrom:
+                            secretKeyRef:
+                              name: {{ .Values.sensor.brokerSecretName }}
+                              key: username
+                        - name: BROKER_PASSWORD
+                          valueFrom:
+                            secretKeyRef:
+                              name: {{ .Values.sensor.brokerSecretName }}
+                              key: password
                       envFrom:
                         - secretRef:
                             name: {{ template "account-provisioner.fullname" $ }}-envs
@@ -66,4 +76,3 @@ spec:
                 dependencyName: {{ template "account-provisioner.fullname" $ }}-dependency
                 dataKey: body
               dest: spec.arguments.parameters.0.value
-

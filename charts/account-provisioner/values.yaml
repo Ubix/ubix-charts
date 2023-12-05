@@ -6,7 +6,7 @@ eventBus:
   replicas: 1
 
 eventSource:
-  amqpUrl: amqp://rabbitmq:5672
+  amqpUrl: amqp://rabbitmq-backoffice.databases.svc.cluster.local:5672
   exchange: create-account
   queue: create-account
   routingKey: create-account
@@ -22,6 +22,7 @@ sensor:
   args:
     - python
     - main.py
+  brokerSecretName: rabbitmq-cluster-secret
 
 serviceAccount:
   create: true
@@ -35,7 +36,7 @@ configMaps:
   annotations: {}
   data:
     envs:
-      BROKER_HOST: rabbitmq
+      BROKER_HOST: rabbitmq-backoffice.databases.svc.cluster.local
       BROKER_QUEUE: account-status
       BROKER_EXCHANGE: account-status
       BROKER_PORT: 5672
@@ -54,8 +55,6 @@ secrets:
   annotations: {}
   data:
     envs:
-      BROKER_USER: "BROKER_USER"
-      BROKER_PASSWORD: "BROKER_PASSWORD"
       GITHUB_INSTALLATION_ID: "GIT_INSTALLATION_ID"
       GITHUB_APP_ID: "GIT_APP_ID"
       THANOS_AWS_ACCESS_KEY: "AWS_ACCESS_KEY_ID"
