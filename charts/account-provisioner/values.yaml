@@ -23,6 +23,8 @@ sensor:
     - python
     - main.py
   brokerSecretName: rabbitmq-cluster-secret
+  brokerSecretUserKey: username
+  brokerSecretPasswordKey: password
 
 serviceAccount:
   create: true

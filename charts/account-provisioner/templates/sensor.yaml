@@ -49,12 +49,12 @@ spec:
                           valueFrom:
                             secretKeyRef:
                               name: {{ .Values.sensor.brokerSecretName }}
-                              key: username
+                              key: {{ .Values.sensor.brokerSecretUserKey }}
                         - name: BROKER_PASSWORD
                           valueFrom:
                             secretKeyRef:
                               name: {{ .Values.sensor.brokerSecretName }}
-                              key: password
+                              key: {{ .Values.sensor.brokerSecretPasswordKey }}
                       envFrom:
                         - secretRef:
                             name: {{ template "account-provisioner.fullname" $ }}-envs
