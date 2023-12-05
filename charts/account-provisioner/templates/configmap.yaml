@@ -1,0 +1,25 @@
+{{- if .Values.configMaps.enabled }}
+{{- $root := . -}}  {{/* Capture the root context */}}
+{{- range $configMapName, $configMapData := .Values.configMaps.data }}
+apiVersion: v1
+kind: configMap
+metadata:
+  name: {{ include "account-provisioner.fullname" $ }}-{{ $configMapName }}
+  namespace: {{ default $root.Release.Namespace $root.Values.namespaceOverride }}
+  labels:
+    {{- include "account-provisioner.labels" $ | nindent 4 }}
+    {{- with $root.Values.configMaps.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with $root.Values.configMaps.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+type: Opaque
+data:
+  {{- range $key, $value := $configMapData }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+---
+{{- end }}
+{{- end }}

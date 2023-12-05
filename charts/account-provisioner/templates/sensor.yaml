@@ -1,0 +1,69 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: {{ include "account-provisioner.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  eventBusName: {{ include "account-provisioner.fullname" . }}
+  template:
+    serviceAccountName: {{ include "account-provisioner.fullname" . }}
+  dependencies:
+    - name: amqp-dependency
+      eventSourceName: {{ include "account-provisioner.fullname" . }}
+      eventName: create-account
+  triggers:
+    - template:
+        name: {{ template "account-provisioner.fullname" $ }}-trigger
+        k8s:
+          operation: create
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: {{ include "account-provisioner.fullname" $ }}-status-
+              spec:
+                serviceAccountName:  {{ include "account-provisioner.fullname" . }}
+                entrypoint: {{ include "account-provisioner.fullname" $ }}-status
+                arguments:
+                  parameters:
+                    - name: message
+                      value: hello world
+                templates:
+                  - name: {{ include "account-provisioner.fullname" $ }}-status
+                    inputs:
+                      parameters:
+                        - name: message
+                    container:
+                      image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+                      {{- with .Values.sensor.args}}
+                      args:
+                        {{- range . }}
+                        - {{ . }}
+                        {{- end }}
+                      {{- end }}
+                      env:
+                        - name: PROVISION_MESSAGE
+                          value: '{{`{{inputs.parameters.message}}`}}'
+                      envFrom:
+                        - secretRef:
+                            name: {{ template "account-provisioner.fullname" $ }}-envs
+                        - configMapRef:
+                            name: {{ template "account-provisioner.fullname" $ }}-envs
+                      volumeMounts:
+                        - name: pem-file
+                          mountPath: /usr/src/app/account-provisioner.pem
+                          subPath: account-provisioner.pem
+                    volumes:
+                      - name: pem-file
+                        secret:
+                          items:
+                            - key: account-provisioner.pem
+                              path: account-provisioner.pem
+                          secretName: {{ template "account-provisioner.fullname" $ }}-pem
+          parameters:
+            - src:
+                dependencyName: amqp-dependency
+                dataKey: body
+              dest: spec.arguments.parameters.0.value
+

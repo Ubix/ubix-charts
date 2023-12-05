@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: {{ include "account-provisioner.fullname" .}}
+spec:
+  amqp:
+    create-account:
+      url: {{ .Values.eventSource.amqpUrl }}
+      jsonBody: true
+      exchangeName: {{ .Values.eventSource.exchange }}
+      exchangeType: fanout
+      routingKey: {{ .Values.eventSource.routingKey }}
+      connectionBackoff:
+        duration: 10s
+        steps: 5
+        factor: 2
+        jitter: 0.2
+      exchangeDeclare:
+        durable: true
+        autoDelete: false
+        internal: false
+        noWait: false
+      queueDeclare:
+        name: {{ .Values.eventSource.queue }}
+        durable: false
+        autoDelete: false
+        exclusive: true
+        noWait: false
+      queueBind:
+        noWait: false
+      consume:
+        consumerTag: account-provisioner-consumer
+        autoAck: true
+        exclusive: false
+        noLocal: false
+        noWait: false
+      auth:
+        username:
+          name: {{ .Values.eventSource.auth.secretName }}
+          key: {{ .Values.eventSource.auth.usernameKey }}
+        password:
+          name: {{ .Values.eventSource.auth.secretName }}
+          key: {{ .Values.eventSource.auth.passwordKey }}
