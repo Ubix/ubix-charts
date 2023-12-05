@@ -3,6 +3,16 @@ entries:
   account-provisioner:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-12-05T14:33:42.841675995Z"
+    description: A Helm chart for Kubernetes
+    digest: 9016be8e3817f48f6459cc798d5aba22a00110a9b7f20f9c91fa7ea5ed52aeaa
+    name: account-provisioner
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/account-provisioner-0.1.3/account-provisioner-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-12-05T14:29:10.391117927Z"
     description: A Helm chart for Kubernetes
     digest: c430fc1fda810a386e54e6b1fe6507ea31022bc67c972845b763424b21ea51cc
@@ -1639,4 +1649,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/master_account-0.1.0/master_account-0.1.0.tgz
     version: 0.1.0
-generated: "2023-12-05T14:29:10.391516562Z"
+generated: "2023-12-05T14:33:42.84201224Z"
