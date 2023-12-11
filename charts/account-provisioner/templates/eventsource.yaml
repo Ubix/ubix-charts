@@ -3,6 +3,7 @@ kind: EventSource
 metadata:
   name: {{ include "account-provisioner.fullname" .}}
 spec:
+  eventBusName: {{ include "account-provisioner.fullname" .}}
   amqp:
     create-account:
       url: {{ .Values.eventSource.amqpUrl }}
