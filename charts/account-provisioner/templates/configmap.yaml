@@ -2,7 +2,7 @@
 {{- $root := . -}}  {{/* Capture the root context */}}
 {{- range $configMapName, $configMapData := .Values.configMaps.data }}
 apiVersion: v1
-kind: configMap
+kind: ConfigMap
 metadata:
   name: {{ include "account-provisioner.fullname" $ }}-{{ $configMapName }}
   namespace: {{ default $root.Release.Namespace $root.Values.namespaceOverride }}
