@@ -3425,9 +3425,9 @@ spec:
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: external-data-upload
+          crossplane.io/external-name: external-data-upload-role
         labels:
-          role: external-data-upload
+          role: external-data-upload-role
       spec:
         forProvider:
           assumeRolePolicy: ""
