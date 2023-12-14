@@ -3430,7 +3430,7 @@ spec:
           role: external-data-upload
       spec:
         forProvider:
-          assumeRolePolicy: "?"
+          assumeRolePolicy: ""
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3447,9 +3447,7 @@ spec:
       combine:
         variables:
         - fromFieldPath: status.id
-        - fromFieldPath: status.clusterOIDC
-        - fromFieldPath: status.clusterOIDC
-        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.dataspaceBackendRoleArn
         strategy: string
         string:
           fmt: |
@@ -3460,7 +3458,7 @@ spec:
                   "Sid": "",
                   "Effect": "Allow",
                   "Principal": {
-                    "AWS": "arn:aws:iam::%s:role/%iamrole-dataspace-backenddd"
+                    "AWS": "%s"
                   },
                   "Action": "sts:AssumeRole",
                 }
@@ -3481,7 +3479,7 @@ spec:
           role: dataspace-backend-role
       spec:
         forProvider:
-          assumeRolePolicy: "?"
+          assumeRolePolicy: ""
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
