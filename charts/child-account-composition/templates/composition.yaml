@@ -3446,7 +3446,6 @@ spec:
       toFieldPath: spec.forProvider.assumeRolePolicy
       combine:
         variables:
-        - fromFieldPath: status.id
         - fromFieldPath: status.dataspaceBackendRoleArn
         strategy: string
         string:
@@ -5223,7 +5222,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-external-data-upload'
+          fmt: '%s-ingestion-artifacts-s3-write-access'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
