@@ -4246,7 +4246,6 @@ spec:
       combine:
         variables:
         - fromFieldPath: status.id
-        - fromFieldPath: status.id
         strategy: string
         string:
           fmt: |
@@ -4277,7 +4276,7 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.ingestionArtifactsS3WrtiePolicyArn
+      toFieldPath: status.ingestionArtifactsS3WritePolicyArn
 
   - name: dataspace-backend-policy
     base:
@@ -4301,7 +4300,7 @@ spec:
       toFieldPath: spec.forProvider.policy
       combine:
         variables:
-          - fromFieldPath: status.zoneId
+          - fromFieldPath: status.externalDataUploadRoleArn
         strategy: string
         string:
           fmt: |
@@ -4310,7 +4309,7 @@ spec:
               "Statement": {
                 "Effect": "Allow",
                 "Action": "sts:AssumeRole",
-                "Resource": "arn:aws:iam::%s:role/%s"
+                "Resource": "%s"
               }
             }
     - type: FromCompositeFieldPath
