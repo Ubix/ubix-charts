@@ -226,6 +226,9 @@ spec:
               ingestionArtifactsS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
+              ingestionArtifactsS3WritePolicyArn:
+                description: Policy to give s3 write access to the cluster
+                type: string
               mlflowArtifactsS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
@@ -237,6 +240,12 @@ spec:
                 type: string
               externalDnsRoleArn:
                 description: Policy to allow external dns to work
+                type: string
+              externalDataUploadRoleArn:
+                description: Role to upload data from dataspace
+                type: string
+              dataspaceBackendRoleArn:
+                description: Role to make dataspace send data to s3 bucket
                 type: string
               zoneId:
                 description: Zone id
