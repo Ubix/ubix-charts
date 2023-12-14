@@ -3459,7 +3459,7 @@ spec:
                   "Principal": {
                     "AWS": "%s"
                   },
-                  "Action": "sts:AssumeRole",
+                  "Action": "sts:AssumeRole"
                 }
               ]
             }
