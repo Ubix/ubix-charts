@@ -3447,6 +3447,7 @@ spec:
       combine:
         variables:
         - fromFieldPath: status.dataspaceBackendRoleArn
+        - fromFieldPath: status.dataspaceBackendRoleArn
         strategy: string
         string:
           fmt: |
@@ -3457,7 +3458,10 @@ spec:
                   "Sid": "",
                   "Effect": "Allow",
                   "Principal": {
-                    "AWS": "%s"
+                    "AWS": [
+                      "%s",
+                      "%s/*"
+                    ]
                   },
                   "Action": "sts:AssumeRole"
                 }
@@ -5228,7 +5232,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-ingestion-artifacts-s3-write-access'
+          fmt: '%s-external-data-upload'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
