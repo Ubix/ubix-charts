@@ -3432,7 +3432,7 @@ spec:
         forProvider:
           assumeRolePolicy: ""
     patches:
-    - type: FromCompositeFieldPath'%s-ingestion-artifacts-s3-write-access'
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
