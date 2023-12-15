@@ -4303,14 +4303,20 @@ spec:
         strategy: string
         string:
           fmt: |
-            {
-              "Version": "2012-10-17",
-              "Statement": {
-                "Effect": "Allow",
-                "Action": "sts:AssumeRole",
-                "Resource": "%s"
+              {
+                  "Statement": [
+                      {
+                          "Action": [
+                              "sts:AssumeRole"
+                          ],
+                          "Effect": "Allow",
+                          "Resource": [
+                              "%s"
+                          ]
+                      }
+                  ],
+                  "Version": "2012-10-17"
               }
-            }
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
