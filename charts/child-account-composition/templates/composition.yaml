@@ -550,6 +550,46 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: cluster-primary-security-group-allow-all-traffic-from-nodes
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: Allow nodes to communicate to fargate pods
+          fromPort: 0
+          protocol: "-1"
+          toPort: 0
+          type: ingress
+          region: #patchme
+          securityGroupId: #patchme
+          sourceSecurityGroupIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-sg-rule-nodes-to-fargate-all-traffic'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterPrimarySecurityGroupId
+      toFieldPath: spec.forProvider.securityGroupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.sourceSecurityGroupIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-node-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: node-security-group-rule-ingress-efs
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -2740,7 +2780,7 @@ spec:
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
         toFieldPath: status.ALBRoleName
-  
+
   - name: data-service-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
