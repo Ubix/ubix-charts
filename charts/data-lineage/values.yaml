@@ -156,6 +156,10 @@ commonAnnotations: {}
 ##
 affinity: {}
 
+## Pod topology constraints
+## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+topologySpreadConstraints: {}
+
 ## Tolerations for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 ##
