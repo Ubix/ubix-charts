@@ -1541,7 +1541,7 @@ spec:
         forProvider:
           region: #patched
           availabilityZone: #patched
-          cidrBlock: 10.0.112.0/2
+          cidrBlock: 10.0.112.0/20
           vpcIdRef:
             name: #patched
           tags:
