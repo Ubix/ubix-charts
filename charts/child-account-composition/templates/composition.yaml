@@ -2509,6 +2509,27 @@ spec:
           fmt: '%s-private-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[3].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[4].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[5].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIdRefs[0].name
       transforms:
       - type: string
@@ -2644,6 +2665,27 @@ spec:
       - type: string
         string:
           fmt: '%s-private-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[3].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[4].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[5].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
 
   - name: kube-system-fargate-profile
     base:
@@ -2708,6 +2750,27 @@ spec:
       - type: string
         string:
           fmt: '%s-private-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[3].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[4].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRefs[5].name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
 
   - name: core-dns-addon
     base:
@@ -2868,7 +2931,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-private-1a'
+          fmt: 'private-%s-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -2917,7 +2980,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-private-1b'
+          fmt: 'private-%s-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -2953,6 +3016,153 @@ spec:
       - type: string
         string:
           fmt: '%s-efs-ap-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.fileSystemIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1c'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupsRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+    - name: efs-access-point-1-1a
+    base:
+      apiVersion: efs.aws.upbound.io/v1beta1
+      kind: MountTarget
+      spec:
+        forProvider:
+          region: #patchme
+          securityGroupsRefs:
+            - name: #patchme
+        fileSystemIdRef:
+          name: #patchme
+        subnetIdRef:
+          name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-ap-1-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.fileSystemIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupsRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: efs-access-point-1-1b
+    base:
+      apiVersion: efs.aws.upbound.io/v1beta1
+      kind: MountTarget
+      spec:
+        forProvider:
+          region: #patchme
+          securityGroupsRefs:
+            - name: #patchme
+        fileSystemIdRef:
+          name: #patchme
+        subnetIdRef:
+          name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-ap-1-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.fileSystemIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupsRefs[0].name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-sg'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: efs-access-point-1-1c
+    base:
+      apiVersion: efs.aws.upbound.io/v1beta1
+      kind: MountTarget
+      spec:
+        forProvider:
+          region: #patchme
+          securityGroupsRefs:
+            - name: #patchme
+        fileSystemIdRef:
+          name: #patchme
+        subnetIdRef:
+          name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-efs-ap-1-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.fileSystemIdRef.name
