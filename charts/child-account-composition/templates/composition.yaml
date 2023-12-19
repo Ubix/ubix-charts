@@ -1097,7 +1097,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'public-%s-1a'
+          fmt: 'public-%s-1-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1187,7 +1187,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'public-%s-1b'
+          fmt: 'public-%s-1-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1277,7 +1277,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'public-%s-1c'
+          fmt: 'public-%s-1-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1368,7 +1368,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1a'
+          fmt: 'private-%s-1-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1462,7 +1462,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1b'
+          fmt: 'private-%s-1-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1556,7 +1556,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1c'
+          fmt: 'private-%s-1-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -1696,7 +1696,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1-1c'
+          fmt: '%s-nat-gateway-1'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.allocationIdRef.name
@@ -1773,39 +1773,6 @@ spec:
       - type: string
         string:
           fmt: '%s-public'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcIdRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.publicRouteTableID
-
-  - name: routetable-public-1
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: RouteTable
-      spec:
-        forProvider:
-          vpcIdRef:
-            name: #patchme
-          region: #patchme
-      providerConfigRef:
-        policy:
-          resolve: "Always"
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-public-1'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcIdRef.name
@@ -1921,42 +1888,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: public-route-1
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: Route
-      spec:
-        forProvider:
-          routeTableIdRef:
-            name: #patchme
-          gatewayIdRef:
-            name: #patchme
-          destinationCidrBlock: 0.0.0.0/0
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-public-1'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.routeTableIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-public-1'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.gatewayIdRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
   - name: private-route
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -1990,14 +1921,14 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1c'
+          fmt: '%s-nat-gateway-1'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-  
+
   - name: private-route-1
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -2031,7 +1962,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1c'
+          fmt: '%s-nat-gateway-1'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -2079,46 +2010,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: private-route-table-assossiation-1-1a
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: RouteTableAssociation
-      spec:
-        forProvider:
-          region: #patchme
-          routeTableIdRef:
-            name: #patchme
-          subnetIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-private-1-1a'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.routeTableIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-private'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: 'private-%s-1-1a'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
   - name: private-route-table-assossiation-1b
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -2155,46 +2046,6 @@ spec:
       - type: string
         string:
           fmt: 'private-%s-1b'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
-  - name: private-route-table-assossiation-1-1b
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: RouteTableAssociation
-      spec:
-        forProvider:
-          region: #patchme
-          routeTableIdRef:
-            name: #patchme
-          subnetIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-private-1-1b'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.routeTableIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-private'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: 'private-%s-1-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2237,6 +2088,86 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: private-route-table-assossiation-1-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: #patchme
+          routeTableIdRef:
+            name: #patchme
+          subnetIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-route-table-assossiation-1-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: #patchme
+          routeTableIdRef:
+            name: #patchme
+          subnetIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'private-%s-1-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: private-route-table-assossiation-1-1c
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -2263,7 +2194,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-private'
+          fmt: '%s-private-1'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.subnetIdRef.name
@@ -2470,7 +2401,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'public-%s-1b'
+          fmt: 'public-%s-1-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2493,7 +2424,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-public-1c'
+          fmt: '%s-public-1-1c'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
