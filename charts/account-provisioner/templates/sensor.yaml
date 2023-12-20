@@ -31,6 +31,9 @@ spec:
                       value: hello world
                 templates:
                   - name: {{ include "account-provisioner.fullname" $ }}-status
+                    retryStrategy:
+                      limit: "5"
+                      retryPolicy: "Always"
                     inputs:
                       parameters:
                         - name: message
