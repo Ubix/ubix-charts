@@ -2635,38 +2635,17 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1a'
+          fmt: '%s-private-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.subnetIdRefs[1].name
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1b'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRefs[2].name
-      transforms:
-      - type: string
-        string:
-          fmt: 'private-%s-1c'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRefs[3].name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-private-1a'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRefs[4].name
-      transforms:
-      - type: string
-        string:
           fmt: '%s-private-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRefs[5].name
+      toFieldPath: spec.forProvider.subnetIdRefs[2].name
       transforms:
       - type: string
         string:
@@ -2720,38 +2699,17 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1a'
+          fmt: '%s-private-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.subnetIdRefs[1].name
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1b'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRefs[2].name
-      transforms:
-      - type: string
-        string:
-          fmt: 'private-%s-1c'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRefs[3].name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-private-1a'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRefs[4].name
-      transforms:
-      - type: string
-        string:
           fmt: '%s-private-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.subnetIdRefs[5].name
+      toFieldPath: spec.forProvider.subnetIdRefs[2].name
       transforms:
       - type: string
         string:
