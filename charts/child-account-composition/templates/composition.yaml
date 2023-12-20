@@ -1040,8 +1040,6 @@ spec:
           vpcIdRef:
             name: #patched
           mapPublicIpOnLaunch: true
-          tags:
-            kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -1130,8 +1128,6 @@ spec:
           vpcIdRef:
             name: #patched
           mapPublicIpOnLaunch: true
-          tags:
-            kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -1220,8 +1216,6 @@ spec:
           vpcIdRef:
             name: #patched
           mapPublicIpOnLaunch: true
-          tags:
-            kubernetes.io/role/elb: "1"
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -1336,9 +1330,6 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
-    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
@@ -1430,9 +1421,6 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcIdRef.name
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
-    - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
@@ -1523,9 +1511,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcIdRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.tags[karpenter.sh/discovery]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
