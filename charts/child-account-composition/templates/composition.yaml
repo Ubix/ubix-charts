@@ -4353,8 +4353,7 @@ spec:
                   "Effect": "Allow",
                   "Principal": {
                     "AWS": [
-                      "%s",
-                      "%s/*"
+                      "%s"
                     ]
                   },
                   "Action": "sts:AssumeRole"
