@@ -1070,7 +1070,7 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.publicSubnet1aID
-  
+
   - name: public-subnet-1-1a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -4294,13 +4294,11 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-    - type: CombineFromComposite
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dataspaceBackendRoleArn
       toFieldPath: spec.forProvider.assumeRolePolicy
-      combine:
-        variables:
-        - fromFieldPath: status.dataspaceBackendRoleArn
-        - fromFieldPath: status.dataspaceBackendRoleArn
-        strategy: string
+      transforms:
+      - type: string
         string:
           fmt: |
             {
