@@ -2770,7 +2770,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'private-%s-1c'
+          fmt: '%s-private-1c'
 
   - name: core-dns-addon
     base:
