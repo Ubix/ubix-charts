@@ -241,6 +241,9 @@ spec:
               externalDnsRoleArn:
                 description: Policy to allow external dns to work
                 type: string
+              certManagerRoleArn:
+                description: Policy to allow external dns to work
+                type: string
               externalDataUploadRoleArn:
                 description: Role to upload data from dataspace
                 type: string
