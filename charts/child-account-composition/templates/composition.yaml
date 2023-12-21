@@ -4937,23 +4937,7 @@ spec:
           crossplane.io/external-name: cert-manager-policy
       spec:
         forProvider:
-          policy: "{}"
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-cert-manager'
-    - type: CombineFromComposite
-      toFieldPath: spec.forProvider.policy
-      combine:
-        variables:
-          - fromFieldPath: status.zoneId
-        strategy: string
-        string:
-          fmt: |
+          policy: |
             {
               "Version": "2012-10-17",
               "Statement": [
@@ -4977,6 +4961,14 @@ spec:
                 }
               ]
             }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-cert-manager'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
