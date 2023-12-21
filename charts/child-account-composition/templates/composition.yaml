@@ -6296,6 +6296,45 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: ingestion-artifacts-bucket-cors-config
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketCorsConfiguration
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          corsRule:
+            - allowedHeaders:
+                - "*"
+              allowedMethods:
+                - PUT
+              allowedOrigins:
+                - patch-me
+              maxAgeSeconds: 6000
+          region: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-ingestion-artifacts-bucket-cors'
+    - type: FromCompositeFieldPath
+      fromField: spec.id
+      toFieldPath: spec.forProvider.corsRule[0].allowedOrigins[0]
+      transforms:
+        - type: string
+          string:
+            fmt: 'https://dataspace.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   # - name: ingestion-artifacts-bucket-acl
   #   base:
   #     apiVersion: s3.aws.upbound.io/v1beta1
