@@ -6304,7 +6304,14 @@ spec:
         forProvider:
           bucketRef:
             name: #patchme
-          corsRule: #patchme
+          corsRule:
+            - allowedHeaders:
+                - "*"
+              allowedMethods:
+                - PUT
+              allowedOrigins:
+                - patchme
+              maxAgeSeconds: 6000
           region: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -6323,18 +6330,11 @@ spec:
             fmt: "%s-ingestion-artifacts"
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.corsRule
+      toFieldPath: spec.forProvider.corsRule[0].allowedOrigins[0]
       transforms:
         - type: string
           string:
-            fmt: |
-              - allowedHeaders:
-                  - "*"
-                allowedMethods:
-                  - PUT
-                allowedOrigins:
-                  - 'https://dataspace.%s.ubix.io'
-                maxAgeSeconds: 6000
+            fmt: 'https://dataspace.%s.ubix.io'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
