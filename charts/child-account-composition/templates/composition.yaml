@@ -2840,7 +2840,7 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.efsID
 
-    - name: efs-access-point-1-1a
+  - name: efs-access-point-1-1a
     base:
       apiVersion: efs.aws.upbound.io/v1beta1
       kind: MountTarget
