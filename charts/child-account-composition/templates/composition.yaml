@@ -6316,6 +6316,13 @@ spec:
             fmt: '%s-ingestion-artifacts-bucket-cors'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-ingestion-artifacts"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.corsRule
       transforms:
         - type: string
