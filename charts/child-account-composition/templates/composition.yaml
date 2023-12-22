@@ -5044,6 +5044,8 @@ spec:
       combine:
         variables:
           - fromFieldPath: status.externalDataUploadRoleArn
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
         strategy: string
         string:
           fmt: |
@@ -5057,6 +5059,25 @@ spec:
                           "Resource": [
                               "%s"
                           ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "s3:PutObject",
+                          "s3:GetObject",
+                          "s3:ListBucket"
+                        ],
+                        "Resource": [
+                          "arn:aws:s3:::ingestion-artifacts-%s/*",
+                          "arn:aws:s3:::ingestion-artifacts-%s"
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "s3:ListAllMyBuckets"
+                        ],
+                        "Resource": "arn:aws:s3:::*"
                       }
                   ],
                   "Version": "2012-10-17"
