@@ -4989,24 +4989,35 @@ spec:
       combine:
         variables:
         - fromFieldPath: status.id
+        - fromFieldPath: status.id
         strategy: string
         string:
           fmt: |
             {
-                "Statement": [
-                    {
-                        "Sid": "",
-                        "Action": [
-                            "s3:PutObject",
-                            "s3:PutObjectAcl"
-                        ],
-                        "Effect": "Allow",
-                        "Resource": [
-                            "arn:aws:s3:::ingestion-artifacts-%s/*"
-                        ]
-                    }
-                ],
-                "Version": "2012-10-17"
+              "Statement": [
+                {
+                  "Action": [
+                    "s3:PutObject",
+                    "s3:PutObjectAcl"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    "arn:aws:s3:::ingestion-artifacts-%s/upload-data/*"
+                  ],
+                  "Sid": ""
+                },
+                {
+                  "Action": [
+                    "s3:ListBucket"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    "arn:aws:s3:::ingestion-artifacts-%s"
+                  ],
+                  "Sid": ""
+                }
+              ],
+              "Version": "2012-10-17"
             }
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
