@@ -4269,7 +4269,7 @@ spec:
                   "Action": "sts:AssumeRoleWithWebIdentity",
                   "Condition": {
                     "StringEquals": {
-                        "%s:sub": "system:serviceaccount:addons:s3-csi-controller-sa",
+                        "%s:sub": "system:serviceaccount:addons:s3-csi-driver-sa",
                         "%s:aud": "sts.amazonaws.com"
                     }
                   }
