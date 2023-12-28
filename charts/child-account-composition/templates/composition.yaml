@@ -5175,7 +5175,6 @@ spec:
       toFieldPath: spec.forProvider.policy
       combine:
         variables:
-          - fromFieldPath: status.externalDataUploadRoleArn
           - fromFieldPath: status.id
           - fromFieldPath: status.id
         strategy: string
