@@ -3597,6 +3597,60 @@ spec:
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.dataspaceBackendRoleArn
 
+  - name: iamrole-s3-csi-driver
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: s3-csi-driver-role
+        labels:
+          role: s3-csi-driver-role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-s3-csi-driver"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": "system:serviceaccount:addons:s3-csi-controller-sa",
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+
 # ########
 # # IAM Policies
 # ########
@@ -4466,6 +4520,66 @@ spec:
                       }
                   ],
                   "Version": "2012-10-17"
+              }
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: s3-csi-driver-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        annotations:
+          crossplane.io/external-name: s3-csi-driver-policy
+      spec:
+        forProvider:
+          policy: "{}"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-s3-csi-driver'
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      combine:
+        variables:
+          - fromFieldPath: status.externalDataUploadRoleArn
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: |
+              {
+                 "Version": "2012-10-17",
+                 "Statement": [
+                      {
+                          "Sid": "MountpointFullBucketAccess",
+                          "Effect": "Allow",
+                          "Action": [
+                              "s3:ListBucket"
+                          ],
+                          "Resource": [
+                              "arn:aws:s3:::s3-csi-driver-%s"
+                          ]
+                      },
+                      {
+                          "Sid": "MountpointFullObjectAccess",
+                          "Effect": "Allow",
+                          "Action": [
+                              "s3:GetObject",
+                              "s3:PutObject",
+                              "s3:AbortMultipartUpload",
+                              "s3:DeleteObject"
+                          ],
+                          "Resource": [
+                              "arn:aws:s3:::s3-csi-driver-%s/*"
+                          ]
+                      }
+                 ]
               }
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -5475,6 +5589,44 @@ spec:
       policy:
         fromFieldPath: Required
 
+  - name: iamattachment-s3-csi-driver
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArnRef:
+            name: #patchme
+          roleRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-s3-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-s3-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-s3-csi-driver'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
 #####
 # ArgoCD
 #####
@@ -6034,6 +6186,71 @@ spec:
   #   - type: FromCompositeFieldPath
   #     fromFieldPath: status.id
   #     toFieldPath: spec.providerConfigRef.name
+
+  - name: s3-csi-driver-bucket
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          region: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-s3-csi-driver"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      transforms:
+      - type: string
+        string:
+          fmt: "s3-csi-driver-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.postgresBackupsBucketName
+
+  - name: s3-csi-driver-bucket-policies
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPublicAccessBlock
+      spec:
+        forProvider:
+          blockPublicAcls: true
+          blockPublicPolicy: true
+          ignorePublicAcls: true
+          restrictPublicBuckets: true
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-s3-csi-driver-policy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.postgresBackupsBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 ###
 # ACM DNS configuration
