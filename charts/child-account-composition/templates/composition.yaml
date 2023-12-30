@@ -3570,6 +3570,7 @@ spec:
         annotations:
           crossplane.io/external-name: OrganizationAccountAccessRole
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: |
             {
