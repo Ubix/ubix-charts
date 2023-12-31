@@ -6339,6 +6339,7 @@ spec:
           config:
             comment: #patchme
             privateZone: false
+        deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
