@@ -4225,15 +4225,15 @@ spec:
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.dataspaceBackendRoleArn
 
-  - name: iamrole-s3-csi-driver
+  - name: iamrole-s3-velero
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: s3-csi-driver-role
+          crossplane.io/external-name: s3-velero-role
         labels:
-          role: s3-csi-driver-role
+          role: s3-velero-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -4244,7 +4244,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-s3-csi-driver"
+          fmt: "%s-s3-velero"
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -4271,7 +4271,7 @@ spec:
                   "Action": "sts:AssumeRoleWithWebIdentity",
                   "Condition": {
                     "StringEquals": {
-                        "%s:sub": "system:serviceaccount:addons:s3-csi-driver-sa",
+                        "%s:sub": "system:serviceaccount:addons:s3-velero-sa",
                         "%s:aud": "sts.amazonaws.com"
                     }
                   }
@@ -5155,13 +5155,13 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: s3-csi-driver-policy
+  - name: s3-velero-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
       metadata:
         annotations:
-          crossplane.io/external-name: s3-csi-driver-policy
+          crossplane.io/external-name: s3-velero-policy
       spec:
         forProvider:
           policy: "{}"
@@ -5172,7 +5172,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-s3-csi-driver'
+          fmt: '%s-s3-velero'
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
       combine:
@@ -5186,17 +5186,17 @@ spec:
                  "Version": "2012-10-17",
                  "Statement": [
                       {
-                          "Sid": "MountpointFullBucketAccess",
+                          "Sid": "VeleroFullBucketAccess",
                           "Effect": "Allow",
                           "Action": [
                               "s3:ListBucket"
                           ],
                           "Resource": [
-                              "arn:aws:s3:::s3-csi-driver-%s"
+                              "arn:aws:s3:::s3-velero-%s"
                           ]
                       },
                       {
-                          "Sid": "MountpointFullObjectAccess",
+                          "Sid": "VeleroFullObjectAccess",
                           "Effect": "Allow",
                           "Action": [
                               "s3:GetObject",
@@ -5205,7 +5205,7 @@ spec:
                               "s3:DeleteObject"
                           ],
                           "Resource": [
-                              "arn:aws:s3:::s3-csi-driver-%s/*"
+                              "arn:aws:s3:::s3-velero-%s/*"
                           ]
                       }
                  ]
@@ -6218,7 +6218,7 @@ spec:
       policy:
         fromFieldPath: Required
 
-  - name: iamattachment-s3-csi-driver
+  - name: iamattachment-s3-velero
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -6235,21 +6235,21 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-s3-csi-driver'
+          fmt: '%s-s3-velero'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-s3-csi-driver'
+          fmt: '%s-s3-velero'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.policyArnRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-s3-csi-driver'
+          fmt: '%s-s3-velero'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -6817,7 +6817,7 @@ spec:
   #     fromFieldPath: status.id
   #     toFieldPath: spec.providerConfigRef.name
 
-  - name: s3-csi-driver-bucket
+  - name: velero-s3-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: Bucket
@@ -6833,14 +6833,14 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-s3-csi-driver"
+          fmt: "%s-velero"
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       transforms:
       - type: string
         string:
-          fmt: "s3-csi-driver-%s"
+          fmt: "velero-%s"
       toFieldPath: metadata.annotations[crossplane.io/external-name]
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -6848,11 +6848,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.postgresBackupsBucketName
 
-  - name: s3-csi-driver-bucket-policies
+  - name: velero-s3-bucket-policies
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
@@ -6871,13 +6868,10 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: '%s-s3-csi-driver-policy'
+            fmt: '%s-s3-velero-bucket-policy'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.postgresBackupsBucketName
-      toFieldPath: spec.forProvider.bucket
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
