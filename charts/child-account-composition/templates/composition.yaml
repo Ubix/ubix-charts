@@ -5069,7 +5069,7 @@ spec:
                   ],
                   "Effect": "Allow",
                   "Resource": [
-                    "arn:aws:s3:::ingestion-artifacts-%s"
+                    "arn:aws:s3:::ingestion-artifacts-%s",
                     "arn:aws:s3:::ingestion-artifacts-%s/*"
                   ],
                   "Sid": ""
