@@ -5192,7 +5192,7 @@ spec:
                               "s3:ListBucket"
                           ],
                           "Resource": [
-                              "arn:aws:s3:::s3-velero-%s"
+                              "arn:aws:s3:::velero-%s"
                           ]
                       },
                       {
@@ -5205,7 +5205,7 @@ spec:
                               "s3:DeleteObject"
                           ],
                           "Resource": [
-                              "arn:aws:s3:::s3-velero-%s/*"
+                              "arn:aws:s3:::velero-%s/*"
                           ]
                       }
                  ]
