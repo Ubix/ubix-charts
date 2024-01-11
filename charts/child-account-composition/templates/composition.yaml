@@ -6351,6 +6351,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 
   - name: cname-validation-record
