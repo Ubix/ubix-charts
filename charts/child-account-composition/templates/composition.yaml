@@ -6327,6 +6327,32 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: ecr-vpc-endpoint
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpoint
+      spec:
+        forProvider:
+          vpcEndpointType: Interface
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.serviceName
+      transforms:
+        - type: string
+          string:
+            fmt: 'com.amazonaws.%s.ecr.dkr'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+
+
   - name: cname-validation-record
     base:
       apiVersion: route53.aws.upbound.io/v1beta1
