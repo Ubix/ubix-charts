@@ -1870,21 +1870,21 @@ spec:
       toFieldPath: spec.forProvider.version
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[3].name
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[0].name
       transforms:
       - type: string
         string:
           fmt: '%s-private-1a'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[4].name
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[1].name
       transforms:
       - type: string
         string:
           fmt: '%s-private-1b'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[5].name
+      toFieldPath: spec.forProvider.vpcConfig[0].subnetIdRefs[2].name
       transforms:
       - type: string
         string:
