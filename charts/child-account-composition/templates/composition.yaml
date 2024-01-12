@@ -6570,7 +6570,26 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-  
+
+  - name: ecr-s3-gateway-layers-vpce-rt-assoc
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointRouteTableAssociation
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - string:
+          fmt: '%s-ecr-vpce'
+        type: string
+    
   - name: ecr-s3-gateway-layers-vpc-endpoint
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
