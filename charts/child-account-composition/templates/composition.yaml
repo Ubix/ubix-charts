@@ -6358,7 +6358,7 @@ spec:
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.privateSubnet1bID
-      toFieldPath: spec.forProvider.subnetId.name
+      toFieldPath: spec.forProvider.subnetId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcEndpointIdRef.name
@@ -6379,7 +6379,7 @@ spec:
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.privateSubnet1cID
-      toFieldPath: spec.forProvider.subnetId.name
+      toFieldPath: spec.forProvider.subnetId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcEndpointIdRef.name
