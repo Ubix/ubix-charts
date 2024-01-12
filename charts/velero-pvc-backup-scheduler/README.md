@@ -73,7 +73,6 @@ spec:
   hooks:
     # Array of hooks that are applicable to specific resources. Optional.
     resources:
-    # Name is the name of this hook.
     - name: restore-hook-1
       includedNamespaces:
       - 'application-namespace'
@@ -88,6 +87,7 @@ spec:
       # The type of the hook. This must be "init" or "exec".
       - init:
           # An array of container specs to be added as init containers to pods to which this hook applies to.
+          # A good example for an init hook could be recovering from a mongodump command
           initContainers:
           - name: restore-hook-init1
             image: alpine:latest
