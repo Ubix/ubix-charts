@@ -6545,6 +6545,7 @@ spec:
       spec:
         forProvider:
           vpcEndpointType: Interface
+          privateDnsEnabled: true
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
