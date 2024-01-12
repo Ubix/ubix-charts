@@ -6341,6 +6341,10 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ecr-vpce'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -6362,6 +6366,10 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ecr-vpce'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id status.privateSubnet1aID
       toFieldPath: metadata.name
@@ -6383,6 +6391,10 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ecr-vpce'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id status.privateSubnet1aID
       toFieldPath: metadata.name
@@ -6508,6 +6520,10 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - string:
+          fmt: '%s-ecr-vpce'
+        type: string
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -6546,6 +6562,137 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-ecr-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+  
+  - name: s3-gateway-vpc-endpoint-subnet-association-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointSubnetAssociation
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1aID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - string:
+          fmt: '%s-s3-gateway-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+  
+  - name: s3-gateway-vpc-endpoint-subnet-association-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointSubnetAssociation
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1bID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - string:
+          fmt: '%s-s3-gateway-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id status.privateSubnet1aID
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+  
+  - name: s3-gateway-vpc-endpoint-subnet-association-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointSubnetAssociation
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1cID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - string:
+          fmt: '%s-s3-gateway-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id status.privateSubnet1aID
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+  
+  - name: ecr-s3-gateway-layers-vpc-endpoint
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpoint
+      spec:
+        forProvider:
+          vpcEndpointType: Gateway
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.policy
+      transforms:
+        - type: string
+          string:
+            fmt: |
+              {
+                "Statement": [
+                  {
+                    "Sid": "Access-to-specific-bucket-only",
+                    "Principal": "*",
+                    "Action": [
+                      "s3:GetObject"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": ["arn:aws:s3:::prod-%s-starport-layer-bucket/*"]
+                  }
+                ]
+              }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.serviceName
+      transforms:
+        - type: string
+          string:
+            fmt: 'com.amazonaws.%s.s3'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-s3-gateway-vpce'
+        type: string
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
