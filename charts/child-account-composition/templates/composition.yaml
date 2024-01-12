@@ -6587,7 +6587,7 @@ spec:
   #     toFieldPath: spec.forProvider.vpcEndpointIdRef.name
   #     transforms:
   #     - string:
-  #         fmt: '%s-ecr-vpce'
+  #         fmt: '%s-s3-gateway-vpce'
   #       type: string
   #   - type: FromCompositeFieldPath
   #     fromFieldPath: status.id
@@ -6600,7 +6600,6 @@ spec:
   #     spec:
   #       forProvider:
   #         vpcEndpointType: Gateway
-  #         privateDnsEnabled: true
   #   patches:
   #   - type: FromCompositeFieldPath
   #     fromFieldPath: spec.parameters.region
