@@ -6589,6 +6589,9 @@ spec:
       - string:
           fmt: '%s-ecr-vpce'
         type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
     
   - name: ecr-s3-gateway-layers-vpc-endpoint
     base:
