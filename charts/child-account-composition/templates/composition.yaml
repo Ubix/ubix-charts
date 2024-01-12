@@ -6371,7 +6371,7 @@ spec:
         string:
           fmt: '%s-ecr-vpce'
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id status.privateSubnet1aID
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -6396,7 +6396,7 @@ spec:
         string:
           fmt: '%s-ecr-vpce'
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id status.privateSubnet1aID
+      fromFieldPath: spec.id
       toFieldPath: metadata.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -6565,6 +6565,144 @@ spec:
       transforms:
       - string:
           fmt: '%s-ecr-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+  
+  #################
+
+  - name: ecr-api-vpc-endpoint-subnet-association-1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointSubnetAssociation
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1aID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ecr-api-vpce'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+  
+  - name: ecr-api-vpc-endpoint-subnet-association-1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointSubnetAssociation
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1bID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ecr-api-vpce'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+  
+  - name: ecr-api-vpc-endpoint-subnet-association-1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointSubnetAssociation
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateSubnet1cID
+      toFieldPath: spec.forProvider.subnetId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ecr-api-vpce'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+  
+  - name: ecr-api-vpc-endpoint-secgroup-association
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointSecurityGroupAssociation
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - string:
+          fmt: '%s-ecr-api-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.securityGroupIdRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-ecr-vpce'
+  
+  - name: ecr-api-vpc-endpoint
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpoint
+      spec:
+        forProvider:
+          vpcEndpointType: Interface
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.serviceName
+      transforms:
+        - type: string
+          string:
+            fmt: 'com.amazonaws.%s.ecr.api'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-ecr-api-vpce'
         type: string
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
