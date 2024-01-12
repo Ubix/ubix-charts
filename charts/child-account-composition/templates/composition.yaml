@@ -6571,79 +6571,79 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  # - name: ecr-s3-gateway-layers-vpce-rt-assoc
-  #   base:
-  #     apiVersion: ec2.aws.upbound.io/v1beta1
-  #     kind: VPCEndpointRouteTableAssociation
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.privateRouteTableID
-  #     toFieldPath: spec.forProvider.routeTableId
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.vpcEndpointIdRef.name
-  #     transforms:
-  #     - string:
-  #         fmt: '%s-s3-gateway-vpce'
-  #       type: string
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
+  - name: ecr-s3-gateway-layers-vpce-rt-assoc
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointRouteTableAssociation
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - string:
+          fmt: '%s-s3-gateway-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
     
-  # - name: ecr-s3-gateway-layers-vpc-endpoint
-  #   base:
-  #     apiVersion: ec2.aws.upbound.io/v1beta1
-  #     kind: VPCEndpoint
-  #     spec:
-  #       forProvider:
-  #         vpcEndpointType: Gateway
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.policy
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: |
-  #             {
-  #               "Statement": [
-  #                 {
-  #                   "Sid": "Access-to-specific-bucket-only",
-  #                   "Principal": "*",
-  #                   "Action": [
-  #                     "s3:GetObject"
-  #                   ],
-  #                   "Effect": "Allow",
-  #                   "Resource": ["arn:aws:s3:::prod-%s-starport-layer-bucket/*"]
-  #                 }
-  #               ]
-  #             }
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.serviceName
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: 'com.amazonaws.%s.s3'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.vpcIdRef.name
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - string:
-  #         fmt: '%s-s3-gateway-vpce'
-  #       type: string
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
+  - name: ecr-s3-gateway-layers-vpc-endpoint
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpoint
+      spec:
+        forProvider:
+          vpcEndpointType: Gateway
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.policy
+      transforms:
+        - type: string
+          string:
+            fmt: |
+              {
+                "Statement": [
+                  {
+                    "Sid": "Access-to-specific-bucket-only",
+                    "Principal": "*",
+                    "Action": [
+                      "s3:GetObject"
+                    ],
+                    "Effect": "Allow",
+                    "Resource": ["arn:aws:s3:::prod-%s-starport-layer-bucket/*"]
+                  }
+                ]
+              }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.serviceName
+      transforms:
+        - type: string
+          string:
+            fmt: 'com.amazonaws.%s.s3'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-s3-gateway-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 
   - name: cname-validation-record
