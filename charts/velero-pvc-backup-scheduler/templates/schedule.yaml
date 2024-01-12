@@ -1,0 +1,19 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: {{ template "application.name" . }}
+  namespace: {{ .Values.veleroNamesace }}
+spec:
+  schedule: {{ .Values.backupScheduleCron }}
+  template:
+    includedNamespaces:
+    - {{ template "application.namespace" . }}
+    includedResources:
+    - 'PersistentVolumeClaim'
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: {{ template "application.name" . }}
+    snapshotVolumes: true
+    ttl: {{ .Values.backupGarbageCollectionTTL }}
+    hooks:
+      resources: {{ .Values.backupHooks }}

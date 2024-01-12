@@ -1,0 +1,27 @@
+# Velero install namespace
+veleroNamespace: addons
+# The cron for running the backups
+backupScheduleCron: 0 0,8,16 * * *
+# The amount of time before backups created on this schedule are eligible for garbage collection.
+backupGarbageCollectionTTL: 7days
+# Backup Action Hooks as defined in
+# https://velero.io/docs/latest/api-types/schedule/
+# https://velero.io/docs/latest/backup-hooks/
+# We define the backupHooks in the values file to ensure future flexibility without chart update
+backupHooks:
+  - name: mongodb-hook
+    includedNamespaces:
+    - {{ template "application.namespace" . }}
+    includedResources:
+    - pods
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: {{ template "application.name" . }}
+    pre:
+      - exec:
+          container: mongodb
+          command:
+            - mongodump
+            - /bitnami/mongodb/bkp
+          onError: Fail
+          timeout: 5m
