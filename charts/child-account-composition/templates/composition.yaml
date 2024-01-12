@@ -6600,25 +6600,19 @@ spec:
       spec:
         forProvider:
           vpcEndpointType: Gateway
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.policy
-      transforms:
-        - type: string
-          string:
-            fmt: |
-              {
-                "Version": "2008-10-17",
-                "Statement": [
-                  {
-                    "Effect": "Allow",
-                    "Principal": "*",
-                    "Action": "*",
-                    "Resource": "*"
-                  }
-                ]
-              }
+          policy: |
+            {
+              "Version": "2008-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": "*",
+                  "Resource": "*"
+                }
+              ]
+            }
+    patches:  
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
