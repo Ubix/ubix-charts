@@ -1925,14 +1925,14 @@ spec:
           regexp:
             match: '.*\/id\/(.*)'
             group: 1
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
-      toFieldPath: status.clusterOIDC
-      transforms:
-      - type: string
-        string:
-          type: TrimPrefix
-          trim: 'https://'
+    # - type: ToCompositeFieldPath
+    #   fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
+    #   toFieldPath: status.clusterOIDC
+    #   transforms:
+    #   - type: string
+    #     string:
+    #       type: TrimPrefix
+    #       trim: 'https://'
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.endpoint
       toFieldPath: status.clusterEndpoint
