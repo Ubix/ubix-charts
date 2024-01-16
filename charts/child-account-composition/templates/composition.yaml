@@ -1923,7 +1923,7 @@ spec:
           string:
             type: Regexp
             regexp:
-              match: '^\w*\/id\/(.*)'
+              match: '.*/id/(.*)'
               group: 1
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
