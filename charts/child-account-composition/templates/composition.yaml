@@ -6714,15 +6714,15 @@ spec:
           string:
             fmt: '%s-kube-fledged'
     - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      policy:
+        fromFieldPath: Required
       combine:
         variables:
           - fromFieldPath: status.id
-          - fromFieldPath: spec.parameters.region
-          - fromFieldPath: status.clusterOIDCid
-          - fromFieldPath: spec.parameters.region
-          - fromFieldPath: status.clusterOIDCid
-          - fromFieldPath: spec.parameters.region
-          - fromFieldPath: status.clusterOIDCid
+          - fromFieldPath: status.clusterOIDC
+          - fromFieldPath: status.clusterOIDC
+          - fromFieldPath: status.clusterOIDC
         strategy: string
         string:
           fmt: |
@@ -6730,21 +6730,22 @@ spec:
               "Version": "2012-10-17",
               "Statement": [
                 {
+                  "Sid": "",
                   "Effect": "Allow",
                   "Principal": {
-                    "Federated": "arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s"
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
                   },
                   "Action": "sts:AssumeRoleWithWebIdentity",
                   "Condition": {
-                      "StringEquals": {
-                          "oidc.eks.%s.amazonaws.com/id/%s:aud": "sts.amazonaws.com",
-                          "oidc.eks.%s.amazonaws.com/id/%s:sub": "system:serviceaccount:addons:kube-fledged"
-                      }
+                    "StringEquals": {
+                        "%s:sub": [
+                        "system:serviceaccount:addons:kube-fledged"],
+                        "%s:aud": "sts.amazonaws.com"
+                    }
                   }
                 }
               ]
             }
-      toFieldPath: spec.forProvider.assumeRolePolicy
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
