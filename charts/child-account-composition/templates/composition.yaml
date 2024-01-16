@@ -6749,6 +6749,46 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+  
+  - name: kubefledged-role-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicy
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-kube-fledged'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-kube-fledged-policy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.policy
+      transforms:
+        - type: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Resource": "arn:aws:ecr:%s:882490700787:repository/*",
+                    "Action": "ecr:*"
+                  }
+                ]
+              }
 
 ###
 # Cybersecurity
