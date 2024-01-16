@@ -1921,18 +1921,23 @@ spec:
       transforms:
       - type: string
         string:
-          type: Regexp
-          regexp:
-            match: '.*\/id\/(.*)'
-            group: 1
-    # - type: ToCompositeFieldPath
-    #   fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
-    #   toFieldPath: status.clusterOIDC
-    #   transforms:
-    #   - type: string
-    #     string:
-    #       type: TrimPrefix
-    #       trim: 'https://'
+          type: TrimPrefix
+          trim: '/id/'
+      # transforms:
+      # - type: string
+      #   string:
+      #     type: Regexp
+      #     regexp:
+      #       match: '.*\/id\/(.*)'
+      #       group: 1
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
+      toFieldPath: status.clusterOIDC
+      transforms:
+      - type: string
+        string:
+          type: TrimPrefix
+          trim: 'https://'
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.endpoint
       toFieldPath: status.clusterEndpoint
@@ -6234,32 +6239,32 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  # - name: velero-s3-bucket-policies
-  #   base:
-  #     apiVersion: s3.aws.upbound.io/v1beta1
-  #     kind: BucketPublicAccessBlock
-  #     spec:
-  #       forProvider:
-  #         blockPublicAcls: true
-  #         blockPublicPolicy: true
-  #         ignorePublicAcls: true
-  #         restrictPublicBuckets: true
-  #         bucket: #patched
-  #         region: #patched
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: '%s-s3-velero-bucket-policy'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
+  - name: velero-s3-bucket-policies
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPublicAccessBlock
+      spec:
+        forProvider:
+          blockPublicAcls: true
+          blockPublicPolicy: true
+          ignorePublicAcls: true
+          restrictPublicBuckets: true
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-s3-velero-bucket-policy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 ###
 # ACM DNS configuration
