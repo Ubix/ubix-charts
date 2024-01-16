@@ -1917,12 +1917,7 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
-      toFieldPath: status.IRSAID
-      # transforms:
-      # - type: string
-      #   string:
-      #     type: TrimPrefix
-      #     trim: '/id/'
+      toFieldPath: status.clusterOIDCid
       transforms:
       - type: string
         string:
@@ -6706,44 +6701,49 @@ spec:
       toFieldPath: spec.providerConfigRef.name
 
 ### Kube Fledged resources
-  # - name: kubefledged-role
-  #   base:
-  #     apiVersion: iam.aws.upbound.io/v1beta1
-  #     kind: Role
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #   - type: CombineFromComposite
-  #         combine:
-  #           variables:
-  #             - fromFieldPath: spec.desiredRegion
-  #             - fromFieldPath: spec.field2
-  #           strategy: string
-  #           string:
-  #             fmt: |
-  #               {
-  #                 "Version": "2012-10-17",
-  #                 "Statement": [
-  #                   {
-  #                     "Effect": "Allow",
-  #                     "Principal": {
-  #                       "Federated": "arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s"
-  #                     },
-  #                     "Action": "sts:AssumeRoleWithWebIdentity",
-  #                     "Condition": {
-  #                         "StringEquals": {
-  #                             "oidc.eks.%s.amazonaws.com/id/%s:aud": "sts.amazonaws.com",
-  #                             "oidc.eks.%s.amazonaws.com/id/%s:sub": "system:serviceaccount:addons:mimir"
-  #                         }
-  #                     }
-  #                   }
-  #                 ]
-  #               }
-  #         toFieldPath: spec.forProvider.assumeRolePolicy              
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
+  - name: kubefledged-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: CombineFromComposite
+      combine:
+        variables:
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.parameters.region
+          - fromFieldPath: status.clusterOIDCid
+          - fromFieldPath: spec.parameters.region
+          - fromFieldPath: status.clusterOIDCid
+          - fromFieldPath: spec.parameters.region
+          - fromFieldPath: status.clusterOIDCid
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                      "StringEquals": {
+                          "oidc.eks.%s.amazonaws.com/id/%s:aud": "sts.amazonaws.com",
+                          "oidc.eks.%s.amazonaws.com/id/%s:sub": "system:serviceaccount:addons:kube-fledged"
+                      }
+                  }
+                }
+              ]
+            }
+      toFieldPath: spec.forProvider.assumeRolePolicy
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
 ###
 # Cybersecurity
