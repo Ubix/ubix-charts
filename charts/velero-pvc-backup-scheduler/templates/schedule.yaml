@@ -15,5 +15,24 @@ spec:
         app.kubernetes.io/name: {{ template "application.name" . }}
     snapshotVolumes: true
     ttl: {{ .Values.backupGarbageCollectionTTL }}
+    # Backup Action Hooks as defined in
+    # https://velero.io/docs/latest/api-types/schedule/
+    # https://velero.io/docs/latest/backup-hooks/
     hooks:
       resources: {{ .Values.backupHooks }}
+      - name: mongodb-hook
+        includedNamespaces:
+        - {{ template "application.namespace" . }}
+        includedResources:
+        - pods
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: {{ template "application.name" . }}
+        pre:
+          - exec:
+              container: mongodb
+              command:
+                - mongodump
+                - /bitnami/mongodb/bkp
+              onError: Fail
+              timeout: 5m
