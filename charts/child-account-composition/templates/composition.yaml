@@ -6740,28 +6740,6 @@ spec:
   #     fromFieldPath: status.id
   #     toFieldPath: spec.providerConfigRef.name
 
-metadata:
-  annotations:
-    meta.upbound.io/example-id: iam/v1beta1/rolepolicy
-  labels:
-    testing.upbound.io/example-name: test_role
-  name: test-role
-spec:
-  forProvider:
-    assumeRolePolicy: |
-      {
-        "Version": "2012-10-17",
-        "Statement": [
-          {
-            "Effect": "Allow",
-            "Principal": {
-              "Service": "eks.amazonaws.com"
-            },
-            "Action": "sts:AssumeRole"
-          }
-        ]
-      }
-
 ###
 # Cybersecurity
 ###
