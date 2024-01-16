@@ -1,18 +1,18 @@
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: {{ template "application.name" . }}
+  name: {{ .Release.Name }}
   namespace: {{ .Values.veleroNamesace }}
 spec:
   schedule: {{ .Values.backupScheduleCron }}
   template:
     includedNamespaces:
-    - {{ template "application.namespace" . }}
+    - {{ .Release.Namespace }}
     includedResources:
     - 'PersistentVolumeClaim'
     labelSelector:
       matchLabels:
-        app.kubernetes.io/name: {{ template "application.name" . }}
+        app.kubernetes.io/name: {{ .Release.Name }}
     snapshotVolumes: true
     ttl: {{ .Values.backupGarbageCollectionTTL }}
     # Backup Action Hooks as defined in
@@ -22,12 +22,12 @@ spec:
       resources: {{ .Values.backupHooks }}
       - name: mongodb-hook
         includedNamespaces:
-        - {{ template "application.namespace" . }}
+        - {{ .Release.Namespace }}
         includedResources:
         - pods
         labelSelector:
           matchLabels:
-            app.kubernetes.io/name: {{ template "application.name" . }}
+            app.kubernetes.io/name: {{ .Release.Name }}
         pre:
           - exec:
               container: mongodb
