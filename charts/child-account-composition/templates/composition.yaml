@@ -6709,6 +6709,10 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-kube-fledged'
     - type: CombineFromComposite
       combine:
         variables:
