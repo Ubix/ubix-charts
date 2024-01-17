@@ -12,7 +12,7 @@ spec:
     - 'PersistentVolumeClaim'
     labelSelector:
       matchLabels:
-        app.kubernetes.io/name: {{ .Release.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     snapshotVolumes: true
     ttl: {{ .Values.backupGarbageCollectionTTL }}
     # Backup Action Hooks as defined in
@@ -27,7 +27,7 @@ spec:
         - pods
         labelSelector:
           matchLabels:
-            app.kubernetes.io/name: {{ .Release.Name }}
+            app.kubernetes.io/instance: {{ .Release.Name }}
         pre:
           - exec:
               container: mongodb
