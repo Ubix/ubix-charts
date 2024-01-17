@@ -1177,6 +1177,7 @@ spec:
             name: #patched
           tags:
             karpenter.sh/discovery: #patchme
+            kubernetes.io/role/internal-elb: "1"
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -1224,6 +1225,7 @@ spec:
             name: #patched
           tags:
             karpenter.sh/discovery: #patchme
+            kubernetes.io/role/internal-elb: "1"
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -1271,6 +1273,7 @@ spec:
             name: #patched
           tags:
             karpenter.sh/discovery: #patchme
+            kubernetes.io/role/internal-elb: "1"
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -6336,7 +6339,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-  
+
   - name: ecr-vpc-endpoint-subnet-association-1a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -6365,7 +6368,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-  
+
   - name: ecr-vpc-endpoint-subnet-association-1b
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -6394,7 +6397,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-  
+
   - name: ecr-vpc-endpoint-subnet-association-1c
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -6423,7 +6426,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-  
+
   - name: ecr-vpce-security-group
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -6492,7 +6495,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-    
+
   - name: ecr-vpce-security-group-rule-ingress
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -6614,7 +6617,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-    
+
   - name: ecr-s3-gateway-layers-vpc-endpoint
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -6634,7 +6637,7 @@ spec:
                 }
               ]
             }
-    patches:  
+    patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -6751,7 +6754,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-  
+
   - name: harbor-role-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
