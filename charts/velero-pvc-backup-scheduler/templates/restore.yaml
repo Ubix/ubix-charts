@@ -10,6 +10,7 @@ metadata:
 spec:
   backupName: ''
   scheduleName: {{ template "schedule.name" . }}
+  existingResourcePolicy: update
   itemOperationTimeout: 1h
   includedResources:
     - 'PersistentVolumeClaim'
