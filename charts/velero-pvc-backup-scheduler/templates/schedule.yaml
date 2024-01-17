@@ -1,38 +1,14 @@
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: {{ .Release.Name }}
-  namespace: {{ .Values.veleroNamespace }}
+  name: {{ template "schedule.name" . }}
+  namespace: {{ .Values.veleroInstallNamespace }}
 spec:
   schedule: {{ .Values.backupScheduleCron }}
   template:
-    includedNamespaces:
-    - {{ .Release.Namespace }}
+{{ include "includedNamespaces" . | indent 4 }}
+{{ include "labelSelector" . | indent 4 }}
     includedResources:
     - 'PersistentVolumeClaim'
-    labelSelector:
-      matchLabels:
-        app.kubernetes.io/instance: {{ .Release.Name }}
     snapshotVolumes: true
     ttl: {{ .Values.backupGarbageCollectionTTL }}
-    # Backup Action Hooks as defined in
-    # https://velero.io/docs/latest/api-types/schedule/
-    # https://velero.io/docs/latest/backup-hooks/
-    hooks:
-      resources: {{ .Values.backupHooks }}
-      - name: mongodb-hook
-        includedNamespaces:
-        - {{ .Release.Namespace }}
-        includedResources:
-        - pods
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/instance: {{ .Release.Name }}
-        pre:
-          - exec:
-              container: mongodb
-              command:
-                - mongodump
-                - /bitnami/mongodb/bkp
-              onError: Fail
-              timeout: 5m

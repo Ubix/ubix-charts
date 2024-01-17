@@ -1,0 +1,17 @@
+{{- if .Values.autoRestore }}
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  name: {{ .Release.Name }}-auto-restore
+  namespace: {{ .Values.veleroInstallNamespace }}
+  annotations:
+    # Ensure we run before sync phase
+    argocd.argoproj.io/hook: PreSync
+spec:
+  scheduleName: {{ template "schedule.name" . }}
+  itemOperationTimeout: 1h
+  includedResources:
+    - 'PersistentVolumeClaim'
+{{ include "includedNamespaces" . | indent 2 }}
+{{ include "labelSelector" . | indent 2 }}
+{{- end }}
