@@ -6792,7 +6792,7 @@ spec:
                 ]
               }
 
-  - name: ingestion-artifacts-bucket
+  - name: harbor-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: Bucket
@@ -6811,7 +6811,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: ingestion-artifacts-bucket-policies
+  - name: harbor-bucket-policies
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
