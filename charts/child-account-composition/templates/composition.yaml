@@ -6756,11 +6756,14 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicy
-      spec:
-        forProvider:
-          roleRef:
-            name: harbor
     patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-harbor'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
