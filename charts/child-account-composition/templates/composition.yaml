@@ -1511,47 +1511,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: private-route
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: Route
-      spec:
-        forProvider:
-          routeTableIdRef:
-            name: #patchme
-          natGatewayIdRef:
-            name: #patchme
-          region: #patchme
-          destinationCidrBlock: 0.0.0.0/0
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-private'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.routeTableIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-private'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.natGatewayIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-nat-gateway-1'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
   - name: private-route-1
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
