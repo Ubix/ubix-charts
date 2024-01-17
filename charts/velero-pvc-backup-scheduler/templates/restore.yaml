@@ -8,6 +8,7 @@ metadata:
     # Ensure we run before sync phase
     argocd.argoproj.io/hook: PreSync
 spec:
+  backupName: ''
   scheduleName: {{ template "schedule.name" . }}
   itemOperationTimeout: 1h
   includedResources:

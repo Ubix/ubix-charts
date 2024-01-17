@@ -40,3 +40,10 @@ For other scenarios please check
 - [Velero CLI or the Restore CRDs](https://velero.io/docs/main/restore-reference/),
 - [Cluster Migration with Velero](https://velero.io/docs/main/migration-case/)
 - [Cluster Disaster Recovery](https://velero.io/docs/main/disaster-case/)
+
+## Manual backup
+
+To issue a manual backup just run
+```bash
+velero -n velero-install-namespace backup create --from-schedule schedule-name
+```
