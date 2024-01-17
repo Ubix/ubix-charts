@@ -13,5 +13,6 @@ labelSelector:
 {{- printf "%s-pvc-bkp-schedule" .Release.Name | trunc 63 -}}
 {{- end -}}
 
-{{- define "aux" -}}
+{{- define "restore.name" -}}
+{{- printf "%s-restore-%s" .Release.Name (now | unixEpoch) | trunc 63 -}}
 {{- end -}}

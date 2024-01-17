@@ -2,7 +2,7 @@
 apiVersion: velero.io/v1
 kind: Restore
 metadata:
-  name: {{ .Release.Name }}-auto-restore
+  name: {{ template "restore.name" . }}
   namespace: {{ .Values.veleroInstallNamespace }}
   annotations:
     # Ensure we run before sync phase
