@@ -6700,19 +6700,14 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-### Kube Fledged resources
-  - name: kubefledged-role
+### Harbor resources
+  - name: harbor-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
+      metadata:
+        name: harbor
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-kube-fledged'
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.assumeRolePolicy
       policy:
@@ -6739,7 +6734,7 @@ spec:
                   "Condition": {
                     "StringEquals": {
                         "%s:sub": [
-                        "system:serviceaccount:addons:kube-fledged"],
+                        "system:serviceaccount:addons:harbor"],
                         "%s:aud": "sts.amazonaws.com"
                     }
                   }
@@ -6750,25 +6745,22 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
   
-  - name: kubefledged-role-policy
+  - name: harbor-role-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicy
+      spec:
+        forProvider:
+          roleRef:
+            name: harbor
     patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleRef.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-kube-fledged'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
         - type: string
           string:
-            fmt: '%s-kube-fledged-policy'
+            fmt: '%s-harbor-policy'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
