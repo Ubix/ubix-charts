@@ -6708,6 +6708,13 @@ spec:
       metadata:
         name: harbor
     patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-harbor'
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.assumeRolePolicy
       policy:
