@@ -6221,6 +6221,13 @@ spec:
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
+      toFieldPath: spec.forProvider.bucket
+      transforms:
+        - type: string
+          string:
+            fmt: 'velero-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
 ###
