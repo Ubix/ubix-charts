@@ -16,7 +16,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
   # add velero scheduler to enable PVC backups via snapshots
   - name: velero-pvc-backup-scheduler
-    version: 1.0.0
+    version: 2.1.0
     repository: https://ubix.github.io/ubix-charts
 ```
 
