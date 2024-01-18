@@ -4,6 +4,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "restore.jobs.cleanup" . }}
+  namespace: {{ .Release.Namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "-12"
 spec:
@@ -40,6 +41,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "restore.jobs.wait" . }}
+  namespace: {{ .Release.Namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "-10"
 spec:
