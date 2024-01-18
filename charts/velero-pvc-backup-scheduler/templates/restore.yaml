@@ -1,12 +1,31 @@
 {{- if .Values.autoRestore }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "restore.jobs.cleanup" . }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-12"
+spec:
+  template:
+    spec:
+      serviceAccountName: restore-job-sa
+      containers:
+      - name: kubectl
+        image: bitnami/kubectl:latest
+        command:
+          - bash
+          - -c
+          - 'kubectl -n {{ .Release.Namespace }} delete pvc,deployment,sts -l app.kubernetes.io/instance={{ .Release.Name }} --wait'
+      restartPolicy: Never
+---
 apiVersion: velero.io/v1
 kind: Restore
 metadata:
   name: {{ template "restore.name" . }}
   namespace: {{ .Values.veleroInstallNamespace }}
   annotations:
-    # Ensure we run before sync phase
-    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-11"
 spec:
   backupName: ''
   scheduleName: {{ template "schedule.name" . }}
@@ -16,4 +35,23 @@ spec:
     - 'PersistentVolumeClaim'
 {{ include "includedNamespaces" . | indent 2 }}
 {{ include "labelSelector" . | indent 2 }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "restore.jobs.wait" . }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  template:
+    spec:
+      serviceAccountName: restore-job-sa
+      containers:
+      - name: kubectl
+        image: bitnami/kubectl:latest
+        command:
+          - bash
+          - -c
+          - 'kubectl -n {{ .Values.veleroInstallNamespace }} wait --for=jsonpath="status.phase"=Completed restores/{{ template "restore.name" . }} --timeout=1h'
+      restartPolicy: Never
 {{- end }}

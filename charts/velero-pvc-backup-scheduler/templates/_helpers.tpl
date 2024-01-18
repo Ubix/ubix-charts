@@ -16,3 +16,11 @@ labelSelector:
 {{- define "restore.name" -}}
 {{- printf "%s-restore-%s" .Release.Name (now | unixEpoch) | trunc 63 -}}
 {{- end -}}
+
+{{- define "restore.jobs.cleanup" -}}
+{{- printf "%s-cleanup-restore-%s" .Release.Name (now | unixEpoch) | trunc 63 -}}
+{{- end -}}
+
+{{- define "restore.jobs.wait" -}}
+{{- printf "%s-wait-restore-%s" .Release.Name (now | unixEpoch) | trunc 63 -}}
+{{- end -}}

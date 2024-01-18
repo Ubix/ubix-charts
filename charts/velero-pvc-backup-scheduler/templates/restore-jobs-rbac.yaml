@@ -1,0 +1,61 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pvc-cleanup-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  - deployments
+  - statefulsets
+  verbs:
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: wait-for-restore-role
+rules:
+- apiGroups:
+  - velero.io
+  resources:
+  - restores
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: restore-job-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pvc-cleanup-role-binding
+  namespace: {{ .Release.Namespace }}
+subjects:
+- kind: ServiceAccount
+  name: restore-job-sa
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: pvc-cleanup-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: wait-for-restore-role-binding
+  namespace: {{ .Values.veleroInstallNamespace }}
+subjects:
+- kind: ServiceAccount
+  name: restore-job-sa
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: wait-for-restore-role
+  apiGroup: rbac.authorization.k8s.io
