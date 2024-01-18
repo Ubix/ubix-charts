@@ -6720,7 +6720,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
   
-  - name: harbor-role-policy
+  - name: aws-lb-controller-role-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicy
