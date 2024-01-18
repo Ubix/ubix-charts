@@ -7074,7 +7074,7 @@ spec:
                 "Statement": [
                   {
                     "Effect": "Allow",
-                    "Resource": "arn:aws:ecr:%s:882490700787:repository/*",
+                    "Resource": "*",
                     "Action": "ecr:*"
                   }
                 ]
