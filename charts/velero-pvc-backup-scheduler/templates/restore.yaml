@@ -30,7 +30,7 @@ metadata:
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-11"
 spec:
-  backupName: ''
+  backupName: {{ .Values.backupName }}
   scheduleName: {{ template "schedule.name" . }}
   existingResourcePolicy: update
   itemOperationTimeout: 1h
