@@ -2471,6 +2471,15 @@ entries:
   velero-pvc-backup-scheduler:
   - apiVersion: v1
     appVersion: 5.2.0
+    created: "2024-01-18T14:53:34.777762703Z"
+    description: Velero PVC Backup Scheduler helm chart addon
+    digest: 248a7639e8ffc47aa1337372e4e445111d409feb2ad20647a693800b40ab87b9
+    name: velero-pvc-backup-scheduler
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-2.0.1/velero-pvc-backup-scheduler-2.0.1.tgz
+    version: 2.0.1
+  - apiVersion: v1
+    appVersion: 5.2.0
     created: "2024-01-18T14:29:48.794502042Z"
     description: Velero PVC Backup Scheduler helm chart addon
     digest: 0f28e97cd4adc8f1d7000b630ec0f0257d97e4a9b32b9bd3788aa34df318c890
@@ -2559,4 +2568,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-18T14:29:48.795004838Z"
+generated: "2024-01-18T14:53:34.778263395Z"
