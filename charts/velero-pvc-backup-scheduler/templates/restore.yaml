@@ -6,6 +6,7 @@ metadata:
   name: {{ template "restore.jobs.cleanup" . }}
   namespace: {{ .Release.Namespace }}
   annotations:
+    argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-12"
 spec:
   template:
@@ -26,6 +27,7 @@ metadata:
   name: {{ template "restore.name" . }}
   namespace: {{ .Values.veleroInstallNamespace }}
   annotations:
+    argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-11"
 spec:
   backupName: ''
@@ -43,6 +45,7 @@ metadata:
   name: {{ template "restore.jobs.wait" . }}
   namespace: {{ .Release.Namespace }}
   annotations:
+    argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-10"
 spec:
   template:
