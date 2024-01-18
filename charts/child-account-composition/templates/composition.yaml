@@ -7040,10 +7040,10 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: harbor-role-policy
+  - name: harbor-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
-      kind: RolePolicy
+      kind: Policy
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -7079,6 +7079,36 @@ spec:
                   }
                 ]
               }
+
+  - name: harbor-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-harbor'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-harbor-policy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-harbor-policy-attachment'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: harbor-bucket
     base:
