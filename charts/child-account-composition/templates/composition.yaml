@@ -7044,6 +7044,19 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
+      spec:
+        forProvider:
+          policy: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Resource": "*",
+                  "Action": "ecr:*"
+                }
+              ]
+            }
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -7062,23 +7075,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.policy
-      transforms:
-        - type: string
-          string:
-            fmt: |
-              {
-                "Version": "2012-10-17",
-                "Statement": [
-                  {
-                    "Effect": "Allow",
-                    "Resource": "*",
-                    "Action": "ecr:*"
-                  }
-                ]
-              }
 
   - name: harbor-policy-attachment
     base:
