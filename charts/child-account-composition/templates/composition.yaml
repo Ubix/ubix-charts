@@ -7079,7 +7079,7 @@ spec:
   - name: harbor-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
-      kind: Policy
+      kind: RolePolicyAttachment
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
