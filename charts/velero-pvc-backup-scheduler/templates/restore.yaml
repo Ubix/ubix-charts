@@ -34,8 +34,6 @@ spec:
   scheduleName: {{ template "schedule.name" . }}
   existingResourcePolicy: update
   itemOperationTimeout: 1h
-  includedResources:
-    - 'PersistentVolumeClaim'
 {{ include "includedNamespaces" . | indent 2 }}
 {{ include "labelSelector" . | indent 2 }}
 ---
