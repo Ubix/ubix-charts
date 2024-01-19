@@ -7054,6 +7054,11 @@ spec:
                   "Effect": "Allow",
                   "Resource": "*",
                   "Action": "ecr:*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Resource": "*",
+                  "Action": "s3:*"
                 }
               ]
             }
