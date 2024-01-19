@@ -6,6 +6,7 @@ metadata:
   name: {{ template "restore.jobs.cleanup" . }}
   namespace: {{ .Release.Namespace }}
   annotations:
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-12"
 spec:
@@ -43,6 +44,7 @@ metadata:
   name: {{ template "restore.jobs.wait" . }}
   namespace: {{ .Release.Namespace }}
   annotations:
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-10"
 spec:
