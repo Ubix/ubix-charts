@@ -1,5 +1,4 @@
-name: otel-collector
-mode: daemonset
+mode: daemonset # values: daemonset | deployment | statefulset
 config: |
   receivers:
     jaeger:
