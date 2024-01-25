@@ -4,6 +4,7 @@ metadata:
   name: {{ .Release.Name }}
 spec:
   mode: {{ .Values.mode }}
+  priorityClassName: system-cluster-critical
   tolerations:
   - operator: Exists
   config: |-
