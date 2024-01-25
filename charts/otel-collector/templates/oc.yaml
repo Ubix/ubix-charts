@@ -3,9 +3,11 @@ kind: OpenTelemetryCollector
 metadata:
   name: {{ .Release.Name }}
 spec:
-  mode: {{ .Values.mode }}
+  mode: {{ .Values.mode -}}
+  {{ if eq .Values.mode "daemonset" }}
   priorityClassName: system-cluster-critical
   tolerations:
   - operator: Exists
+  {{- end }}
   config: |-
 {{ .Values.config | toYaml | indent 4 }}
