@@ -12,7 +12,7 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: restore-job-sa
+      serviceAccountName: {{ .Release.Name }}-restore-job-sa
       containers:
       - name: kubectl
         image: bitnami/kubectl:latest
@@ -50,7 +50,7 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: restore-job-sa
+      serviceAccountName: {{ .Release.Name }}-restore-job-sa
       containers:
       - name: kubectl
         image: bitnami/kubectl:latest
