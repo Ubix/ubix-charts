@@ -1,6 +1,6 @@
 mode: daemonset # values: daemonset | deployment | statefulset
 basic_auth_token: ""
-config: |
+config:
   receivers:
     jaeger:
       protocols:

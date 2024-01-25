@@ -4,5 +4,5 @@ metadata:
   name: {{ .Release.Name }}
 spec:
   mode: {{ .Values.mode }}
-  config: |
-{{ .Values.config | indent 4 | replace "basic_auth_token" .Values.basic_auth_token}}
+  config: |-
+{{ .Values.config | toYaml | indent 4 }}
