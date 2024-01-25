@@ -1,18 +1,18 @@
 mode: daemonset # values: daemonset | deployment | statefulset
 basic_auth_token: ""
-config:
-  receivers:
-    jaeger:
-      protocols:
-        thrift_compact:
-  processors:
+config: {}
+  # receivers:
+  #   jaeger:
+  #     protocols:
+  #       thrift_compact:
+  # processors:
 
-  exporters:
-    debug:
+  # exporters:
+  #   debug:
 
-  service:
-    pipelines:
-      traces:
-        receivers: [jaeger]
-        processors: []
-        exporters: [debug]
+  # service:
+  #   pipelines:
+  #     traces:
+  #       receivers: [jaeger]
+  #       processors: []
+  #       exporters: [debug]
