@@ -3,7 +3,6 @@ kind: OpenTelemetryCollector
 metadata:
   name: {{ .Release.Name }}
 spec:
-  mode: {{ .Values.mode -}}
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -13,6 +12,7 @@ spec:
             operator: NotIn
             values:
             - fargate
+  mode: {{ .Values.mode -}}
   {{ if eq .Values.mode "daemonset" }}
   priorityClassName: system-cluster-critical
   tolerations:
