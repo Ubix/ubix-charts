@@ -1,7 +1,7 @@
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Chart.Name }}
 spec:
   affinity:
     nodeAffinity:
