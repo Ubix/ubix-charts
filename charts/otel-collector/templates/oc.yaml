@@ -4,6 +4,15 @@ metadata:
   name: {{ .Release.Name }}
 spec:
   mode: {{ .Values.mode -}}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: eks.amazonaws.com/compute-type
+            operator: NotIn
+            values:
+            - fargate
   {{ if eq .Values.mode "daemonset" }}
   priorityClassName: system-cluster-critical
   tolerations:
