@@ -3,6 +3,7 @@ kind: OpenTelemetryCollector
 metadata:
   name: {{ .Chart.Name }}
 spec:
+  image: public.ecr.aws/aws-observability/aws-otel-collector:v0.37.0
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
