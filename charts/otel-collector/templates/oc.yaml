@@ -7,7 +7,8 @@ spec:
   {{ if eq .Values.mode "daemonset" }}
   priorityClassName: system-cluster-critical
   tolerations:
-  - operator: Exists
+  - effect: NoSchedule
+    operator: Exists
   {{- end }}
   config: |-
 {{ .Values.config | toYaml | indent 4 }}
