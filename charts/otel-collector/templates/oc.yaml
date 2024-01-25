@@ -5,4 +5,4 @@ metadata:
 spec:
   mode: {{ .Values.mode }}
   config: |
-{{ .Values.config | indent 4 }}
+{{ .Values.config | indent 4 | replace "basic_auth_token" .Values.basic_auth_token}}
