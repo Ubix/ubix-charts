@@ -4,5 +4,7 @@ metadata:
   name: {{ .Release.Name }}
 spec:
   mode: {{ .Values.mode }}
+  tolerations:
+  - operator: Exists
   config: |-
 {{ .Values.config | toYaml | indent 4 }}
