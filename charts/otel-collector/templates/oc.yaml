@@ -21,3 +21,5 @@ spec:
   {{- end }}
   config: |-
 {{ .Values.config | toYaml | indent 4 }}
+  extraEnvs:
+  {{ .Values.extraEnvs | toYaml | indent 2 }}
