@@ -1,5 +1,4 @@
 mode: deployment # values: daemonset | deployment | statefulset
-extraEnvs: []
 config: {}
   # receivers:
   #   jaeger:

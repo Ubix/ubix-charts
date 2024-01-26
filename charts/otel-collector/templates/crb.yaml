@@ -9,4 +9,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ .Chart.Name }}-collector
-  namespace: default
+  namespace: {{ .Release.Namespace }}
