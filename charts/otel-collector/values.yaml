@@ -1,4 +1,6 @@
 mode: deployment # values: daemonset | deployment | statefulset
+volumes: {}
+volumeMounts: {}
 config: {}
   # receivers:
   #   jaeger:
