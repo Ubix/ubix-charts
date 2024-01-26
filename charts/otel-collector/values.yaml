@@ -1,5 +1,6 @@
 mode: deployment # values: daemonset | deployment | statefulset
 basic_auth_token: ""
+extraEnvs: []
 config: {}
   # receivers:
   #   jaeger:
