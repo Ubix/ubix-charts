@@ -3,11 +3,11 @@ kind: OpenTelemetryCollector
 metadata:
   name: {{ .Chart.Name }}
 spec:
+{{ if not (eq .Values.mode "sidecar" )}}
   volumes:
-{{ .Values.volumes | toYaml | indent 4 }}
+  {{ .Values.volumes | toYaml | indent 4 }}
   volumeMounts: 
-{{ .Values.volumeMounts | toYaml | indent 4 }}
-{{ if ne .Values.mode "sidecar" | toYaml | indent 4 }}
+  {{ .Values.volumeMounts | toYaml | indent 4 }}
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

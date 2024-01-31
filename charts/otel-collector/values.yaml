@@ -1,4 +1,4 @@
-mode: deployment # values: daemonset | deployment | statefulset
+mode: sidecar # values: daemonset | deployment | statefulset
 volumes: {}
 volumeMounts: {}
 config: {}
