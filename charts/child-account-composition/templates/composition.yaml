@@ -3672,7 +3672,7 @@ spec:
                   "Action": "sts:AssumeRoleWithWebIdentity",
                   "Condition": {
                     "StringEquals": {
-                        "%s:sub": "system:serviceaccount:addons:warehouse-sa",
+                        "%s:sub": "system:serviceaccount:data-tooling:warehouse-sa",
                         "%s:aud": "sts.amazonaws.com"
                     }
                   }
