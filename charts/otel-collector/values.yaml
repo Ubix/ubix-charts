@@ -1,6 +1,6 @@
 mode: sidecar # values: daemonset | deployment | statefulset
-volumes: {}
-volumeMounts: {}
+volumes: []
+volumeMounts: []
 config: {}
   # receivers:
   #   jaeger:
