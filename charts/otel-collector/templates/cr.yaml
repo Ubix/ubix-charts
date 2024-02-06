@@ -4,7 +4,7 @@ metadata:
   name: {{ .Chart.Name }}-collector
 rules:
   - apiGroups: [""]
-    resources: ["pods", "namespaces"]
+    resources: ["pods", "namespaces", "services", "endpoints"]
     verbs: ["get", "watch", "list"]
   - apiGroups: ["apps"]
     resources: ["replicasets"]
