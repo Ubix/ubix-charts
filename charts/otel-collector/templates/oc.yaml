@@ -1,0 +1,29 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+{{ if not (eq .Values.mode "sidecar" )}}
+  volumes:
+  {{ .Values.volumes | toYaml | indent 4 }}
+  volumeMounts: 
+  {{ .Values.volumeMounts | toYaml | indent 4 }}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: eks.amazonaws.com/compute-type
+            operator: NotIn
+            values:
+            - fargate
+{{ end }}
+  mode: {{ .Values.mode -}}
+  {{ if eq .Values.mode "daemonset" }}
+  priorityClassName: system-cluster-critical
+  tolerations:
+  - effect: NoSchedule
+    operator: Exists
+  {{- end }}
+  config: |-
+{{ .Values.config | toYaml | indent 4 }}

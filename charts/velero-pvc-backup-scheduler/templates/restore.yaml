@@ -6,12 +6,13 @@ metadata:
   name: {{ template "restore.jobs.cleanup" . }}
   namespace: {{ .Release.Namespace }}
   annotations:
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-12"
 spec:
   template:
     spec:
-      serviceAccountName: restore-job-sa
+      serviceAccountName: {{ .Release.Name }}-restore-job-sa
       containers:
       - name: kubectl
         image: bitnami/kubectl:latest
@@ -30,7 +31,7 @@ metadata:
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-11"
 spec:
-  backupName: {{ .Values.backupName }}
+  backupName: {{ .Values.backupName | quote }}
   scheduleName: {{ template "schedule.name" . }}
   existingResourcePolicy: update
   itemOperationTimeout: 1h
@@ -43,12 +44,13 @@ metadata:
   name: {{ template "restore.jobs.wait" . }}
   namespace: {{ .Release.Namespace }}
   annotations:
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-10"
 spec:
   template:
     spec:
-      serviceAccountName: restore-job-sa
+      serviceAccountName: {{ .Release.Name }}-restore-job-sa
       containers:
       - name: kubectl
         image: bitnami/kubectl:latest

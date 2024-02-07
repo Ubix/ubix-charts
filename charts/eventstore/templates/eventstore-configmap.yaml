@@ -28,6 +28,7 @@ data:
   EVENTSTORE_GOSSIP_ALLOWED_DIFFERENCE_MS: {{ quote .Values.gossipAllowedDiffMs }}
   ## Whether or not to add interface prefixes.
   EVENTSTORE_ADD_INTERFACE_PREFIXES: "False"
+  EVENTSTORE_DISCOVER_VIA_DNS: "true"
   ## The prefixes that the internal HTTP server should respond to. 
   EVENTSTORE_INT_HTTP_PREFIXES: "http://*:{{ .Values.intHttpPort }}/"
   ## The prefixes that the external HTTP server should respond to. 
