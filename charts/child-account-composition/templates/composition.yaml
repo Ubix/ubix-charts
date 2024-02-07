@@ -5679,7 +5679,7 @@ spec:
 # Grafana Resources
 #####
 
-  - name: grafana-data-srouces
+  - name: grafana-data-sources
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
