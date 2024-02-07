@@ -5874,47 +5874,72 @@ spec:
           strategy: string
           string:
             fmt: |
-              %s.yaml: |
-                apiVersion: 1
-                deleteDatasources:
-                - name: Mimir %s
-                - name: Tempo %s
-                - name: Loki %s
-                datasources:
-                - name: Mimir %s
-                  type: prometheus
-                  typeName: Prometheus
-                  typeLogoUrl: https://grafana.com/static/img/logos/logo-mimir.svg
-                  access: proxy
-                  url: http://mimir-gateway/prometheus
-                  basicAuth: true
-                  basicAuthUser: ${{ .Values.mimir.user }}
-                  jsonData:
-                    httpHeaderName1: 'X-Scope-OrgID'
-                  secureJsonData:
-                    httpHeaderValue1: '%s'
-                    basicAuthPassword: ${{ .Values.mimir.password }}
-                  isDefault: false
-                  readOnly: true
-                - name: Tempo %s
-                  type: tempo
-                  access: proxy
-                  url: http://tempo-gateway
-                  basicAuth: true
-                  basicAuthUser: ${{ .Values.tempo.user }}
-                  secureJsonData:
-                    basicAuthPassword: ${{ .Values.tempo.password }}
-                  isDefault: false
-                  readOnly: true
-                - name: Loki %s
-                  type: loki
-                  url: http://loki-gateway
-                  baseAuth: true
-                  basicAuthUser: ${{ .Values.loki.user }}
-                  secureJsonData:
-                    basicAuthPassword: ${{ .Values.loki.password }}
-                  isDefault: false
-                  readOnly: true
+              {
+                "%s.yaml": {
+                  "apiVersion": 1,
+                  "deleteDatasources": [
+                    {
+                      "name": "Mimir %s"
+                    },
+                    {
+                      "name": "Tempo %s"
+                    },
+                    {
+                      "name": "Loki %s"
+                    }
+                  ],
+                  "datasources": [
+                    {
+                      "name": "Mimir %s",
+                      "type": "prometheus",
+                      "typeName": "Prometheus",
+                      "typeLogoUrl": "https://grafana.com/static/img/logos/logo-mimir.svg",
+                      "access": "proxy",
+                      "url": "http://mimir-gateway/prometheus",
+                      "basicAuth": true,
+                      "basicAuthUser": "{{ .Values.mimir.user }}",
+                      "jsonData": {
+                        "httpHeaderName1": "X-Scope-OrgID"
+                      },
+                      "secureJsonData": {
+                        "httpHeaderValue1": "%s",
+                        "basicAuthPassword": "{{ .Values.mimir.password }}"
+                      },
+                      "isDefault": false,
+                      "readOnly": true
+                    },
+                    {
+                      "name": "Tempo %s",
+                      "type": "tempo",
+                      "access": "proxy",
+                      "url": "http://tempo-gateway",
+                      "basicAuth": true,
+                      "basicAuthUser": "{{ .Values.tempo.user }}",
+                      "secureJsonData": {
+                        "basicAuthPassword": "{{ .Values.tempo.password }}"
+                      },
+                      "isDefault": false,
+                      "readOnly": true
+                    },
+                    {
+                      "name": "Loki %s",
+                      "type": "loki",
+                      "url": "http://loki-gateway",
+                      "baseAuth": true,
+                      "basicAuthUser": "{{ .Values.loki.user }}",
+                      "secureJsonData": {
+                        "basicAuthPassword": "{{ .Values.loki.password }}"
+                      },
+                      "isDefault": false,
+                      "readOnly": true
+                    }
+                  ]
+              }
+        transforms:
+          - type: convert
+            convert:
+              toType: object
+              format: json
         policy:
           fromFieldPath: Required
 
