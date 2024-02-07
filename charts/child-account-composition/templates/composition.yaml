@@ -3807,7 +3807,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-metastore"
+          fmt: "%s-trino"
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
