@@ -3711,7 +3711,6 @@ spec:
         - fromFieldPath: status.clusterOIDC
         - fromFieldPath: status.clusterOIDC
         - fromFieldPath: status.clusterOIDC
-        - fromFieldPath: status.clusterOIDC
         strategy: string
         string:
           fmt: |
@@ -3728,7 +3727,6 @@ spec:
                   "Condition": {
                     "StringEquals": {
                         "%s:sub": "system:serviceaccount:data-tooling:spark",
-                        "%s:sub": "system:serviceaccount:data-tooling:spark-historyserver",
                         "%s:aud": "sts.amazonaws.com"
                     }
                   }
