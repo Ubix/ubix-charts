@@ -4817,6 +4817,16 @@ spec:
                               "arn:aws:s3:::warehouse-%s",
                               "arn:aws:s3:::warehouse-%s/*"
                           ]
+                      },
+                      {
+                          "Sid": "ListAllBuckets",
+                          "Effect": "Allow",
+                          "Action": [
+                              "s3:ListBucket"
+                          ],
+                          "Resource": [
+                              "*"
+                          ]
                       }
                  ]
               }
