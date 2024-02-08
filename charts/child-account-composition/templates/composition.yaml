@@ -3767,7 +3767,6 @@ spec:
         - fromFieldPath: status.clusterOIDC
         - fromFieldPath: status.clusterOIDC
         - fromFieldPath: status.clusterOIDC
-        - fromFieldPath: status.clusterOIDC
         strategy: string
         string:
           fmt: |
