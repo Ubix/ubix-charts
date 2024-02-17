@@ -1,0 +1,2239 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: childaccount
+  labels:
+      provider: upbound-provider-family-gcp
+      name: childaccount
+spec:
+  compositeTypeRef:
+    apiVersion: cloudspace.resources/v1alpha1
+    kind: ChildAccount
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+      type: FromCompositeFieldPath
+  resources:
+  - name: child-project
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: Project
+      spec:
+        providerConfigRef:
+          name: root-gcp
+        forProvider:
+          name: crossplane-gcp-project # patchme
+          projectId: crossplane-gcp-project # patchme
+          billingAccount: # {{ .Values.billingAccount }}
+          folderId: # {{ .Values.parentId }}
+          autoCreateNetwork: false
+          #folderIdRef:
+          #  name: "technology"
+          #orgId: "my-gcp-org-id"
+          deletionPolicy: Orphan
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.projectId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.name
+      toFieldPath: spec.forProvider.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.billingAccount
+      toFieldPath: spec.forProvider.billingAccount
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.parentId
+      toFieldPath: spec.forProvider.folderId
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.projectId
+      toFieldPath: status.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.number
+      toFieldPath: status.projectNumber
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions[0].status
+      toFieldPath: status.projectStatus
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.conditions[0].status
+      matchString: "True"
+    connectionDetails:
+      - fromConnectionSecretKey: kubeconfig
+
+  #this resource is key to deploy everything inside the newly created project
+  - name: provider-config
+    base:
+      apiVersion: gcp.upbound.io/v1beta1
+      kind: ProviderConfig
+      metadata:
+        #name: crossplane-test-pconfig
+        labels:
+          provider: upbound-provider-family-gcp
+          name: childaccount
+      spec:
+        projectID: crossplane-gcp-project # patchme
+        credentials:
+          source: Secret
+          secretRef:
+            namespace: crossplane-system
+            name: gcp-secret
+            key: creds
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.projectID
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    readinessChecks:
+    - type: None
+
+  - name: Enable Compute API
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectService
+      metadata:
+        name: project-service # patchme
+      spec:
+        forProvider:
+          disableDependentServices: false
+          service: compute.googleapis.com # patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-project-compute-service-api'
+        type: string
+
+  - name: vpc
+    base:
+      apiVersion: compute.gcp.upbound.io/v1beta1
+      kind: Network
+      spec:
+        forProvider:
+          autoCreateSubnetworks: false
+          routingMode: GLOBAL
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.vpcID
+
+  - name: private-subnet-1
+    base:
+      apiVersion: compute.gcp.upbound.io/v1beta1
+      kind: Subnetwork
+      metadata:
+        labels:
+          karpenter.sh/discovery: #patchme
+          #kubernetes.io/role/internal-lb: "1"
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          ipCidrRange: 10.0.64.0/20
+          networkRef:
+            name: # patched
+          region: # patched 
+          privateIpGoogleAccess: true
+          secondaryIpRange:
+            - ipCidrRange: 10.8.0.0/14
+              rangeName: #patchme
+            - ipCidrRange: 10.12.0.0/20
+              rangeName: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-subnet-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.networkRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.labels[karpenter.sh/discovery]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.secondaryIpRange[0].rangeName
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-pods-range'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.secondaryIpRange[1].rangeName
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-svc-range'
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateSubnet1ID
+
+  - name: nat-gateway-static-ip-1
+    base:
+      apiVersion: compute.gcp.upbound.io/v1beta1
+      kind: Address
+      spec:
+        forProvider:
+          #address: 10.0.42.42
+          addressType: EXTERNAL
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-static-ip-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayStaticIPID
+
+  - name: nat-gateway-router-1
+    base:
+      apiVersion: compute.gcp.upbound.io/v1beta1
+      kind: Router
+      spec:
+        forProvider:
+          region: #patched
+          networkRef:
+            name: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-router-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.networkRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayRouterID
+
+  - name: nat-gateway-1
+    base:
+      apiVersion: compute.gcp.upbound.io/v1beta1
+      kind: RouterNAT
+      spec:
+        forProvider:
+          logConfig:
+            - enable: true
+              filter: ERRORS_ONLY
+          routerRef:
+            name: #patchme
+          natIpAllocateOption: MANUAL_ONLY
+          natIps:
+          - #patchme
+          region: #patchme
+          sourceSubnetworkIpRangesToNat: ALL_SUBNETWORKS_ALL_IP_RANGES
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.natGatewayStaticIPID
+      toFieldPath: spec.forProvider.natIps[0]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routerRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-router-1'
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayID
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.natIps[0]
+      toFieldPath: status.natGatewayIP
+
+# ########
+# # GKE Cluster and related resources
+# ########
+  - name: Enable GKE API
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectService
+      spec:
+        forProvider:
+          disableDependentServices: false
+          service: container.googleapis.com
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-project-gke-service-api'
+        type: string
+
+  - name: GKE Cluster
+    base:
+      apiVersion: container.gcp.upbound.io/v1beta1
+      kind: Cluster
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          enableAutopilot: true
+          location: #patchme
+          # nodeLocations:
+          # - us-central1-a
+          #   us-central1-b
+          #   us-central1-c
+          #   us-central1-f
+          minMasterVersion: #patchme
+          privateClusterConfig:
+          - enablePrivateNodes: true
+            enablePrivateEndpoint: false
+          removeDefaultNodePool: true
+          networkRef:
+            name: #patchme
+          subnetworkRef:
+            name: #patchme
+          clusterAutoscaling:
+            - autoProvisioningDefaults:
+                - bootDiskKmsKey: #patchme
+                  serviceAccount: #patchme
+                  oauthScopes:
+                  - "https://www.googleapis.com/auth/cloud-platform"
+          databaseEncryption:
+          - keyName: #patchme
+            state: "ENCRYPTED"
+          ipAllocationPolicy:
+          - clusterSecondaryRangeName: #patchme
+            servicesSecondaryRangeName: #patchme
+          workloadIdentityConfig:
+          - workloadPool: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.gke.version
+      toFieldPath: spec.forProvider.minMasterVersion
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.networkRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetworkRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-subnet-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.ipAllocationPolicy[0].clusterSecondaryRangeName
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-pods-range'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.ipAllocationPolicy[0].servicesSecondaryRangeName
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-svc-range'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.workloadIdentityConfig[0].workloadPool
+      transforms:
+      - type: string
+        string:
+          fmt: '%s.svc.id.goog'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.gkeKmsKeyID
+      toFieldPath: spec.forProvider.clusterAutoscaling[0].autoProvisioningDefaults[0].bootDiskKmsKey
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.gkeKmsKeyID
+      toFieldPath: spec.forProvider.databaseEncryption[0].keyName
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.gkeNodePoolSAEmail
+      toFieldPath: spec.forProvider.clusterAutoscaling[0].autoProvisioningDefaults[0].serviceAccount
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.clusterName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions[0].status
+      toFieldPath: status.controlPlaneStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.masterAuth[0].clusterCaCertificate
+      toFieldPath: status.clusterCertificateAuthorityData
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.endpoint
+      toFieldPath: status.clusterEndpoint
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.conditions[0].status
+      matchString: "True"
+
+  - name: Enable KMS API
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectService
+      spec:
+        forProvider:
+          disableDependentServices: false
+          service: cloudkms.googleapis.com
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-project-kms-service-api'
+        type: string
+
+  - name: kms-keyring
+    base:
+      apiVersion: kms.gcp.upbound.io/v1beta1
+      kind: KeyRing
+      spec:
+        forProvider:
+          location: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-kms-keyring'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.kmsKeyringID
+
+  - name: gke-kms-key
+    base:
+      apiVersion: kms.gcp.upbound.io/v1beta1
+      kind: CryptoKey
+      spec:
+        forProvider:
+          keyRingRef:
+            name: #patchme
+          rotationPeriod: 100000s
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-kms-key'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.keyRingRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-kms-keyring'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.gkeKmsKeyID
+
+  - name: persistent-disk-kms-key
+    base:
+      apiVersion: kms.gcp.upbound.io/v1beta1
+      kind: CryptoKey
+      spec:
+        forProvider:
+          keyRingRef:
+            name: #patchme
+          rotationPeriod: 100000s
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-persistent-disk-kms-key'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.keyRingRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-kms-keyring'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.persistentDiskKmsKeyID
+
+
+# ########
+# # IAM Service Accounts
+# ########
+
+  - name: iam-sa-nodepool
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: gke-nodepool-sa
+        labels:
+          service-account: gke-nodepool-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          displayName: GKE NodePool Service Account
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-nodepool-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.gkeNodePoolSAEmail
+
+  - name: postgres-operator-gcs-backups-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: postgres-operator-gcs-backups-sa
+        labels:
+          service-account: postgres-operator-gcs-backups-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-postgres-operator-gcs-backups-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.postgresOperatorGCSSAEmail
+    
+  - name: mlflow-artifcats-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: mlflow-artifacts-sa
+        labels:
+          service-account: mlflow-artifacts-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-mlflow-artifacts-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.mlflowArtifactsSAEmail
+
+  - name: api-service-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: api-service-sa
+        labels:
+          service-account: api-service-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-api-service-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.apiServiceSAEmail
+
+  - name: data-service-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: data-service-sa
+        labels:
+          service-account: data-service-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-service-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.dataServiceSAEmail
+
+  - name: data-service-external-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: data-service-external-sa
+        labels:
+          service-account: data-service-external-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-service-external-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.dataServiceExternalSAEmail
+
+  - name: dataflow-listener-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: dataflow-listener-sa
+        labels:
+          service-account: dataflow-listener-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-dataflow-listener-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.dataFlowListenerSAEmail
+
+  - name: exec-service-python-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: exec-service-python-sa
+        labels:
+          service-account: exec-service-python-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-exec-service-python-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.execServicePythonSAEmail
+
+  - name: data-lineage-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: data-lineage-sa
+        labels:
+          service-account: data-lineage-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-lineage-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.dataLineageSAEmail
+
+  - name: gcs-velero-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: gcs-velero-sa
+        labels:
+          service-account: gcs-velero-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gcs-velero-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.gcsVeleroSAEmail
+
+  - name: load-balancer-controller-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: load-balancer-controller-sa
+        labels:
+          service-account: load-balancer-controller-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-load-balancer-controller-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.ALBSAEmail
+
+  - name: external-data-upload-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: external-data-upload-sa
+        labels:
+          service-account: external-data-upload-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-data-upload-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: dataspace-backend-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: dataspace-backend-sa
+        labels:
+          service-account: dataspace-backend-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-dataspace-backend-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: external-dns-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: external-dns-sa
+        labels:
+          service-account: external-dns-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: cert-manager-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: cert-manager-sa
+        labels:
+          service-account: cert-manager-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-cert-manager-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+# ########
+# # IAM Role-Binding
+# ########
+
+  - name: gke-disk-encryption-kms-rolebinding
+    base:
+      apiVersion: kms.gcp.upbound.io/v1beta1
+      kind: CryptoKeyIAMMember
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          cryptoKeyIdRef:
+            name: #patchme
+          member: #patchme
+          role: roles/cloudkms.cryptoKeyEncrypterDecrypter
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-disk-encryption-kms-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.cryptoKeyIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-kms-key'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectNumber
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:service-%s@compute-system.iam.gserviceaccount.com'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: gke-etcd-application-layer-encryption-kms-rolebinding
+    base:
+      apiVersion: kms.gcp.upbound.io/v1beta1
+      kind: CryptoKeyIAMMember
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          cryptoKeyIdRef:
+            name: #patchme
+          member: #patchme
+          role: roles/cloudkms.cryptoKeyEncrypterDecrypter
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-etcd-encryption-kms-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.cryptoKeyIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-kms-key'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectNumber
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:service-%s@container-engine-robot.iam.gserviceaccount.com'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: workload-identity-iambinding-nodepool
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccountIAMMember
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          role: roles/iam.workloadIdentityUser
+          serviceAccountIdRef:
+            name: #patchme
+      # apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      # kind: ProjectIAMMember
+      # spec:
+      #   providerConfigRef:
+      #     policy:
+      #       resolve: "Always"
+      #   forProvider:
+      #     member: #patchme
+      #     projectRef:
+      #       name: #patchme
+      #     role: roles/iam.workloadIdentityUser
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-nodepool-workload-identity-rolebinding'
+    # - type: FromCompositeFieldPath
+    #   fromFieldPath: spec.id
+    #   toFieldPath: spec.forProvider.projectRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.gkeNodePoolSAEmail
+      toFieldPath: spec.forProvider.serviceAccountIdRef.name
+      #spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.member
+      #spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s.svc.id.goog[%s/%s]'
+    # - type: CombineFromComposite
+    #   combine:
+    #     variables:
+    #     - fromFieldPath: spec.id #project-id
+    #     - fromFieldPath: spec.id #k8s-namespace
+    #     - fromFieldPath: spec.id #k8s-sa
+    #     strategy: string
+    #     string:
+    #       fmt: "serviceAccount:%s.svc.id.goog[%s/%s]"
+    #   toFieldPath: spec.forProvider.member
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: postgres-operator-gcs-backups-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-postgres-operator-gcs-backups-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'postgres-backups-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.postgresOperatorGCSSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: load-balancer-controller-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          projectRef:
+            name: #patchme
+          role: roles/compute.loadBalancerAdmin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-load-balancer-controller-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.projectRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.ALBSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: mlflow-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-mlflow-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'mlflow-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.mlflowArtifactsSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: data-service-ingestion-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-service-ingestion-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'ingestion-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dataServiceSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: data-service-external-ingestion-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-service-external-ingestion-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'ingestion-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dataServiceExternalSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: data-flow-listener-ingestion-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-flow-listener-ingestion-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'ingestion-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dataFlowListenerSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: data-flow-listener-mlflow-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-flow-listener-mlflow-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'mlflow-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dataFlowListenerSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: exec-service-python-execution-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-exec-service-python-execution-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'execution-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.execServicePythonSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: exec-service-python-mlflow-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-exec-service-python-mlflow-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'mlflow-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.execServicePythonSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: artifact-registry-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          projectRef:
+            name: #patchme
+          role: roles/artifactregistry.reader
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-registry-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.projectRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.gkeNodePoolSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: external-dns-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          projectRef:
+            name: #patchme
+          role: roles/dns.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.projectRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.forProvider.member
+      policy:
+        fromFieldPath: Required
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s-external-dns-sa@%s.iam.gserviceaccount.com'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: cert-manager-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          projectRef:
+            name: #patchme
+          role: roles/dns.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-cert-manager'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.projectRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.forProvider.member
+      policy:
+        fromFieldPath: Required
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s-cert-manager-sa@%s.iam.gserviceaccount.com'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: api-service-execution-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-api-service-execution-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'execution-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.apiServiceSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: api-service-mlflow-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-api-service-mlflow-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'mlflow-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.apiServiceSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: data-lineage-execution-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-lineage-execution-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'execution-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dataLineageSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: data-lineage-ingestion-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-lineage-ingestion-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'ingestion-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dataLineageSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: external-data-upload-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-data-upload-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'ingestion-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.forProvider.member
+      policy:
+        fromFieldPath: Required
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s-external-data-upload-sa@%s.iam.gserviceaccount.com'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: dataspace-backend-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-dataspace-backend-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'ingestion-artifacts-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.forProvider.member
+      policy:
+        fromFieldPath: Required
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s-dataspace-backend-sa@%s.iam.gserviceaccount.com'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: gcs-velero-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gcs-velero-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: 'velero-%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.gcsVeleroSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+#####
+# ArgoCD
+#####
+  - name: argocd-secret-remote-cluster-credentials
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: # patched
+              namespace: argocd
+              labels:
+                argocd.argoproj.io/secret-type: cluster
+            type: Opaque
+            stringData:
+              name: #patched
+              server: #patched #https://34.139.149.183
+              config: #patched
+        providerConfigRef:
+          name: kubernetes-provider
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.manifest.metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-argocd-cluster-secret"
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.manifest.stringData.name
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.clusterEndpoint
+        toFieldPath: spec.forProvider.manifest.stringData.server
+        policy:
+          fromFieldPath: Required
+        transforms:
+          - type: string
+            string:
+              fmt: "https://%s"
+      - type: FromCompositeFieldPath
+        policy:
+          fromFieldPath: Required
+        fromFieldPath: status.clusterCertificateAuthorityData
+        toFieldPath: spec.forProvider.manifest.stringData.config
+        transforms:
+          - type: string
+            string:
+              fmt: |
+                {
+                  "execProviderConfig": {
+                    "command": "argocd-k8s-auth",
+                    "args": ["gcp"],
+                    "apiVersion": "client.authentication.k8s.io/v1beta1"
+                  },
+                  "tlsClientConfig": {
+                    "insecure": false,
+                    "caData": "%s"
+                  }
+                }
+
+#####
+# Cloud DNS
+#####
+
+  - name: cloud-dns-zone
+    base:
+      apiVersion: dns.gcp.upbound.io/v1beta1
+      kind: ManagedZone
+      spec:
+        forProvider:
+          description: #patchme
+          dnsName: #patchme
+          visibility: public
+        deletionPolicy: Orphan
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.dnsName
+      transforms:
+        - type: string
+          string:
+            fmt: "%s.ubix.io"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.description
+      transforms:
+        - type: string
+          string:
+            fmt: "%s.ubix.io-ZONE"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.nameServers
+      toFieldPath: status.zoneNameServers
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.zoneId
+
+  - name: cloud-dns-record
+    base:
+      apiVersion: dns.gcp.upbound.io/v1beta1
+      kind: RecordSet
+      metadata:
+        name: managed-zone
+      spec:
+        forProvider:
+          managedZoneRef:
+            name: #{{ .Values.zoneId }}
+          name: #patchme
+          ttl: 300
+          type: NS
+        providerConfigRef:
+          name: root-gcp
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.name
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.managedZoneRef.name
+        transforms:
+        - type: string
+          string:
+            fmt: "%s.ubix.io"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.zoneNameServers
+        toFieldPath: spec.forProvider.rrdatas
+        policy:
+          fromFieldPath: Required
+
+#####
+# GCS
+#####
+
+  - name: execution-artifacts-bucket
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          location: #patchme
+          storageClass: STANDARD
+          versioning:
+          - enabled: true
+          uniformBucketLevelAccess: true
+          publicAccessPrevention: "enforced"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-execution-artifacts"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      transforms:
+        - type: string
+          string:
+            fmt: "execution-artifacts-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.executionArtifactsBucketName
+
+  - name: ingestion-artifacts-bucket
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          location: #patchme
+          publicAccessPrevention: "enforced"
+          cors:
+          - origin: 
+              - #patchme
+            method:
+              - "PUT"
+            responseHeader:
+              - "*"
+            maxAgeSeconds: 6000
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-ingestion-artifacts"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      transforms:
+        - type: string
+          string:
+            fmt: "ingestion-artifacts-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.cors[0].origin[0]
+      transforms:
+        - type: string
+          string:
+            fmt: 'https://dataspace.%s.ubix.io'
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.ingestionArtifactsBucketName
+
+  - name: mlflow-artifacts-bucket
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          location: #patchme
+          publicAccessPrevention: "enforced"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-mlflow-artifacts"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      transforms:
+        - type: string
+          string:
+            fmt: "mlflow-artifacts-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.mlflowArtifactsBucketName
+
+  - name: postgres-backups-bucket
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          location: #patchme
+          publicAccessPrevention: "enforced"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-postgres-backups"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      transforms:
+      - type: string
+        string:
+          fmt: "postgres-backups-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.postgresBackupsBucketName
+
+  - name: velero-s3-bucket
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          location: #patchme
+          publicAccessPrevention: "enforced"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-velero"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      transforms:
+      - type: string
+        string:
+          fmt: "velero-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+#####
+# Artifact Registry
+#####
+
+  - name: artifact-registry
+    base:
+      apiVersion: artifact.gcp.upbound.io/v1beta1
+      kind: RegistryRepository
+      spec:
+        forProvider:
+          description: Artifact Docker repository
+          format: DOCKER
+          location: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-artifact-registry"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.artifactRegistryID
+
+#####
+# Harbor Resources
+#####
+
+  - name: harbor-bucket
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: Bucket
+      spec:
+        forProvider:
+          location: #patchme
+          publicAccessPrevention: "enforced"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "harbor-%s"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
