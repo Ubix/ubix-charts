@@ -1,8 +1,13 @@
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Chart.Name }}
 spec:
+{{ if not (eq .Values.mode "sidecar" )}}
+  volumes:
+  {{ .Values.volumes | toYaml | indent 4 }}
+  volumeMounts: 
+  {{ .Values.volumeMounts | toYaml | indent 4 }}
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -12,6 +17,7 @@ spec:
             operator: NotIn
             values:
             - fargate
+{{ end }}
   mode: {{ .Values.mode -}}
   {{ if eq .Values.mode "daemonset" }}
   priorityClassName: system-cluster-critical
