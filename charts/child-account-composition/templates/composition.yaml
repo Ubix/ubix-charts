@@ -6373,6 +6373,8 @@ spec:
             - fromFieldPath: spec.id
             - fromFieldPath: spec.id
             - fromFieldPath: spec.id
+            - fromFieldPath: spec.id
+            - fromFieldPath: spec.id
           strategy: string
           string:
             # this section needs to be like this due to crossplane limitations.
