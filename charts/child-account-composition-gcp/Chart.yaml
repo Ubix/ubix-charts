@@ -1,5 +1,5 @@
 apiVersion: v2
-name: child-account-composition
+name: child-account-composition-gcp
 description: XRD Child account Chart
 
 # The present helm chart renders only the composition and defintion resources that are going to be used for the ChildAccount provisioning.
