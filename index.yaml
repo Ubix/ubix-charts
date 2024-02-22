@@ -2488,6 +2488,16 @@ entries:
   child-account-composition-gcp:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-02-22T10:49:14.803657005Z"
+    description: XRD Child account Chart
+    digest: 5f01e29a30701db2475fec9845df61c89a97a9b15f1329b36440f9a4deb6b9a8
+    name: child-account-composition-gcp
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/child-account-composition-gcp-0.15.13/child-account-composition-gcp-0.15.13.tgz
+    version: 0.15.13
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-02-20T18:16:10.177329997Z"
     description: XRD Child account Chart
     digest: ab7968367df8ca35fdd40910e10ed4cecc9aa4943d7c3034b0a005964a050df5
@@ -2568,6 +2578,17 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/composition-instance-0.1.0/composition-instance-0.1.0.tgz
     version: 0.1.0
+  custom-dashboards:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-02-22T10:49:14.903855161Z"
+    description: A Helm chart for deploying custom dashboards for Grafana
+    digest: d22574801ffb5d4549e80c0047a5dc5aa3ce383903ae2d7c8a2bc0173f9a7570
+    name: custom-dashboards
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/custom-dashboards-1.0.0/custom-dashboards-1.0.0.tgz
+    version: 1.0.0
   data-lineage:
   - apiVersion: v2
     appVersion: "1.0"
@@ -3228,4 +3249,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-02-20T18:40:36.86716353Z"
+generated: "2024-02-22T10:49:14.904344192Z"
