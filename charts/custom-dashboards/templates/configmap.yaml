@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "custom-dashboards.fullname" . }}
+  labels:
+    {{- include "custom-dashboards.labels" . | nindent 4 }}
+    {{- with .Values.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+data:
+  {{- $root := . }}
+  {{- range .Values.dashboards.enabled }}
+  {{ . }}: |
+    {{- $root.Files.Get (print "files/" .) | nindent 4 }}
+  {{- end }}
