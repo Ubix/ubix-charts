@@ -5,9 +5,9 @@ metadata:
 spec:
 {{ if not (eq .Values.mode "sidecar" )}}
   volumes:
-  {{ .Values.volumes | toYaml | indent 4 }}
+{{ .Values.volumes | toYaml | indent 4 }}
   volumeMounts: 
-  {{ .Values.volumeMounts | toYaml | indent 4 }}
+{{ .Values.volumeMounts | toYaml | indent 4 }}
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
