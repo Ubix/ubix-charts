@@ -13,9 +13,10 @@ spec:
   #     name: childaccount
   parameters:
     name: crossplane-t23
-    parentId: "864422329430" # GCP Folder/Organization ID
-    billingAccount: 01D413-AF532E-11D35E
+    parentId: "371262631165" # GCP Folder/Organization ID
+    billingAccount: 0168F3-63A34D-4713A5
     region: us-east4
+    AWSNATIP: "3.229.80.206"
     # requiredAPIs:
     # - "compute.googleapis.com" # Compute API for Networking
     # - "container.googleapis.com" # GKE API

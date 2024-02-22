@@ -350,6 +350,10 @@ spec:
             name: #patchme
           subnetworkRef:
             name: #patchme
+          masterAuthorizedNetworksConfig:
+          - cidrBlocks:
+            - displayName: "ArgoCD AWS NAT IP address"
+              cidrBlock: "1.2.3.4/32" #patchme
           clusterAutoscaling:
             - autoProvisioningDefaults:
                 - bootDiskKmsKey: #patchme
@@ -387,6 +391,13 @@ spec:
       - type: string
         string:
           fmt: '%s-private-subnet-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.AWSNATIP
+      toFieldPath: spec.forProvider.masterAuthorizedNetworksConfig[0].cidrBlocks[0].cidrBlock
+      transforms:
+      - type: string
+        string:
+          fmt: '%s/32'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.ipAllocationPolicy[0].clusterSecondaryRangeName
@@ -541,6 +552,95 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.persistentDiskKmsKeyID
 
+
+# ########
+# # IAM Custom Roles
+# ########
+
+  - name: load-balancer-controller-role
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMCustomRole
+      metadata:
+        annotations:
+          crossplane.io/external-name: GKE_GCP_Load_Balancer_Controller_Role
+      spec:
+        forProvider:
+          permissions:
+            #Compute Load Balancer Admin
+            - compute.networks.listPeeringRoutes
+            - certificatemanager.certs.list
+            - certificatemanager.certs.get
+            - compute.firewalls.create
+            - compute.instances.setTags
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-load-balancer-controller-role"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.GCPLBGKERoleID
+
+  - name: external-dns-role
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMCustomRole
+      metadata:
+        annotations:
+          crossplane.io/external-name: external-dns-role
+      spec:
+        forProvider:
+          permissions:
+            - dns.resourceRecordSets.update
+            - dns.resourceRecordSets.list
+            - dns.managedZones.list
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-external-dns-role"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: cert-manager-role
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMCustomRole
+      metadata:
+        annotations:
+          crossplane.io/external-name: cert-manager-role
+      spec:
+        forProvider:
+          permissions:
+            - dns.resourceRecordSets.get
+            - dns.resourceRecordSets.update
+            - dns.resourceRecordSets.list
+            - dns.managedZones.list
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-cert-manager-role"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
 
 # ########
 # # IAM Service Accounts
@@ -1147,7 +1247,7 @@ spec:
       policy:
         fromFieldPath: Required
 
-  - name: load-balancer-controller-rolebinding
+  - name: load-balancer-controller-rolebinding-1
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectIAMMember
@@ -1167,7 +1267,51 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-load-balancer-controller-rolebinding'
+          fmt: '%s-load-balancer-controller-rolebinding-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.projectRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.ALBSAEmail
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+
+  - name: load-balancer-controller-rolebinding-2
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          projectRef:
+            name: #patchme
+          role: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-load-balancer-controller-rolebinding-2'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.role
+      transforms:
+      - type: string
+        string:
+          fmt: 'roles/%s-load-balancer-controller-role'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.projectRef.name
@@ -1499,7 +1643,7 @@ spec:
           member: #patchme
           projectRef:
             name: #patchme
-          role: roles/dns.admin
+          role: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -1508,6 +1652,13 @@ spec:
       - type: string
         string:
           fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.role
+      transforms:
+      - type: string
+        string:
+          fmt: 'roles/%s-external-dns-role'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.projectRef.name
@@ -1538,7 +1689,7 @@ spec:
           member: #patchme
           projectRef:
             name: #patchme
-          role: roles/dns.admin
+          role: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -1547,6 +1698,13 @@ spec:
       - type: string
         string:
           fmt: '%s-cert-manager'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.role
+      transforms:
+      - type: string
+        string:
+          fmt: 'roles/%s-cert-manager-role'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.projectRef.name
@@ -1945,21 +2103,18 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.zoneId
 
-  - name: cloud-dns-record
+  - name: route53-record
     base:
-      apiVersion: dns.gcp.upbound.io/v1beta1
-      kind: RecordSet
-      metadata:
-        name: managed-zone
+      apiVersion: route53.aws.upbound.io/v1beta1
+      kind: Record
       spec:
         forProvider:
-          managedZoneRef:
-            name: #{{ .Values.zoneId }}
           name: #patchme
-          ttl: 300
           type: NS
+          ttl: 300
+          zoneId: #{{ .Values.zoneId }}
         providerConfigRef:
-          name: root-gcp
+          name: root
     patches:
       - type: FromCompositeFieldPath
         fromFieldPath: spec.id
@@ -1968,17 +2123,127 @@ spec:
         fromFieldPath: spec.id
         toFieldPath: spec.forProvider.name
       - type: FromCompositeFieldPath
-        fromFieldPath: spec.id
-        toFieldPath: spec.forProvider.managedZoneRef.name
-        transforms:
-        - type: string
-          string:
-            fmt: "%s.ubix.io"
+        fromFieldPath: spec.parameters.region
+        toFieldPath: spec.forProvider.region
       - type: FromCompositeFieldPath
         fromFieldPath: status.zoneNameServers
-        toFieldPath: spec.forProvider.rrdatas
+        toFieldPath: spec.forProvider.records
         policy:
           fromFieldPath: Required
+
+  - name: cname-validation-record
+    base:
+      apiVersion: dns.gcp.upbound.io/v1beta1
+      kind: RecordSet
+      metadata:
+        labels:
+          resource: Record
+          type: CNAME
+      spec:
+        forProvider:
+          managedZoneRef:
+            name: #patchme
+          name: #patchme
+          rrdatas:
+            - 8.8.8.8
+          ttl: 300
+          type: CNAME
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-cname-validation-record'
+    - fromFieldPath: status.GCMresourceRecordName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managedZoneRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s.ubix.io"
+    - fromFieldPath: status.GCMresourceRecordValue
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.rrdatas[0]
+    - fromFieldPath: status.GCMresourceRecordType
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.type
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+#####
+# GCP LB Resources
+#####
+
+  - name: gcp-lb-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: gcp-lb-sa
+        labels:
+          service-account: gcp-lb-sa
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gcp-lb-controller-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: gcp-lb-controller-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          projectRef:
+            name: #patchme
+          role: roles/compute.loadBalancerAdmin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gcp-lb-controller-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.projectRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s-gcp-lb-controller-sa@%s.iam.gserviceaccount.com'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
 #####
 # GCS
@@ -2176,6 +2441,197 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.location
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+#####
+# GCP Certificate Manager DNS
+#####
+
+  - name: dns-authorization
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: DNSAuthorization
+      spec:
+        forProvider:
+          domain: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-gcp-cm-dns-authorization'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.domain
+      transforms:
+        - type: string
+          string:
+            fmt: '%s.ubix.io'
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.dnsResourceRecord[0].name
+      toFieldPath: status.GCMresourceRecordName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.dnsResourceRecord[0].data
+      toFieldPath: status.GCMresourceRecordValue
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.dnsResourceRecord[0].type
+      toFieldPath: status.GCMresourceRecordType
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.dnsAuthorizationID
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: gcp-certificate-manager-certificate
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: Certificate
+      metadata:
+        labels:
+          child-account-gcp-cm-certificate: #patched
+      spec:
+        forProvider:
+          managed:
+          - dnsAuthorizations: [] #patchme
+            domains: [] #patchme
+              #- subdomain.example.com
+              #- *.subdomain.example.com
+          scope: DEFAULT
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-acm-certificate'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains
+      transforms:
+      - type: string
+        string:
+          fmt: '["*.%s.ubix.io","%s.ubix.io"]'
+      - type: convert
+        convert:
+          toType: array
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dnsAuthorizationID
+      toFieldPath: spec.providerConfigRef.managed[0].dnsAuthorizations[0]
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.CertificateID
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: gcp-certificate-map
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: CertificateMap
+      spec:
+        forProvider:
+          description: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-certificate-map'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.description
+      transforms:
+        - type: string
+          string:
+            fmt: '%s certificate map'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: gcp-certificate-map-entry-1
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: CertificateMapEntry
+      spec:
+        forProvider:
+          hostname: #patchme
+          certificates: [] #patchme
+          mapRef:
+            name: #patchme
+          matcher: PRIMARY
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-certificate-map-entry-1'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.mapRef
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-certificate-map'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.hostname
+      transforms:
+        - type: string
+          string:
+            fmt: '%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.certificateID
+      toFieldPath: spec.forProvider.certificates[0]
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: gcp-certificate-map-entry-2
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: CertificateMapEntry
+      spec:
+        forProvider:
+          hostname: #patchme
+          certificates: [] #patchme
+          mapRef:
+            name: #patchme
+          matcher: PRIMARY
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-certificate-map-entry-2'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.mapRef
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-certificate-map'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.hostname
+      transforms:
+        - type: string
+          string:
+            fmt: '*.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.certificateID
+      toFieldPath: spec.forProvider.certificates[0]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name

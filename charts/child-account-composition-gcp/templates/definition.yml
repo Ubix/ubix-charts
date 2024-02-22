@@ -44,10 +44,14 @@ spec:
                     description: Region is the region you'd like your resource to be created in.
                     type: string
                     default: us-east-1
+                  AWSNATIP:
+                    description: the NAT IP address which is used by EKS Cluster where ArgoCD is running
+                    type: string
                 required:
                 - name
                 - parentId
                 - billingAccount
+                - AWSNATIP
               gke:
                 type: object
                 properties:
@@ -252,9 +256,9 @@ spec:
               # mlflowArtifactsS3PolicyArn:
               #   description: Policy to give s3 access to the cluster
               #   type: string
-              # ALBEKSPolicyArn:
-              #   description: Policy to give load balancer controller access to the cluster
-              #   type: string
+              GCPLBGKERoleID:
+                description: Role-id to give load balancer controller access to the cluster
+                type: string
               # postgresOperatorS3PolicyArn:
               #   description: Policy to give s3 access to the cluster, bucket that is used for postgres s3 backups
               #   type: string
@@ -297,18 +301,18 @@ spec:
               # ebsKmsArn:
               #   description: EBS csi driver KMS key
               #   type: string
-              # ACMresourceRecordName:
-              #   description: The name of the DNS record to create to validate the certificate
-              #   type: string
-              # ACMresourceRecordValue:
-              #   description: The type of DNS record to create
-              #   type: string
-              # ACMresourceRecordType:
-              #   description: The value the DNS record needs to have
-              #   type: string
-              # ACMArn:
-              #   description: ARN of the certificate that is being validated.
-              #   type: string
+              GCMresourceRecordName:
+                description: The name of the DNS record to create to validate the certificate
+                type: string
+              GCMresourceRecordValue:
+                description: The type of DNS record to create
+                type: string
+              GCMresourceRecordType:
+                description: The value the DNS record needs to have
+                type: string
+              CertificateID:
+                description: ID of the certificate that is being validated.
+                type: string
     additionalPrinterColumns:
     - name: GCPProjectID
       type: string
