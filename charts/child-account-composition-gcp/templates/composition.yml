@@ -267,8 +267,7 @@ spec:
           routerRef:
             name: #patchme
           natIpAllocateOption: MANUAL_ONLY
-          natIps:
-          - #patchme
+          natIps: #patchme
           region: #patchme
           sourceSubnetworkIpRangesToNat: ALL_SUBNETWORKS_ALL_IP_RANGES
     patches:
