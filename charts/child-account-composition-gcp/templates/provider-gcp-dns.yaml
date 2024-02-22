@@ -1,6 +1,0 @@
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-gcp-dns
-spec:
-  package: xpkg.upbound.io/upbound/provider-gcp-dns:v0.41.1
