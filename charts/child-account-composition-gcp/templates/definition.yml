@@ -1,16 +1,16 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: childaccounts.cloudspace.resources
+  name: childaccount.gcp.ubix.io
 spec:
   connectionSecretKeys:
   - kubeconfig
   # defaultCompositionRef:
   #   name: account-aws
-  group: cloudspace.resources
+  group: gcp.ubix.io
   names:
     kind: ChildAccount
-    plural: childaccounts
+    plural: childaccount
   claimNames:
     kind: ChildAccountClaim
     plural: childaccountclaims

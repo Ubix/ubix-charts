@@ -7,7 +7,7 @@ metadata:
       name: childaccount
 spec:
   compositeTypeRef:
-    apiVersion: cloudspace.resources/v1alpha1
+    apiVersion: gcp.ubix.io/v1alpha1
     kind: ChildAccount
   writeConnectionSecretsToNamespace: crossplane-system
   patchSets:
