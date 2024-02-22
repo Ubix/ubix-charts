@@ -1,0 +1,10 @@
+# Dashboard selection
+dashboards:
+  # List of enabled dashboard filenames from the `files/` directory
+  enabled:
+    - "vpa-recommender.json"
+    # Add or remove dashboard filenames as needed
+
+# Additional labels to be added to the ConfigMap
+additionalLabels:
+  grafana_dashboard: "1"
