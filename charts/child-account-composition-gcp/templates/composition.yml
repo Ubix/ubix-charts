@@ -2512,20 +2512,24 @@ spec:
             fmt: '%s-acm-certificate'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains
+      toFieldPath: spec.forProvider.managed[0].domains[0]
       transforms:
       - type: string
         string:
-          fmt: '["*.%s.ubix.io","%s.ubix.io"]'
-      - type: convert
-        convert:
-          toType: array
+          fmt: '*.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[1]
+      transforms:
+      - type: string
+        string:
+          fmt: '%s.ubix.io'
     - type: FromCompositeFieldPath
       fromFieldPath: status.dnsAuthorizationID
-      toFieldPath: spec.providerConfigRef.managed[0].dnsAuthorizations[0]
+      toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.CertificateID
+      toFieldPath: status.certificateID
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
@@ -2577,7 +2581,7 @@ spec:
             fmt: '%s-certificate-map-entry-1'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.mapRef
+      toFieldPath: spec.forProvider.mapRef.name
       transforms:
         - type: string
           string:
@@ -2617,7 +2621,7 @@ spec:
             fmt: '%s-certificate-map-entry-2'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.mapRef
+      toFieldPath: spec.forProvider.mapRef.name
       transforms:
         - type: string
           string:
