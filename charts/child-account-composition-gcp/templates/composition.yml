@@ -1,10 +1,10 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: childaccount
+  name: childaccount-gcp
   labels:
       provider: upbound-provider-family-gcp
-      name: childaccount
+      name: childaccount-gcp
 spec:
   compositeTypeRef:
     apiVersion: gcp.ubix.io/v1alpha1
