@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: childaccount.gcp.ubix.io
+  name: childaccounts.gcp.ubix.io
 spec:
   connectionSecretKeys:
   - kubeconfig
@@ -10,7 +10,7 @@ spec:
   group: gcp.ubix.io
   names:
     kind: ChildAccount
-    plural: childaccount
+    plural: childaccounts
   claimNames:
     kind: ChildAccountClaim
     plural: childaccountclaims
