@@ -1,0 +1,196 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: childaccounts.gcp.ubix.io
+spec:
+  connectionSecretKeys:
+  - kubeconfig
+  # defaultCompositionRef:
+  #   name: account-aws
+  group: gcp.ubix.io
+  names:
+    kind: ChildAccount
+    plural: childaccounts
+  claimNames:
+    kind: ChildAccountClaim
+    plural: childaccountclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID of this Account that other objects will use to refer to it.
+              parameters:
+                type: object
+                properties:
+                  name:
+                    description: Friendly name for the member project.
+                    type: string
+                  region:
+                    description: Region is the region you'd like your resource to be created in.
+                    type: string
+                    default: us-east-4
+                required:
+                - name
+              gke:
+                type: object
+                properties:
+                  version:
+                    description: The Kubernetes version for the cluster.
+                    type: string
+                    default: "1.27.3-gke.100"
+            required:
+            - parameters
+          status:
+            type: object
+            properties:
+              id:
+                description: The GCP project id
+                type: string
+              projectNumber:
+                description: The GCP project number
+                type: string
+              vpcID:
+                description: The VPC id
+                type: string
+              projectStatus:
+                description: The status of the GCP project
+                type: string
+              natGatewayStaticIP:
+                description: Nat Gateway static ip id
+                type: string
+              natGatewayRouterID:
+                description: Nat Gateway Router id
+                type: string
+              natGatewayID:
+                description: id of the nat gateway
+                type: string
+              natGatewayIP:
+                description: ip of the nat gateway
+                type: string
+              privateSubnet1ID:
+                description: id of the private subnet 1
+                type: string
+              kmsKeyringID:
+                description: id of the kms keyring
+                type: string
+              gkeKmsKeyID:
+                description: id of the gke kms key
+                type: string
+              persistentDiskKmsKeyID:
+                description: id of the persistent-disk kms key
+                type: string
+              gkeNodePoolSAEmail:
+                description: email of the gke nodepool service-account
+                type: string
+              externalDnsRoleId:
+                description: Role to allow external dns to work
+                type: string
+              certManagerRoleId:
+                description: Role to allow external dns to work
+                type: string
+              warehouseReadOnlyRoleId:
+                description: Role to allow read-only access to warehouse buckets
+                type: string
+              postgresOperatorGCSSAEmail:
+                description: email of the postgres-operator-gcs-backups service-account
+                type: string
+              mlflowArtifactsSAEmail:
+                description: email of the mlflow-artifacts service-account
+                type: string
+              apiServiceSAEmail:
+                description: email of the api-service service-account
+                type: string
+              dataServiceSAEmail:
+                description: email of the data-service service-account
+                type: string
+              dataServiceExternalSAEmail:
+                description: email of the data-service-external service-account
+                type: string
+              dataFlowListenerSAEmail:
+                description: email of the dataflow listener service-account
+                type: string
+              execServicePythonSAEmail:
+                description: email of the execution service python service-account
+                type: string
+              dataLineageSAEmail:
+                description: email of the data lineage service-account
+                type: string
+              gcsVeleroSAEmail:
+                description: email of the gcs velero service-account
+                type: string
+              ALBSAEmail:
+                description: email of the alb service-account
+                type: string
+              artifactRegistryID:
+                description: id of the artifact registry
+                type: string
+              clusterName:
+                description: The name of the cluster
+                type: string
+              controlPlaneStatus:
+                description: The status of the control plane
+                type: string
+              clusterEndpoint:
+                description: Endpoint for your Kubernetes API server.
+                type: string
+              clusterCertificateAuthorityData:
+                description: Base64 encoded certificate data required to communicate with your cluster.
+                type: string
+              GCPLBGKERoleID:
+                description: Role-id to give load balancer controller access to the cluster
+                type: string
+              zoneId:
+                description: Zone id
+                type: string
+              zoneNameServers:
+                description: Zone name servers
+                type: array
+                items:
+                  type: string
+                default: []
+              ingestionArtifactsBucketName:
+                description: GCS Bucket for Cloudspace apps
+                type: string
+              mlflowArtifactsBucketName:
+                description: GCS Bucket for Cloudspace apps
+                type: string
+              executionArtifactsBucketName:
+                description: GCS Bucket for Cloudspace apps
+                type: string
+              postgresBackupsBucketName:
+                description: GCS Bucket for Postgres backups
+                type: string
+              dnsAuthorizationID:
+                description: dns authorization id for gcp certificate
+                type: string
+              GCMresourceRecordName:
+                description: The name of the DNS record to create to validate the certificate
+                type: string
+              GCMresourceRecordValue:
+                description: The type of DNS record to create
+                type: string
+              GCMresourceRecordType:
+                description: The value the DNS record needs to have
+                type: string
+              certificateID:
+                description: ID of the certificate that is being validated.
+                type: string
+    additionalPrinterColumns:
+    - name: GCPProjectID
+      type: string
+      jsonPath: ".status.id"
+    - name: projectStatus
+      type: string
+      jsonPath: ".status.projectStatus"
+    - name: clusterName
+      type: string
+      jsonPath: ".status.clusterName"

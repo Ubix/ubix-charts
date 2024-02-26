@@ -1,32 +1,25 @@
 
 The present helm chart renders only the composition and defintion resources that are going to be used for the ChildAccount provisioning.
 
-Once this composition has been deployed in the Cluster, you can create child accounts by applying the folowing yaml.
+Once this composition has been deployed in the Cluster, you can create child accounts by applying the following yaml.
 
 ````
-apiVersion: cloudspace.resources/v1alpha1
+apiVersion: gcp.ubix.io/v1alpha1
 kind: ChildAccountClaim
 metadata:
-  name: crossplane-t18
+  name: crossplane-t23
   labels:
-    provider: aws-jet
+    provider: gcp-jet
     name: childaccount
 spec:
-  id: crossplane-t18
-  compositionSelector:
-    matchLabels:
-      provider: aws-jet
-      name: childaccount
+  id: crossplane-t23
+  # compositionSelector:
+  #   matchLabels:
+  #     provider: aws-jet
+  #     name: childaccount
   parameters:
-    email: awsaccountadmin+crossplane.crossplane-t18@ubixlabs.com
-    name: crossplane-t18
-    parentId: ou-8jat-sv0412tm
-    region: us-east-1
-  eks:
-    version: "1.23"
-    nodeSize: small
-    minNodeCount: 1
-    maxNodeCount: 3
-    desiredNodeCount: 3
-    diskSize: 20
+    name: crossplane-t23
+    region: us-east4
+  gke:
+    version: "1.29.0-gke.1381000"
 ````

@@ -1,3 +1,13 @@
-backofficeArgocdRoleArn: arn:aws:iam::882490700787:role/argocd-server
-zoneId: "" # Add Parent Zone ID
-parentId: "" # Add Parent OU IDs
+parentId: "100853304751" # GCP Folder/Organization ID
+billingAccount: 0168F3-63A34D-4713A5
+AWSNATIP: "3.229.80.206"
+zoneId: "Z2FIL4FICDFU9O" # Add Parent Zone ID
+mimir:
+  user: "required"
+  password: "required"
+tempo:
+  user: "required"
+  password: "required"
+loki:
+  user: "required"
+  password: "required"
