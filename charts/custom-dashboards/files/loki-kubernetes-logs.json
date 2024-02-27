@@ -115,7 +115,7 @@
               "type": "loki",
               "uid": "$datasource"
             },
-            "expr": "sum(count_over_time({app_name=~\"$app_name\", container=~\"$container\"} |= \"$query\" [$__interval]))",
+            "expr": "sum(count_over_time({app_name=~\"$app_name\", container=~\"$container\", pod_name=~\"$pod_name\"} |= \"$query\" [$__interval]))",
             "instant": false,
             "legendFormat": "Log count",
             "range": true,
@@ -154,7 +154,7 @@
               "uid": "$datasource"
             },
             "editorMode": "code",
-            "expr": "{app_name=~\"$app_name\", container=~\"$container\"} |= \"$query\" | logfmt | __error__=``",
+            "expr": "{app_name=~\"$app_name\", container=~\"$container\", pod_name=~\"$pod_name\"} |= \"$query\" | logfmt | __error__=``",
             "queryType": "range",
             "refId": "A"
           }
@@ -168,11 +168,6 @@
     "templating": {
       "list": [
         {
-          "current": {
-            "selected": false,
-            "text": "Backoffice Logs",
-            "value": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
-          },
           "hide": 0,
           "includeAll": false,
           "label": "Data Source",
@@ -212,10 +207,10 @@
           "current": {
             "selected": true,
             "text": [
-              "account-management-backend"
+              "All"
             ],
             "value": [
-              "account-management-backend"
+              "$__all"
             ]
           },
           "datasource": {
@@ -245,10 +240,10 @@
           "current": {
             "selected": true,
             "text": [
-              "account-management-backend"
+              "All"
             ],
             "value": [
-              "account-management-backend"
+              "$__all"
             ]
           },
           "datasource": {
@@ -263,6 +258,39 @@
           "options": [],
           "query": {
             "label": "container",
+            "refId": "LokiVariableQueryEditor-VariableQuery",
+            "stream": "{app_name=~\"$app_name\"}",
+            "type": 1
+          },
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        },
+        {
+          "allValue": ".+",
+          "current": {
+            "selected": true,
+            "text": [
+              "All"
+            ],
+            "value": [
+              "$__all"
+            ]
+          },
+          "datasource": {
+            "type": "loki",
+            "uid": "${datasource}"
+          },
+          "definition": "",
+          "hide": 0,
+          "includeAll": true,
+          "multi": true,
+          "name": "pod_name",
+          "options": [],
+          "query": {
+            "label": "pod_name",
             "refId": "LokiVariableQueryEditor-VariableQuery",
             "stream": "{app_name=~\"$app_name\"}",
             "type": 1
