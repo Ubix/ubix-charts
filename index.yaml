@@ -2631,6 +2631,16 @@ entries:
   custom-dashboards:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2024-02-27T15:04:19.872883895Z"
+    description: A Helm chart for deploying custom dashboards for Grafana
+    digest: 90ccacdd2ee1b195b558ec28c5796c609ba9a0f26620cbb7fe9a0e48e31c6a3d
+    name: custom-dashboards
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/custom-dashboards-1.0.1/custom-dashboards-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2024-02-22T10:49:14.903855161Z"
     description: A Helm chart for deploying custom dashboards for Grafana
     digest: d22574801ffb5d4549e80c0047a5dc5aa3ce383903ae2d7c8a2bc0173f9a7570
@@ -3307,4 +3317,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-02-26T15:15:05.0161021Z"
+generated: "2024-02-27T15:04:19.873372181Z"
