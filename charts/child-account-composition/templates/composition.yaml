@@ -3909,7 +3909,7 @@ spec:
           crossplane.io/external-name: postgres-operator-s3-backups-policy
       spec:
         forProvider:
-          policy: #patchme
+          policy: "{}" #patchme
     patches:
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
@@ -3957,7 +3957,7 @@ spec:
           crossplane.io/external-name: ingestion-artifacts-s3-full-access
       spec:
         forProvider:
-          policy: #patchme
+          policy: "{}" #patchme
     patches:
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
@@ -4006,7 +4006,7 @@ spec:
           crossplane.io/external-name: execution-artifacts-s3-full-access
       spec:
         forProvider:
-          policy: #patchme
+          policy: "{}" #patchme
     patches:
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
@@ -4305,7 +4305,7 @@ spec:
           crossplane.io/external-name: mlflow-artifacts-s3-full-access
       spec:
         forProvider:
-          policy: #patchme
+          policy: "{}" #patchme
     patches:
       - type: CombineFromComposite
         toFieldPath: spec.forProvider.policy
