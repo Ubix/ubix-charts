@@ -115,7 +115,7 @@
               "type": "loki",
               "uid": "$datasource"
             },
-            "expr": "sum(count_over_time({app_name=~\"$app_name\", container=~\"$container\", pod_name=~\"$pod_name\"} |= \"$query\" [$__interval]))",
+            "expr": "sum(count_over_time({app_name=~\"$app_name\", container=~\"$container\", pod_name=~\"$pod_name|.*\"} |= \"$query\" [$__interval]))",
             "instant": false,
             "legendFormat": "Log count",
             "range": true,
@@ -154,7 +154,7 @@
               "uid": "$datasource"
             },
             "editorMode": "code",
-            "expr": "{app_name=~\"$app_name\", container=~\"$container\", pod_name=~\"$pod_name\"} |= \"$query\" | logfmt | __error__=``",
+            "expr": "{app_name=~\"$app_name\", container=~\"$container\", pod_name=~\"$pod_name|.*\"} |= \"$query\" | logfmt | __error__=``",
             "queryType": "range",
             "refId": "A"
           }
