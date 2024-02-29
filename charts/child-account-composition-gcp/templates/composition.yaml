@@ -2725,7 +2725,7 @@ spec:
       kind: ServiceAccount
       metadata:
         annotations:
-          crossplane.io/external-name: #patchme
+          crossplane.io/external-name: gcp-lb-sa
         labels:
           service-account: gcp-lb-sa
       spec:
@@ -2743,13 +2743,6 @@ spec:
       - type: string
         string:
           fmt: '%s-gcp-lb-controller-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.annotations['crossplane.io/external-name']
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gcp-lb-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
@@ -2787,7 +2780,7 @@ spec:
         - fromFieldPath: spec.id
         strategy: string
         string:
-          fmt: "serviceAccount:%s-gcp-lb-sa@%s.iam.gserviceaccount.com"
+          fmt: "serviceAccount:gcp-lb-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
     - type: PatchSet
       patchSetName: providerconfigref-patch
@@ -3270,7 +3263,10 @@ spec:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccount
       metadata:
-        name: harbor-sa
+        annotations:
+          crossplane.io/external-name: harbor-sa
+        labels:
+          service-account: harbor-sa
       spec:
         providerConfigRef:
           name: #patchme
@@ -3326,7 +3322,7 @@ spec:
         - fromFieldPath: status.id
         strategy: string
         string:
-          fmt: "serviceAccount:%s-harbor-sa@%s.iam.gserviceaccount.com"
+          fmt: "serviceAccount:harbor-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
     - type: PatchSet
       patchSetName: providerconfigref-patch
