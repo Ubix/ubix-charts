@@ -18,7 +18,7 @@ spec:
   - name: providerconfigref-patch
     patches:
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.providerconfig
+      fromFieldPath: spec.parameters.providerconfig
       toFieldPath: spec.providerConfigRef.name
   resources:
   - name: child-project
