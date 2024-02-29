@@ -78,7 +78,7 @@ spec:
       - string:
           fmt: '%s-project-compute-service-api'
         type: string
-    
+
   - name: Enable GKE API
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -188,7 +188,7 @@ spec:
           ipCidrRange: 10.0.64.0/20
           networkRef:
             name: # patched
-          region: # patched 
+          region: # patched
           privateIpGoogleAccess: true
           secondaryIpRange:
             - ipCidrRange: 10.8.0.0/14
@@ -676,7 +676,7 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.gkeNodePoolSAEmail
-      
+
   - name: workload-identity-iambinding-nodepool
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -689,7 +689,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -903,7 +903,7 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.postgresOperatorGCSSAEmail
-    
+
   - name: mlflow-artifcats-sa
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -2648,6 +2648,7 @@ spec:
           type: NS
           ttl: 300
           zoneId: {{ .Values.zoneId }}
+          region: us-east-1
         providerConfigRef:
           name: root
     patches:
@@ -2657,9 +2658,6 @@ spec:
       - type: FromCompositeFieldPath
         fromFieldPath: spec.id
         toFieldPath: spec.forProvider.name
-      - type: FromCompositeFieldPath
-        fromFieldPath: spec.parameters.region
-        toFieldPath: spec.forProvider.region
       - type: FromCompositeFieldPath
         fromFieldPath: status.zoneNameServers
         toFieldPath: spec.forProvider.records
@@ -2803,7 +2801,7 @@ spec:
           location: #patchme
           publicAccessPrevention: "enforced"
           cors:
-          - origin: 
+          - origin:
               - #patchme
             method:
               - "PUT"
