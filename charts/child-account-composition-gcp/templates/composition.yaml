@@ -657,7 +657,7 @@ spec:
       kind: ServiceAccount
       metadata:
         annotations:
-          crossplane.io/external-name: #patchme
+          crossplane.io/external-name: gke-nodepool-sa
         labels:
           service-account: gke-nodepool-sa
       spec:
@@ -672,13 +672,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-nodepool-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.annotations['crossplane.io/external-name']
       transforms:
       - type: string
         string:
