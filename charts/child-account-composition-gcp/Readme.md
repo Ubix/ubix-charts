@@ -20,6 +20,7 @@ spec:
   parameters:
     name: crossplane-t23
     region: us-east4
+    providerconfig: root-gcp #root-gcp-dev/root-gcp-stg/root-gcp-prod
   gke:
     version: "1.29.0-gke.1381000"
 ````

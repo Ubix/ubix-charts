@@ -38,8 +38,12 @@ spec:
                     description: Region is the region you'd like your resource to be created in.
                     type: string
                     default: us-east-4
+                  providerconfig:
+                    description: The name of GCP Providerconfig that will be used for child-accounts deployments.
+                    type: string
                 required:
                 - name
+                - providerconfig
               gke:
                 type: object
                 properties:
