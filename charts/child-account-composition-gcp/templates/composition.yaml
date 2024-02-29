@@ -15,14 +15,17 @@ spec:
     patches:
     - fromFieldPath: metadata.labels
       type: FromCompositeFieldPath
+  - name: providerconfigref-patch
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.providerconfig
+      toFieldPath: spec.providerConfigRef.name
   resources:
   - name: child-project
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: Project
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           name: #patchme
           projectId: #patchme
@@ -40,6 +43,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.name
       toFieldPath: spec.forProvider.name
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.projectId
       toFieldPath: status.id
@@ -61,8 +66,6 @@ spec:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectService
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           disableDependentServices: false
@@ -78,14 +81,14 @@ spec:
       - string:
           fmt: '%s-project-compute-service-api'
         type: string
-
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+    
   - name: Enable GKE API
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectService
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           disableDependentServices: false
@@ -101,14 +104,14 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: Enable KMS API
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectService
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           disableDependentServices: false
@@ -124,14 +127,14 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: Enable Certificate Manager API
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectService
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           disableDependentServices: false
@@ -147,14 +150,14 @@ spec:
       - string:
           fmt: '%s-project-certificate-manager-service-api'
         type: string
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: vpc
     base:
       apiVersion: compute.gcp.upbound.io/v1beta1
       kind: Network
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           autoCreateSubnetworks: false
@@ -166,6 +169,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.vpcID
@@ -180,7 +185,7 @@ spec:
           #kubernetes.io/role/internal-lb: "1"
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -188,7 +193,7 @@ spec:
           ipCidrRange: 10.0.64.0/20
           networkRef:
             name: # patched
-          region: # patched
+          region: # patched 
           privateIpGoogleAccess: true
           secondaryIpRange:
             - ipCidrRange: 10.8.0.0/14
@@ -229,6 +234,8 @@ spec:
       - type: string
         string:
           fmt: '%s-gke-svc-range'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.privateSubnet1ID
@@ -238,8 +245,6 @@ spec:
       apiVersion: compute.gcp.upbound.io/v1beta1
       kind: Address
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           #address: 10.0.42.42
@@ -259,6 +264,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.natGatewayStaticIP
@@ -268,8 +275,6 @@ spec:
       apiVersion: compute.gcp.upbound.io/v1beta1
       kind: Router
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           region: #patched
@@ -292,6 +297,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.networkRef.name
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.natGatewayRouterID
@@ -301,8 +308,6 @@ spec:
       apiVersion: compute.gcp.upbound.io/v1beta1
       kind: RouterNAT
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           logConfig:
@@ -340,6 +345,8 @@ spec:
       - type: string
         string:
           fmt: '%s-nat-gateway-router-1'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.natGatewayID
@@ -356,8 +363,6 @@ spec:
       apiVersion: kms.gcp.upbound.io/v1beta1
       kind: KeyRing
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           location: #patchme
@@ -375,6 +380,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.location
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.kmsKeyringID
@@ -384,8 +391,6 @@ spec:
       apiVersion: kms.gcp.upbound.io/v1beta1
       kind: CryptoKey
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           keyRingRef:
             name: #patchme
@@ -405,6 +410,8 @@ spec:
       - type: string
         string:
           fmt: '%s-kms-keyring'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.gkeKmsKeyID
@@ -414,8 +421,6 @@ spec:
       apiVersion: kms.gcp.upbound.io/v1beta1
       kind: CryptoKey
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           keyRingRef:
             name: #patchme
@@ -435,6 +440,8 @@ spec:
       - type: string
         string:
           fmt: '%s-kms-keyring'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.persistentDiskKmsKeyID
@@ -445,7 +452,7 @@ spec:
       kind: CryptoKeyIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -477,6 +484,8 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:service-%s@compute-system.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: gke-etcd-application-layer-encryption-kms-rolebinding
     base:
@@ -484,7 +493,7 @@ spec:
       kind: CryptoKeyIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -516,6 +525,8 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:service-%s@container-engine-robot.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: GKE Cluster
     base:
@@ -523,7 +534,7 @@ spec:
       kind: Cluster
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -621,6 +632,8 @@ spec:
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.clusterAutoscaling[0].autoProvisioningDefaults[0].serviceAccount
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.clusterName
@@ -649,7 +662,7 @@ spec:
           service-account: gke-nodepool-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -673,23 +686,25 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.gkeNodePoolSAEmail
-
+      
   - name: workload-identity-iambinding-nodepool
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef:
+          serviceAccountIdRef: 
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -716,6 +731,8 @@ spec:
         string:
           fmt: "serviceAccount:%s.svc.id.goog[%s/%s]"
       toFieldPath: spec.forProvider.member
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
 # ########
 # # IAM Custom Roles
@@ -729,8 +746,6 @@ spec:
         annotations:
           crossplane.io/external-name: GKE_GCP_Load_Balancer_Controller_Role
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           permissions:
@@ -756,6 +771,8 @@ spec:
           - type: string
             string:
               fmt: "%s-load-balancer-controller-role"
+      - type: PatchSet
+        patchSetName: providerconfigref-patch
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
         toFieldPath: status.GCPLBGKERoleID
@@ -768,8 +785,6 @@ spec:
         annotations:
           crossplane.io/external-name: external_dns_role
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           permissions:
@@ -792,6 +807,8 @@ spec:
           - type: string
             string:
               fmt: "%s-external-dns-role"
+      - type: PatchSet
+        patchSetName: providerconfigref-patch
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
         toFieldPath: status.externalDnsRoleId
@@ -804,8 +821,6 @@ spec:
         annotations:
           crossplane.io/external-name: cert_manager_role
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           permissions:
@@ -829,6 +844,8 @@ spec:
           - type: string
             string:
               fmt: "%s-cert-manager-role"
+      - type: PatchSet
+        patchSetName: providerconfigref-patch
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
         toFieldPath: status.certManagerRoleId
@@ -841,8 +858,6 @@ spec:
         annotations:
           crossplane.io/external-name: warehouse_read_only_role
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           permissions:
@@ -864,6 +879,8 @@ spec:
           - type: string
             string:
               fmt: "%s-warehouse-read-only-role"
+      - type: PatchSet
+        patchSetName: providerconfigref-patch
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
         toFieldPath: status.warehouseReadOnlyRoleId
@@ -883,7 +900,7 @@ spec:
           service-account: postgres-operator-gcs-backups-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -900,10 +917,12 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.postgresOperatorGCSSAEmail
-
+    
   - name: mlflow-artifcats-sa
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -915,7 +934,7 @@ spec:
           service-account: mlflow-artifacts-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -932,6 +951,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.mlflowArtifactsSAEmail
@@ -947,7 +968,7 @@ spec:
           service-account: api-service-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -964,6 +985,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.apiServiceSAEmail
@@ -979,7 +1002,7 @@ spec:
           service-account: data-service-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -996,6 +1019,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.dataServiceSAEmail
@@ -1011,7 +1036,7 @@ spec:
           service-account: data-service-external-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1028,6 +1053,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.dataServiceExternalSAEmail
@@ -1043,7 +1070,7 @@ spec:
           service-account: dataflow-listener-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1060,6 +1087,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.dataFlowListenerSAEmail
@@ -1075,7 +1104,7 @@ spec:
           service-account: exec-service-python-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1092,6 +1121,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.execServicePythonSAEmail
@@ -1107,7 +1138,7 @@ spec:
           service-account: data-lineage-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1124,6 +1155,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.dataLineageSAEmail
@@ -1139,7 +1172,7 @@ spec:
           service-account: gcs-velero-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1156,6 +1189,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.gcsVeleroSAEmail
@@ -1171,7 +1206,7 @@ spec:
           service-account: load-balancer-controller-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1188,6 +1223,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.ALBSAEmail
@@ -1203,7 +1240,7 @@ spec:
           service-account: external-data-upload-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1220,6 +1257,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: dataspace-backend-sa
     base:
@@ -1232,7 +1271,7 @@ spec:
           service-account: dataspace-backend-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1249,6 +1288,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: external-dns-sa
     base:
@@ -1256,12 +1297,12 @@ spec:
       kind: ServiceAccount
       metadata:
         annotations:
-          crossplane.io/external-name: #patchme
+          crossplane.io/external-name: external-dns-sa
         labels:
           service-account: external-dns-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1277,14 +1318,9 @@ spec:
           fmt: '%s-external-dns-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: metadata.annotations['crossplane.io/external-name']
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-external-dns-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: cert-manager-sa
     base:
@@ -1292,12 +1328,12 @@ spec:
       kind: ServiceAccount
       metadata:
         annotations:
-          crossplane.io/external-name: #patchme
+          crossplane.io/external-name: cert-manager-sa
         labels:
           service-account: cert-manager-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1313,14 +1349,9 @@ spec:
           fmt: '%s-cert-manager-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: metadata.annotations['crossplane.io/external-name']
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-cert-manager-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: warehouse-sa
     base:
@@ -1333,7 +1364,7 @@ spec:
           service-account: warehouse-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1350,6 +1381,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: spark-thrift-server-sa
     base:
@@ -1362,7 +1395,7 @@ spec:
           service-account: spark-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1379,6 +1412,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: spark-history-server-sa
     base:
@@ -1391,7 +1426,7 @@ spec:
           service-account: spark-history-server-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1408,6 +1443,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: metastore-sa
     base:
@@ -1420,7 +1457,7 @@ spec:
           service-account: metastore-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1437,6 +1474,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: trino-sa
     base:
@@ -1449,7 +1488,7 @@ spec:
           service-account: trino-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1466,6 +1505,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
 # ########
 # # IAM Role-Binding
@@ -1476,8 +1517,6 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1509,6 +1548,8 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: load-balancer-controller-rolebinding-1
     base:
@@ -1516,7 +1557,7 @@ spec:
       kind: ProjectIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1543,6 +1584,8 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: load-balancer-controller-rolebinding-2
     base:
@@ -1550,7 +1593,7 @@ spec:
       kind: ProjectIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -1582,14 +1625,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: mlflow-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1621,14 +1664,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: data-service-ingestion-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1660,14 +1703,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: data-service-external-ingestion-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1699,14 +1742,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: data-flow-listener-ingestion-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1738,14 +1781,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: data-flow-listener-mlflow-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1777,14 +1820,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: dataflow-warehouse-full-access-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1816,14 +1859,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: spark-warehouse-full-access-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1855,14 +1898,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:spark-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: spark-history-server-warehouse-full-access-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1894,14 +1937,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:spark-history-server-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: metastore-warehouse-full-access-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1933,14 +1976,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:metastore-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: trino-warehouse-read-only-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -1977,14 +2020,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:trino-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: exec-service-python-execution-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2016,14 +2059,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: exec-service-warehouse-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2055,14 +2098,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: warehouse-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2094,14 +2137,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:warehouse-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: exec-service-python-mlflow-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2133,6 +2176,8 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: artifact-registry-rolebinding
     base:
@@ -2140,7 +2185,7 @@ spec:
       kind: ProjectIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -2167,6 +2212,8 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: external-dns-rolebinding
     base:
@@ -2174,7 +2221,7 @@ spec:
       kind: ProjectIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -2206,8 +2253,10 @@ spec:
         - fromFieldPath: status.id
         strategy: string
         string:
-          fmt: "serviceAccount:%s-external-dns-sa@%s.iam.gserviceaccount.com"
+          fmt: "serviceAccount:external-dns-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: cert-manager-rolebinding
     base:
@@ -2215,7 +2264,7 @@ spec:
       kind: ProjectIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -2247,16 +2296,16 @@ spec:
         - fromFieldPath: status.id
         strategy: string
         string:
-          fmt: "serviceAccount:%s-cert-manager-sa@%s.iam.gserviceaccount.com"
+          fmt: "serviceAccount:cert-manager-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: api-service-execution-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2288,14 +2337,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: api-service-mlflow-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2327,14 +2376,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: data-lineage-execution-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2366,14 +2415,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: data-lineage-ingestion-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2405,14 +2454,14 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: external-data-upload-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2445,14 +2494,14 @@ spec:
         string:
           fmt: "serviceAccount:external-data-upload-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: dataspace-backend-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2485,14 +2534,14 @@ spec:
         string:
           fmt: "serviceAccount:dataspace-backend-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: gcs-velero-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           bucketRef:
             name: #patchme
@@ -2524,6 +2573,8 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
 # #####
 # # ArgoCD
@@ -2602,8 +2653,6 @@ spec:
       apiVersion: dns.gcp.upbound.io/v1beta1
       kind: ManagedZone
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           description: #patchme
@@ -2631,6 +2680,8 @@ spec:
         - type: string
           string:
             fmt: "%s.ubix.io-ZONE"
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.nameServers
       toFieldPath: status.zoneNameServers
@@ -2648,7 +2699,7 @@ spec:
           type: NS
           ttl: 300
           zoneId: {{ .Values.zoneId }}
-          region: us-east-1
+          region: us-east1
         providerConfigRef:
           name: root
     patches:
@@ -2679,7 +2730,7 @@ spec:
           service-account: gcp-lb-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -2702,6 +2753,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: gcp-lb-controller-rolebinding
     base:
@@ -2709,7 +2762,7 @@ spec:
       kind: ProjectIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -2736,6 +2789,8 @@ spec:
         string:
           fmt: "serviceAccount:%s-gcp-lb-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
 # #####
 # # GCS
@@ -2749,8 +2804,6 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           location: #patchme
@@ -2782,6 +2835,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.location
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.executionArtifactsBucketName
@@ -2794,14 +2849,12 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           location: #patchme
           publicAccessPrevention: "enforced"
           cors:
-          - origin:
+          - origin: 
               - #patchme
             method:
               - "PUT"
@@ -2838,6 +2891,8 @@ spec:
         - type: string
           string:
             fmt: 'https://dataspace.%s.ubix.io'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.ingestionArtifactsBucketName
@@ -2850,8 +2905,6 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           location: #patchme
@@ -2879,6 +2932,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.location
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.mlflowArtifactsBucketName
@@ -2891,8 +2946,6 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           location: #patchme
@@ -2920,6 +2973,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.location
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.postgresBackupsBucketName
@@ -2932,8 +2987,6 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           location: #patchme
@@ -2961,6 +3014,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.location
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: warehouse-bucket
     base:
@@ -2970,8 +3025,6 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           location: #patchme
@@ -2999,6 +3052,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.location
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
 # #####
 # # GCP Certificate Manager DNS
@@ -3009,8 +3064,6 @@ spec:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
       kind: DNSAuthorization
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           domain: #patchme
@@ -3032,6 +3085,8 @@ spec:
         - type: string
           string:
             fmt: '%s.ubix.io'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.dnsAuthorizationID
@@ -3044,8 +3099,6 @@ spec:
         labels:
           child-account-gcp-cm-certificate: #patched
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           location: global
@@ -3085,6 +3138,8 @@ spec:
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.certificateID
@@ -3094,8 +3149,6 @@ spec:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
       kind: CertificateMap
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           description: #patchme
@@ -3117,14 +3170,14 @@ spec:
         - type: string
           string:
             fmt: '%s certificate map'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: gcp-certificate-map-entry-1
     base:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
       kind: CertificateMapEntry
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           hostname: #patchme
@@ -3161,14 +3214,14 @@ spec:
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.certificates[0]
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: gcp-certificate-map-entry-2
     base:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
       kind: CertificateMapEntry
       spec:
-        providerConfigRef:
-          name: root-gcp
         forProvider:
           project: #patchme
           hostname: #patchme
@@ -3205,6 +3258,8 @@ spec:
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.certificates[0]
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
 # #####
 # # Harbor Resources
@@ -3218,7 +3273,7 @@ spec:
         name: harbor-sa
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -3235,6 +3290,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: harbor-rolebinding
     base:
@@ -3242,7 +3299,7 @@ spec:
       kind: ProjectIAMMember
       spec:
         providerConfigRef:
-          name: root-gcp
+          name: #patchme
           policy:
             resolve: "Always"
         forProvider:
@@ -3271,6 +3328,8 @@ spec:
         string:
           fmt: "serviceAccount:%s-harbor-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
 #####
 # Grafana Resources
