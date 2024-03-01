@@ -282,7 +282,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
+      fromFieldPath: status.atProvider.selfLink
       toFieldPath: status.natGatewayStaticIP
 
   - name: nat-gateway-router-1
@@ -334,8 +334,6 @@ spec:
           #natIps: #patchme
           region: #patchme
           sourceSubnetworkIpRangesToNat: ALL_SUBNETWORKS_ALL_IP_RANGES
-        initProvider:
-          natIps: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -352,7 +350,7 @@ spec:
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.natGatewayStaticIP
-      toFieldPath: spec.initProvider.natIps[0]
+      toFieldPath: spec.forProvider.natIps[0]
       policy:
         fromFieldPath: Required
     - type: FromCompositeFieldPath
