@@ -2252,16 +2252,15 @@ spec:
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.role
-    - type: CombineFromComposite
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
       policy:
         fromFieldPath: Required
-      combine:
-        variables:
-        - fromFieldPath: status.id
-        strategy: string
-        string:
-          fmt: "serviceAccount:external-dns-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:external-dns-sa@%s.iam.gserviceaccount.com'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
@@ -2294,16 +2293,15 @@ spec:
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.role
-    - type: CombineFromComposite
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
       policy:
         fromFieldPath: Required
-      combine:
-        variables:
-        - fromFieldPath: status.id
-        strategy: string
-        string:
-          fmt: "serviceAccount:cert-manager-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:cert-manager-sa@%s.iam.gserviceaccount.com'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
