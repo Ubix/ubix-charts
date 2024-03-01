@@ -21,6 +21,9 @@ spec:
       fromFieldPath: spec.parameters.providerconfig
       toFieldPath: spec.providerConfigRef.name
   resources:
+# ########
+# # GCP Project
+# ########
   - name: child-project
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -61,6 +64,9 @@ spec:
     connectionDetails:
       - fromConnectionSecretKey: kubeconfig
 
+# ########
+# # Enable Required APIs
+# ########
   - name: Enable Compute API
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -153,6 +159,9 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+# ########
+# # VPC
+# ########
   - name: vpc
     base:
       apiVersion: compute.gcp.upbound.io/v1beta1
@@ -175,6 +184,9 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.vpcID
 
+# ########
+# # Subnets
+# ########
   - name: private-subnet-1
     base:
       apiVersion: compute.gcp.upbound.io/v1beta1
@@ -240,6 +252,9 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.privateSubnet1ID
 
+# ########
+# # Nat Gateway and related resources
+# ########
   - name: nat-gateway-static-ip-1
     base:
       apiVersion: compute.gcp.upbound.io/v1beta1
@@ -2243,7 +2258,6 @@ spec:
       combine:
         variables:
         - fromFieldPath: status.id
-        - fromFieldPath: status.id
         strategy: string
         string:
           fmt: "serviceAccount:external-dns-sa@%s.iam.gserviceaccount.com"
@@ -2285,7 +2299,6 @@ spec:
         fromFieldPath: Required
       combine:
         variables:
-        - fromFieldPath: status.id
         - fromFieldPath: status.id
         strategy: string
         string:
