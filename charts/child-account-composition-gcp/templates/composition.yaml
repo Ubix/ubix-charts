@@ -2488,16 +2488,15 @@ spec:
       - type: string
         string:
           fmt: '%s-ingestion-artifacts'
-    - type: CombineFromComposite
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
       policy:
         fromFieldPath: Required
-      combine:
-        variables:
-        - fromFieldPath: status.id
-        strategy: string
-        string:
-          fmt: "serviceAccount:external-data-upload-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:external-data-upload-sa@%s.iam.gserviceaccount.com'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
@@ -2528,16 +2527,15 @@ spec:
       - type: string
         string:
           fmt: '%s-ingestion-artifacts'
-    - type: CombineFromComposite
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
       policy:
         fromFieldPath: Required
-      combine:
-        variables:
-        - fromFieldPath: status.id
-        strategy: string
-        string:
-          fmt: "serviceAccount:dataspace-backend-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:dataspace-backend-sa@%s.iam.gserviceaccount.com'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
@@ -2777,15 +2775,13 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
-    - type: CombineFromComposite
-      combine:
-        variables:
-        - fromFieldPath: spec.id
-        - fromFieldPath: spec.id
-        strategy: string
-        string:
-          fmt: "serviceAccount:gcp-lb-sa@%s.iam.gserviceaccount.com"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:gcp-lb-sa@%s.iam.gserviceaccount.com'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
@@ -3317,17 +3313,54 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
-    - type: CombineFromComposite
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
       policy:
         fromFieldPath: Required
-      combine:
-        variables:
-        - fromFieldPath: status.id
-        - fromFieldPath: status.id
-        strategy: string
-        string:
-          fmt: "serviceAccount:harbor-sa@%s.iam.gserviceaccount.com"
       toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:harbor-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: workload-identity-harbor-iambinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccountIAMMember
+      spec:
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          role: roles/iam.workloadIdentityUser
+          serviceAccountIdRef: 
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-workload-identity-harbor-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.serviceAccountIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-harbor-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s.svc.id.goog[databases/harbor]'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
@@ -3401,3 +3434,4 @@ spec:
           convert:
             toType: object
             format: json
+s
