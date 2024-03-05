@@ -553,6 +553,11 @@ spec:
           policy:
             resolve: "Always"
         forProvider:
+          addonsConfig:
+          - dnsCacheConfig:
+            - enabled: true
+            gcePersistentDiskCsiDriverConfig:
+            - enabled: true
           project: #patchme
           enableAutopilot: true
           location: #patchme
@@ -3434,4 +3439,3 @@ spec:
           convert:
             toType: object
             format: json
-s
