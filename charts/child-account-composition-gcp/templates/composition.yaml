@@ -2706,7 +2706,7 @@ spec:
           type: NS
           ttl: 300
           zoneId: {{ .Values.zoneId }}
-          region: us-east1
+          region: us-east-1
         providerConfigRef:
           name: root
     patches:
