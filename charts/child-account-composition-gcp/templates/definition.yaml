@@ -173,21 +173,6 @@ spec:
               postgresBackupsBucketName:
                 description: GCS Bucket for Postgres backups
                 type: string
-              dnsAuthorizationID:
-                description: dns authorization id for gcp certificate
-                type: string
-              GCMresourceRecordName:
-                description: The name of the DNS record to create to validate the certificate
-                type: string
-              GCMresourceRecordValue:
-                description: The type of DNS record to create
-                type: string
-              GCMresourceRecordType:
-                description: The value the DNS record needs to have
-                type: string
-              certificateID:
-                description: ID of the certificate that is being validated.
-                type: string
     additionalPrinterColumns:
     - name: GCPProjectID
       type: string

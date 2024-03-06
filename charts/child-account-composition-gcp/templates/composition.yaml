@@ -35,7 +35,7 @@ spec:
           billingAccount: "{{ .Values.billingAccount }}"
           folderId: "{{ .Values.parentId }}"
           autoCreateNetwork: false
-          #deletionPolicy: Orphan
+        deletionPolicy: Delete
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -72,6 +72,7 @@ spec:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectService
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           disableDependentServices: false
@@ -95,6 +96,7 @@ spec:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectService
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           disableDependentServices: false
@@ -118,6 +120,7 @@ spec:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectService
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           disableDependentServices: false
@@ -136,29 +139,6 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: Enable Certificate Manager API
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ProjectService
-      spec:
-        forProvider:
-          project: #patchme
-          disableDependentServices: false
-          service: certificatemanager.googleapis.com
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-project-certificate-manager-service-api'
-        type: string
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
 # ########
 # # VPC
 # ########
@@ -167,6 +147,7 @@ spec:
       apiVersion: compute.gcp.upbound.io/v1beta1
       kind: Network
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           autoCreateSubnetworks: false
@@ -200,6 +181,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           ipCidrRange: 10.0.64.0/20
@@ -260,6 +242,7 @@ spec:
       apiVersion: compute.gcp.upbound.io/v1beta1
       kind: Address
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           #address: 10.0.42.42
@@ -290,6 +273,7 @@ spec:
       apiVersion: compute.gcp.upbound.io/v1beta1
       kind: Router
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           region: #patched
@@ -323,6 +307,7 @@ spec:
       apiVersion: compute.gcp.upbound.io/v1beta1
       kind: RouterNAT
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           logConfig:
@@ -331,7 +316,7 @@ spec:
           routerRef:
             name: #patchme
           natIpAllocateOption: MANUAL_ONLY
-          natIps: #patchme
+          natIps: [] #patchme
           region: #patchme
           sourceSubnetworkIpRangesToNat: ALL_SUBNETWORKS_ALL_IP_RANGES
     patches:
@@ -343,16 +328,16 @@ spec:
         string:
           fmt: '%s-nat-gateway-1'
     - type: FromCompositeFieldPath
+      fromFieldPath: status.natGatewayStaticIP
+      toFieldPath: spec.forProvider.natIps[0]
+      policy:
+        fromFieldPath: Required
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.natGatewayStaticIP
-      toFieldPath: spec.forProvider.natIps[0]
-      policy:
-        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.routerRef.name
@@ -378,6 +363,7 @@ spec:
       apiVersion: kms.gcp.upbound.io/v1beta1
       kind: KeyRing
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           location: #patchme
@@ -406,6 +392,7 @@ spec:
       apiVersion: kms.gcp.upbound.io/v1beta1
       kind: CryptoKey
       spec:
+        deletionPolicy: Orphan
         forProvider:
           keyRingRef:
             name: #patchme
@@ -436,6 +423,7 @@ spec:
       apiVersion: kms.gcp.upbound.io/v1beta1
       kind: CryptoKey
       spec:
+        deletionPolicy: Orphan
         forProvider:
           keyRingRef:
             name: #patchme
@@ -470,6 +458,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           cryptoKeyIdRef:
             name: #patchme
@@ -511,6 +500,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           cryptoKeyIdRef:
             name: #patchme
@@ -552,6 +542,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           addonsConfig:
           - dnsCacheConfig:
@@ -685,6 +676,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: GKE NodePool Service Account
@@ -714,6 +706,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
@@ -759,6 +752,7 @@ spec:
         annotations:
           crossplane.io/external-name: GKE_GCP_Load_Balancer_Controller_Role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           permissions:
@@ -798,6 +792,7 @@ spec:
         annotations:
           crossplane.io/external-name: external_dns_role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           permissions:
@@ -834,6 +829,7 @@ spec:
         annotations:
           crossplane.io/external-name: cert_manager_role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           permissions:
@@ -871,6 +867,7 @@ spec:
         annotations:
           crossplane.io/external-name: warehouse_read_only_role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           permissions:
@@ -916,6 +913,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: postgres operator gcs backup Service Account
@@ -950,6 +948,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "mlflow-artifacts-sa"
@@ -984,6 +983,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "api-service-sa"
@@ -1018,6 +1018,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "data-service-sa"
@@ -1052,6 +1053,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "data-service-external-sa"
@@ -1086,6 +1088,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "dataflow-listener-sa"
@@ -1120,6 +1123,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "exec-service-python-sa"
@@ -1154,6 +1158,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "data-lineage-sa"
@@ -1188,6 +1193,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "gcs-velero-sa"
@@ -1222,6 +1228,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #project
           displayName: "load-balancer-controller-sa"
@@ -1256,6 +1263,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "external-data-upload-sa"
@@ -1287,6 +1295,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "dataspace-backend-sa"
@@ -1318,6 +1327,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "external-dns-sa"
@@ -1349,6 +1359,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "cert-manager-sa"
@@ -1380,6 +1391,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "warehouse-sa"
@@ -1411,6 +1423,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "spark-sa"
@@ -1442,6 +1455,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "spark-history-server-sa"
@@ -1473,6 +1487,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "metastore-sa"
@@ -1504,6 +1519,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           displayName: "trino-sa"
@@ -1530,6 +1546,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1573,6 +1590,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #project
           member: #patchme
@@ -1609,6 +1627,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #project
           member: #patchme
@@ -1646,6 +1665,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1685,6 +1705,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1724,6 +1745,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1763,6 +1785,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1802,6 +1825,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1841,6 +1865,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1880,6 +1905,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1919,6 +1945,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1958,6 +1985,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -1997,6 +2025,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2041,6 +2070,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2080,6 +2110,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2119,6 +2150,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2158,6 +2190,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2201,6 +2234,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           member: #patchme
@@ -2237,6 +2271,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           member: #patchme
@@ -2278,6 +2313,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           member: #patchme
@@ -2315,6 +2351,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2354,6 +2391,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2393,6 +2431,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2432,6 +2471,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2471,6 +2511,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2510,6 +2551,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2549,6 +2591,7 @@ spec:
       apiVersion: storage.gcp.upbound.io/v1beta1
       kind: BucketIAMMember
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -2591,6 +2634,7 @@ spec:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
       spec:
+        #deletionPolicy: Orphan
         forProvider:
           manifest:
             apiVersion: v1
@@ -2701,6 +2745,7 @@ spec:
       apiVersion: route53.aws.upbound.io/v1beta1
       kind: Record
       spec:
+        #deletionPolicy: Orphan
         forProvider:
           name: #patchme
           type: NS
@@ -2740,6 +2785,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
     patches:
@@ -2765,6 +2811,7 @@ spec:
           name: #patchme
           policy:
             resolve: "Always"
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           member: #patchme
@@ -2802,6 +2849,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           location: #patchme
@@ -2847,6 +2895,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           location: #patchme
@@ -2903,6 +2952,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           location: #patchme
@@ -2944,6 +2994,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           location: #patchme
@@ -2985,6 +3036,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           location: #patchme
@@ -3023,6 +3075,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           project: #patchme
           location: #patchme
@@ -3054,212 +3107,6 @@ spec:
       patchSetName: providerconfigref-patch
 
 # #####
-# # GCP Certificate Manager DNS
-# #####
-
-  - name: dns-authorization
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: DNSAuthorization
-      spec:
-        forProvider:
-          project: #patchme
-          domain: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-gcp-cm-dns-authorization'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.domain
-      transforms:
-        - type: string
-          string:
-            fmt: '%s.ubix.io'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.dnsAuthorizationID
-
-  - name: gcp-certificate-manager-certificate
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: Certificate
-      metadata:
-        labels:
-          child-account-gcp-cm-certificate: #patched
-      spec:
-        forProvider:
-          project: #patchme
-          location: global
-          managed:
-          - dnsAuthorizations: [] #patchme
-            domains: [] #patchme
-              #- subdomain.example.com
-              #- *.subdomain.example.com
-          scope: DEFAULT
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-gcm-certificate'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[0]
-      transforms:
-      - type: string
-        string:
-          fmt: '*.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[1]
-      transforms:
-      - type: string
-        string:
-          fmt: '%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.dnsAuthorizationID
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.certificateID
-
-  - name: gcp-certificate-map
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: CertificateMap
-      spec:
-        forProvider:
-          project: #patchme
-          description: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-certificate-map'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.description
-      transforms:
-        - type: string
-          string:
-            fmt: '%s certificate map'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: gcp-certificate-map-entry-1
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: CertificateMapEntry
-      spec:
-        forProvider:
-          project: #patchme
-          hostname: #patchme
-          certificates: #patchme
-          mapRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-certificate-map-entry-1'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.mapRef.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-certificate-map'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.hostname
-      transforms:
-        - type: string
-          string:
-            fmt: '%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.certificateID
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.certificates[0]
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: gcp-certificate-map-entry-2
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: CertificateMapEntry
-      spec:
-        forProvider:
-          project: #patchme
-          hostname: #patchme
-          certificates: [] #patchme
-          mapRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-certificate-map-entry-2'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.mapRef.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-certificate-map'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.hostname
-      transforms:
-        - type: string
-          string:
-            fmt: '*.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.certificateID
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.certificates[0]
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-# #####
 # # Harbor Resources
 # #####
 
@@ -3273,6 +3120,7 @@ spec:
         labels:
           service-account: harbor-sa
       spec:
+        deletionPolicy: Orphan
         providerConfigRef:
           name: #patchme
           policy:
@@ -3299,6 +3147,7 @@ spec:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectIAMMember
       spec:
+        deletionPolicy: Orphan
         providerConfigRef:
           name: #patchme
           policy:
@@ -3335,6 +3184,7 @@ spec:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
       spec:
+        deletionPolicy: Orphan
         providerConfigRef:
           name: #patchme
           policy:
@@ -3378,6 +3228,7 @@ spec:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
       spec:
+        #deletionPolicy: Orphan
         forProvider:
           manifest:
             apiVersion: v1
