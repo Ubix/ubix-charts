@@ -4383,6 +4383,8 @@ spec:
           - fromFieldPath: spec.parameters.region
           - fromFieldPath: status.id
           - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+          - fromFieldPath: status.id
         strategy: string
         string:
           fmt: |
@@ -4468,6 +4470,18 @@ spec:
                         ],
                         "Effect": "Allow",
                         "Resource": "arn:aws:sqs:%s:%s:%s-karpenter-cluster",
+                        "Sid": ""
+                    },
+                    {
+                        "Action": [
+                            "s3:GetObject",
+                            "s3:ListBucket",
+                        ],
+                        "Effect": "Allow",
+                        "Resource": [
+                          "arn:aws:s3:::warehouse-%s",
+                          "arn:aws:s3:::warehouse-%s/*"
+                        ],
                         "Sid": ""
                     }
                 ],
