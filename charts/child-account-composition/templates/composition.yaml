@@ -4479,57 +4479,6 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.karpenterIRSAPolicyArn
-  
-  - name: karpenter-irsa-trino-policy
-    base:
-      apiVersion: iam.aws.upbound.io/v1beta1
-      kind: Policy
-      metadata:
-        annotations:
-          crossplane.io/external-name: karpenter-irsa-trino-policy
-      spec:
-        forProvider:
-          policy: "{}"
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-karpenter-irsa-trino-bucket'
-    - type: CombineFromComposite
-      toFieldPath: spec.forProvider.policy
-      combine:
-        variables:
-          - fromFieldPath: status.id
-          - fromFieldPath: status.id
-        strategy: string
-        string:
-          fmt: |
-            {
-                "Statement": [
-                    {
-                        "Action": [
-                            "s3:GetObject",
-                            "s3:ListBucket",
-                        ],
-                        "Effect": "Allow",
-                        "Resource": [
-                          "arn:aws:s3:::warehouse-%s",
-                          "arn:aws:s3:::warehouse-%s/*"
-                        ],
-                        "Sid": ""
-                    }
-                ],
-                "Version": "2012-10-17"
-            }
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.karpenterIRSATrinoPolicyArn
 
   - name: efs-csi-driver-policy
     base:
@@ -5016,39 +4965,6 @@ spec:
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
-        policy:
-          fromFieldPath: Required
-  
-  - name: karpenter-irsa-trino-policy-attachment
-    base:
-      apiVersion: iam.aws.upbound.io/v1beta1
-      kind: RolePolicyAttachment
-      spec:
-        forProvider:
-          policyArn: #patchme
-          role: #patchme
-    patches:
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-karpenter-irsa-trino-bucket"
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.karpenterIRSATrinoPolicyArn
-        toFieldPath: spec.forProvider.policyArn
-        policy:
-          fromFieldPath: Required
-      - type: FromCompositeFieldPath
-        fromFieldPath: spec.id
-        toFieldPath: spec.forProvider.roleRef.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-karpenter-cluster"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -6353,6 +6269,44 @@ spec:
       - type: string
         string:
           fmt: '%s-trino'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-warehouse-read-only'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
+  
+  - name: karpenter-cluster-trino-bucket-ro-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArnRef:
+            name: #patchme
+          roleRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-trino-warehouse-read-only'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.policyArnRef.name
