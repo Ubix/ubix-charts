@@ -6299,7 +6299,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-trino-warehouse-read-only'
+          fmt: '%s-karpenter-cluster-trino-warehouse-read-only'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
