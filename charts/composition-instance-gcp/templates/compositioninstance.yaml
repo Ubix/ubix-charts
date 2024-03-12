@@ -15,3 +15,4 @@ spec:
     name: {{ .Values.spec.parameters.name }}
     providerconfig: {{ .Values.spec.parameters.providerconfig }}
   gke:
+    version: {{ quote .Values.spec.gke.version }}
