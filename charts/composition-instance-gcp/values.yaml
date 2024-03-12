@@ -1,0 +1,13 @@
+# Default values for compositioninstances.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#sample
+metadata:
+  name: #name to tag the created resources
+spec:
+  id: #value used to name the aws resources created like vpc, subnet, eks cluster, etc
+  parameters:
+    name: #customer account name, will also be injected in the aws root account email
+    providerconfig: "childaccount-gcp"
+  gke:
