@@ -13,6 +13,7 @@ spec:
       name: childaccount-gcp
   parameters:
     name: {{ .Values.spec.parameters.name }}
+    region: {{ .Values.spec.parameters.region }}
     providerconfig: {{ .Values.spec.parameters.providerconfig }}
   gke:
     version: {{ quote .Values.spec.gke.version }}
