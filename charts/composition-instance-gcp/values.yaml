@@ -10,6 +10,6 @@ spec:
   parameters:
     name: #customer account name, will also be injected in the aws root account email
     region: us-east-4
-    providerconfig: "childaccount-gcp"
+    providerconfig: "root-gcp"
   gke:
     version: 1.29.1-gke.1589017
