@@ -1,4 +1,4 @@
-apiVersion: childaccounts.gcp.ubix.io/v1alpha1
+apiVersion: gcp.ubix.io/v1alpha1
 kind: ChildAccountClaim
 metadata:
   name: {{ .Values.metadata.name }}
