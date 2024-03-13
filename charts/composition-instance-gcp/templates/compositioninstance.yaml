@@ -1,4 +1,4 @@
-apiVersion: cloudspace.resources/v1alpha1
+apiVersion: childaccounts.gcp.ubix.io/v1alpaha1
 kind: ChildAccountClaim
 metadata:
   name: {{ .Values.metadata.name }}
