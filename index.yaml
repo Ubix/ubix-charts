@@ -3055,6 +3055,16 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/data-lineage-0.35.0/data-lineage-0.35.0.tgz
     version: 0.35.0
+  docker-registry:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-03-15T20:15:50.865938442Z"
+    description: A Helm chart for Kubernetes
+    digest: e3da4abc881aaf42dbf5ed047c3842394af5a7b5976b39f3a869073b7f4d7214
+    name: docker-registry
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/docker-registry-0.0.1/docker-registry-0.0.1.tgz
+    version: 0.0.1
   eventstore:
   - apiVersion: v1
     appVersion: 4.1.1-hotfix1
@@ -3649,4 +3659,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-15T17:08:48.805543015Z"
+generated: "2024-03-15T20:15:50.867059287Z"
