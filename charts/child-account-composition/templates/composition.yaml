@@ -6714,7 +6714,7 @@ spec:
                 - PUT
               allowedOrigins:
                 - patchme
-              maxAgeSeconds: 6000
+              maxAgeSeconds: 86400
           region: #patchme
     patches:
     - type: FromCompositeFieldPath
