@@ -3478,6 +3478,7 @@ spec:
       spec:
         forProvider:
           assumeRolePolicy: ""
+          maxSessionDuration: 43200
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -6714,7 +6715,7 @@ spec:
                 - PUT
               allowedOrigins:
                 - patchme
-              maxAgeSeconds: 86400
+              maxAgeSeconds: 43200
           region: #patchme
     patches:
     - type: FromCompositeFieldPath
