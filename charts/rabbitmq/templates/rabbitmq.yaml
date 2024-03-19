@@ -1,0 +1,23 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ .Values.rabbitmqClusterName }}
+  annotations:
+    rabbitmq.com/topology-allowed-namespaces: "*"
+spec:
+  imagePullSecrets:
+  - name: docker-registry-secret
+  persistence:
+    storageClassName: {{ .Values.persistence.storageClassName }}
+    storage: {{ .Values.persistence.storage }}
+  resources:
+    requests:
+      cpu: {{ .Values.resources.requests.cpu }}
+      memory: {{ .Values.resources.requests.memory }}
+    limits:
+      memory: {{ .Values.resources.limits.memory }}
+  tolerations:
+  - key: databases
+    operator: Equal
+    value: "true"
+    effect: NoSchedule

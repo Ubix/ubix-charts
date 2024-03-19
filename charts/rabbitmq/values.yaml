@@ -1,0 +1,10 @@
+rabbitmqClusterName: rabbitmq-backoffice
+persistence:
+  storageClassName: gp3
+  storage: 8Gi
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    memory: 2Gi

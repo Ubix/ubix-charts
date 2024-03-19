@@ -1,0 +1,12 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: Policy
+metadata:
+  name: {{ .Values.rabbitmqClusterName }}-remove-amq-gen-queues
+spec:
+  name: remove-amq-gen-queues
+  pattern: "^amq.gen*"
+  applyTo: "queues"
+  definition:
+    expires: 600
+  rabbitmqClusterReference:
+    name: {{ .Values.rabbitmqClusterName }}
