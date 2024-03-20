@@ -36,4 +36,3 @@ policies:
   applyTo: "queues"
   definition:
     expires: 600
-
