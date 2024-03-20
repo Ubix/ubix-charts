@@ -1,12 +1,11 @@
+{{ $clusterName := .Values.clusterName}}
+{{ range .Values.policies }}
 apiVersion: rabbitmq.com/v1beta1
 kind: Policy
 metadata:
-  name: {{ .Values.rabbitmqClusterName }}-remove-amq-gen-queues
+  name: {{ $clusterName }}-{{ .name }}
 spec:
-  name: remove-amq-gen-queues
-  pattern: "^amq.gen*"
-  applyTo: "queues"
-  definition:
-    expires: 600
+{{ . | toYaml | indent 2 }}
   rabbitmqClusterReference:
-    name: {{ .Values.rabbitmqClusterName }}
+    name: {{ $clusterName }}
+{{ end }}

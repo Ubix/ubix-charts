@@ -1,0 +1,37 @@
+{{ $clusterName := .Values.clusterName }}
+{{ range .Values.queues }}
+apiVersion: rabbitmq.com/v1beta1
+kind: Queue
+metadata:
+  name: {{ $clusterName }}-{{ .name }}
+spec:
+  name: {{ .name }}
+  autoDelete: {{ .autoDelete }}
+  durable: {{ .durable }}
+  rabbitmqClusterReference:
+    name: {{ $clusterName }}
+---
+{{ $queueName := .name }}
+{{ range .exchanges }}
+apiVersion: rabbitmq.com/v1beta1
+kind: Exchange
+metadata:
+  name: {{ $clusterName }}-{{ .name }}
+spec:
+{{ . | toYaml | indent 2 }}
+  rabbitmqClusterReference:
+    name: {{ $clusterName }}
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Binding
+metadata:
+  name: {{ $clusterName }}-{{ .name }}
+spec:
+  vhost: {{ .vhost }}
+  source: {{ .name }}
+  destination: {{ $queueName }}
+  destinationType: queue
+  rabbitmqClusterReference:
+    name: {{ $clusterName }}
+{{ end }}
+{{ end }}

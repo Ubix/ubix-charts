@@ -1,4 +1,4 @@
-rabbitmqClusterName: rabbitmq-backoffice
+clusterName: rabbitmq-backoffice
 persistence:
   storageClassName: gp3
   storage: 8Gi
@@ -8,3 +8,32 @@ resources:
     memory: 1Gi
   limits:
     memory: 2Gi
+queues:
+- name: account-status
+  autoDelete: false
+  durable: false
+  exchanges:
+  - name: account-status
+    vhost: "/"
+    type: fanout
+    autoDelete: false
+    durable: true
+users:
+- name: account-provisioner
+  vhost: "/"
+  tags:
+  - administrator
+  permissions:
+    write: ".*"
+    configure: ".*"
+    read: ".*"
+  credentialsNamespaces:
+  - data-tooling
+  - services
+policies:
+- name: remove-amq-gen-queues
+  pattern: "^amq.gen*"
+  applyTo: "queues"
+  definition:
+    expires: 600
+
