@@ -4,7 +4,6 @@ apiVersion: rabbitmq.com/v1beta1
 kind: User
 metadata:
   name: {{ .name }}
-  namespace: databases
 spec:
   tags:
 {{ .tags | toYaml | indent 2}}
