@@ -6,7 +6,7 @@ metadata:
     rabbitmq.com/topology-allowed-namespaces: "*"
 spec:
   imagePullSecrets:
-  - name: docker-registry-secret
+  - name: .Values.imagePullSecret
   persistence:
     storageClassName: {{ .Values.persistence.storageClassName }}
     storage: {{ .Values.persistence.storage }}
@@ -17,7 +17,4 @@ spec:
     limits:
       memory: {{ .Values.resources.limits.memory }}
   tolerations:
-  - key: databases
-    operator: Equal
-    value: "true"
-    effect: NoSchedule
+{{ .Values.tolerations | toYaml | indent 2}}

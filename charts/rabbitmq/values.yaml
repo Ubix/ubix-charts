@@ -30,9 +30,15 @@ users:
   credentialsNamespaces:
   - data-tooling
   - services
+imagePullSecret: docker-registry-secret
 policies:
 - name: remove-amq-gen-queues
   pattern: "^amq.gen*"
   applyTo: "queues"
   definition:
     expires: 600
+tolerations:
+- key: databases
+  operator: Equal
+  value: "true"
+  effect: NoSchedule
