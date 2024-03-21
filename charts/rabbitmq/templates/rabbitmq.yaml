@@ -1,0 +1,20 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ .Values.clusterName }}
+  annotations:
+    rabbitmq.com/topology-allowed-namespaces: "*"
+spec:
+  imagePullSecrets:
+  - name: .Values.imagePullSecret
+  persistence:
+    storageClassName: {{ .Values.persistence.storageClassName }}
+    storage: {{ .Values.persistence.storage }}
+  resources:
+    requests:
+      cpu: {{ .Values.resources.requests.cpu }}
+      memory: {{ .Values.resources.requests.memory }}
+    limits:
+      memory: {{ .Values.resources.limits.memory }}
+  tolerations:
+{{ .Values.tolerations | toYaml | indent 2}}
