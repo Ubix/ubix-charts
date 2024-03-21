@@ -3528,6 +3528,7 @@ spec:
       spec:
         forProvider:
           assumeRolePolicy: ""
+          maxSessionDuration: 43200
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
