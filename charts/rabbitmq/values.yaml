@@ -9,34 +9,34 @@ resources:
   limits:
     memory: 2Gi
 queues:
-- name: account-status
-  autoDelete: false
-  durable: false
-  exchanges:
-  - name: account-status
-    vhost: "/"
-    type: fanout
+  account-status:
     autoDelete: false
-    durable: true
+    durable: false
+    exchanges:
+      account-status:
+        vhost: "/"
+        type: fanout
+        autoDelete: false
+        durable: true
 users:
-- name: account-provisioner
-  vhost: "/"
-  tags:
-  - administrator
-  permissions:
-    write: ".*"
-    configure: ".*"
-    read: ".*"
-  credentialsNamespaces:
-  - data-tooling
-  - services
+  account-provisioner:
+    vhost: "/"
+    tags:
+      administrator: {}
+    permissions:
+      write: ".*"
+      configure: ".*"
+      read: ".*"
+    credentialsNamespaces:
+      data-tooling: {}
+      services: {}
 imagePullSecret: docker-registry-secret
 policies:
-- name: remove-amq-gen-queues
-  pattern: "^amq.gen*"
-  applyTo: "queues"
-  definition:
-    expires: 600
+  remove-amq-gen-queues:
+    pattern: "^amq.gen*"
+    applyTo: "queues"
+    definition:
+      expires: 600
 tolerations:
 - key: databases
   operator: Equal
