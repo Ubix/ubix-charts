@@ -6,7 +6,7 @@ metadata:
     rabbitmq.com/topology-allowed-namespaces: "*"
 spec:
   imagePullSecrets:
-  - name: .Values.imagePullSecret
+  - name: {{ .Values.imagePullSecret }}
   persistence:
     storageClassName: {{ .Values.persistence.storageClassName }}
     storage: {{ .Values.persistence.storage }}
