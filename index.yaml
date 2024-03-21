@@ -3516,6 +3516,15 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/otel-collector-1.0.1/otel-collector-1.0.1.tgz
     version: 1.0.1
+  rabbitmq:
+  - apiVersion: v1
+    created: "2024-03-21T20:06:44.558751115Z"
+    description: Generic RabbitMQ helm chart
+    digest: aab909250d9223c061a4b124a06d95513ef502afca09c452f0ae78fc149406ff
+    name: rabbitmq
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/rabbitmq-0.0.1/rabbitmq-0.0.1.tgz
+    version: 0.0.1
   velero-pvc-backup-scheduler:
   - apiVersion: v1
     appVersion: 5.2.0
@@ -3697,4 +3706,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-21T18:04:07.371783029Z"
+generated: "2024-03-21T20:06:44.559462987Z"
