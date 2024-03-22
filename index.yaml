@@ -3547,6 +3547,20 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/rabbitmq-0.0.1/rabbitmq-0.0.1.tgz
     version: 0.0.1
+  trino-gateway:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-03-22T14:36:57.464249982Z"
+    description: A load balancer / proxy / gateway for Trino
+    digest: e4c4bc0d7fd70f817d5f32083df1d646c9e8d11a670df65a55199144b08f3e9c
+    home: https://github.com/starburstdata/trino-gateway
+    name: trino-gateway
+    sources:
+    - https://github.com/starburstdata/trino-gateway
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/trino-gateway-1.0.0/trino-gateway-1.0.0.tgz
+    version: 1.0.0
   velero-pvc-backup-scheduler:
   - apiVersion: v1
     appVersion: 5.2.0
@@ -3728,4 +3742,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-22T14:20:22.260322041Z"
+generated: "2024-03-22T14:36:57.464877154Z"
