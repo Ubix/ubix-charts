@@ -1,0 +1,80 @@
+# Default values for gateway.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: harbor.starburstdata.net/gateway/gateway
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+gateway:
+  requestPort: 8080
+  appPort: 8090
+  adminPort: 8091
+  log:
+    level: INFO
+  tls:
+    enabled: false
+    keystorePath: ""
+    keystorePassword: ""
+  routingRules:
+    enabled: false
+    configPath: ""
+  queryHistorySize: 1000
+  rerouteRequestsToApplication: true
+
+securityConf: ""
+
+backendState:
+  username:
+  password:
+  ssl: true
+
+backendDatabase:
+  type: postgres
+  #must be postgres or mysql
+  host: localhost
+  port: 5432
+  schema: gateway
+  user:
+    secret: my-credentials-secret
+    key: username
+  password:
+    secret: my-credentials-secret
+    key: password
+
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+
+service:
+  type: ClusterIP
+  requestPort: 8080
+  appPort: 8090
+  adminPort: 8091
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+monitor:
+  connectionTimeout: 15
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+secretMounts: []
+
+additionalVolumes: []
+
+extraJvmOptions: ""
+
+topologySpreadConstraints: []
