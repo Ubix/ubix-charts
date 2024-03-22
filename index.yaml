@@ -3196,6 +3196,20 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/eventstore-0.2.5/eventstore-0.2.5.tgz
     version: 0.2.5
+  gateway:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-03-22T14:20:22.259846135Z"
+    description: A load balancer / proxy / gateway for Trino
+    digest: 5f8099ad8196c28095ea9f6a41d7ad8c0c34b37509e21e696168e5d8324b033a
+    home: https://github.com/starburstdata/trino-gateway
+    name: gateway
+    sources:
+    - https://github.com/starburstdata/trino-gateway
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/gateway-1/gateway-1.tgz
+    version: "1"
   hadoop:
   - apiVersion: v1
     appVersion: 2.9.0
@@ -3714,4 +3728,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-21T23:09:39.102854137Z"
+generated: "2024-03-22T14:20:22.260322041Z"
