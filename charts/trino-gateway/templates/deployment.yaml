@@ -123,6 +123,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
+            - name: gateway-conf
+              mountPath: /opt/trino
             {{- range .Values.secretMounts }}
             - name: {{ .name }}
               mountPath: {{ .path }}
@@ -136,6 +138,9 @@ spec:
               {{- end }}
             {{- end }}
       volumes:
+        - name: gateway-conf
+          configMap:
+            name: {{ include "gateway.fullname" . }}-cm
         {{- range .Values.secretMounts }}
         - name: {{ .name }}
           secret:
