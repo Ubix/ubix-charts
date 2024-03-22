@@ -3550,6 +3550,19 @@ entries:
   trino-gateway:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2024-03-22T17:47:41.957606089Z"
+    description: A load balancer / proxy / gateway for Trino
+    digest: c9614f9bb388b0474d5264c7a8ad71c13c9b86316bf4424b7092d6343361c430
+    home: https://github.com/starburstdata/trino-gateway
+    name: trino-gateway
+    sources:
+    - https://github.com/starburstdata/trino-gateway
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/trino-gateway-1.0.2/trino-gateway-1.0.2.tgz
+    version: 1.0.2
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2024-03-22T17:21:44.784948975Z"
     description: A load balancer / proxy / gateway for Trino
     digest: d96a991e085c80840f71eee2faffd27e26e05cf2db79c69de4eeee6e20cdcae7
@@ -3755,4 +3768,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-22T17:21:44.785539399Z"
+generated: "2024-03-22T17:47:41.958666293Z"
