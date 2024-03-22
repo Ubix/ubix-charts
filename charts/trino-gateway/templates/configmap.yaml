@@ -3,9 +3,9 @@ data:
   gateway-ha-config.yml: |-
     {{ with .Values.gateway }}
     routingRules:
-      rulesEngineEnabled: .routingRules.enabled
+      rulesEngineEnabled: {{ .routingRules.enabled }}
       {{ if .routingRules.enabled }}
-      rulesConfigPath: .routingRules.configPath
+      rulesConfigPath: {{ .routingRules.configPath }}
       {{ end }}
 
     requestRouter:
