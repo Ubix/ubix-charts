@@ -1,0 +1,19 @@
+apiVersion: gcp.ubix.io/v1alpha1
+kind: ChildAccountClaim
+metadata:
+  name: {{ .Values.metadata.name }}
+  labels:
+    provider: upbound-provider-family-gcp
+    name: childaccount-gcp
+spec:
+  id: {{ .Values.spec.id }}
+  compositionSelector:
+    matchLabels:
+      provider: upbound-provider-family-gcp
+      name: childaccount-gcp
+  parameters:
+    name: {{ .Values.spec.parameters.name }}
+    region: {{ .Values.spec.parameters.region }}
+    providerconfig: {{ .Values.spec.parameters.providerconfig }}
+  gke:
+    version: {{ quote .Values.spec.gke.version }}

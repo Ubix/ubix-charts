@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: docker-registry-secret
+data:
+  .dockerconfigjson: "{{ .Values.dockerConfigJson | b64enc }}"
+type: kubernetes.io/dockerconfigjson

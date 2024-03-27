@@ -3478,6 +3478,7 @@ spec:
       spec:
         forProvider:
           assumeRolePolicy: ""
+          maxSessionDuration: 43200
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3527,6 +3528,7 @@ spec:
       spec:
         forProvider:
           assumeRolePolicy: ""
+          maxSessionDuration: 43200
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -6281,6 +6283,44 @@ spec:
       toFieldPath: spec.providerConfigRef.name
       policy:
         fromFieldPath: Required
+  
+  - name: karpenter-cluster-trino-bucket-ro-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArnRef:
+            name: #patchme
+          roleRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster-trino-warehouse-read-only'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-warehouse-read-only'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+      policy:
+        fromFieldPath: Required
 
 #####
 # ArgoCD
@@ -6676,7 +6716,6 @@ spec:
                 - PUT
               allowedOrigins:
                 - patchme
-              maxAgeSeconds: 6000
           region: #patchme
     patches:
     - type: FromCompositeFieldPath
