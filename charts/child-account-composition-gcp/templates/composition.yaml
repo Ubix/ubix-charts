@@ -90,7 +90,7 @@ spec:
         type: string
     - type: PatchSet
       patchSetName: providerconfigref-patch
-
+    
   - name: Enable GKE API
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -187,7 +187,7 @@ spec:
           ipCidrRange: 10.0.64.0/20
           networkRef:
             name: # patched
-          region: # patched
+          region: # patched 
           privateIpGoogleAccess: true
           secondaryIpRange:
             - ipCidrRange: 10.8.0.0/14
@@ -550,18 +550,23 @@ spec:
             gcePersistentDiskCsiDriverConfig:
             - enabled: true
           project: #patchme
-          enableAutopilot: true
+          #enableAutopilot: true
           location: #patchme
           # nodeLocations:
-          # - us-central1-a
-          #   us-central1-b
+          # - us-east4-a
+          #   us-east4-b
           #   us-central1-c
-          #   us-central1-f
           minMasterVersion: #patchme
+          releaseChannel:
+          - channel: STABLE
+          verticalPodAutoscaling:
+          - enabled: true
           privateClusterConfig:
           - enablePrivateNodes: true
             enablePrivateEndpoint: false
+            masterIpv4CidrBlock: 192.168.0.0/28
           removeDefaultNodePool: true
+          initialNodeCount: 1
           networkRef:
             name: #patchme
           subnetworkRef:
@@ -571,11 +576,31 @@ spec:
             - displayName: "ArgoCD AWS NAT IP address"
               cidrBlock: "{{ .Values.AWSNATIP }}/32"
           clusterAutoscaling:
-            - autoProvisioningDefaults:
+            - enabled: true
+              autoProvisioningDefaults:
                 - bootDiskKmsKey: #patchme
+                  diskSize: 50
+                  diskType: pd-standard
                   serviceAccount: #patchme
+                  management:
+                  - autoRepair: true
+                    autoUpgrade: true
+                  shieldedInstanceConfig:
+                  - enableIntegrityMonitoring: true
+                    enableSecureBoot: true
+                  upgradeSettings:
+                  - strategy: SURGE
+                    maxSurge: 1
+                    maxUnavailable: 0
                   oauthScopes:
                   - "https://www.googleapis.com/auth/cloud-platform"
+              resourceLimits:
+              - resourceType: 'cpu'
+                maximum: 1024
+              - resourceType: 'memory'
+                maximum: 1024
+              - resourceType: 'nvidia-tesla-t4'
+                maximum: 16
           databaseEncryption:
           - keyName: #patchme
             state: "ENCRYPTED"
@@ -696,7 +721,7 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.gkeNodePoolSAEmail
-
+      
   - name: workload-identity-iambinding-nodepool
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -710,7 +735,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef:
+          serviceAccountIdRef: 
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -933,7 +958,7 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.postgresOperatorGCSSAEmail
-
+    
   - name: mlflow-artifcats-sa
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -2901,7 +2926,7 @@ spec:
           location: #patchme
           publicAccessPrevention: "enforced"
           cors:
-          - origin:
+          - origin: 
               - #patchme
             method:
               - "PUT"
@@ -3192,7 +3217,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef:
+          serviceAccountIdRef: 
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
