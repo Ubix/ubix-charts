@@ -12,4 +12,4 @@ spec:
     region: us-east-4
     providerconfig: "root-gcp"
   gke:
-    version: 1.29.1-gke.1589017
+    version: 1.27.8-gke.1067004
