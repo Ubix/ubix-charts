@@ -5267,14 +5267,6 @@ spec:
         policy:
           fromFieldPath: Required
 
-- type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-nix'
-
   - name: exec-service-warehouse-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
