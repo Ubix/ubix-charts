@@ -4899,22 +4899,8 @@ spec:
           crossplane.io/external-name: nix-policy
       spec:
         forProvider:
-          policy: "{}"
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-nix'
-    - type: FromCompositeFieldPath
-      toFieldPath: spec.forProvider.policy
-      transforms:
-      - type: string
-        string:
-          fmt: |
-              {
+          policy: |
+            {
                  "Version": "2012-10-17",
                  "Statement": [
                       {
@@ -4930,6 +4916,14 @@ spec:
                       }
                  ]
               }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nix'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
