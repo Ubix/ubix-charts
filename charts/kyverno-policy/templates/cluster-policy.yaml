@@ -1,0 +1,13 @@
+{{- range $policyName, $policy := .Values.clusterPolicies }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: {{ $policyName }}
+  {{- if $policy.annotations }}
+  annotations:
+    {{ toYaml $policy.annotations }}
+  {{- end }}
+spec:
+{{ toYaml (required "the spec is required" $policy.spec) | indent 2 }}
+---
+{{- end }}
