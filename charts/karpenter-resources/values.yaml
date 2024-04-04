@@ -1,5 +1,7 @@
 nodeClass:
   my-node-class:
+    amiSelectorTags:
+      name: my-ami
     subnetSelectorTags:
       karpenter.sh/discovery: "my-cluster"
       environment: "my-env"
