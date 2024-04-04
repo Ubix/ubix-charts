@@ -3381,6 +3381,16 @@ entries:
   kyverno-policy:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-04-04T22:38:55.441260143Z"
+    description: A Helm chart to create kyverno policies
+    digest: 8c945e2ab93552e931d72355315838a2ffc6d8a94d393ca87e93acf846df6f16
+    name: kyverno-policy
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/kyverno-policy-0.1.2/kyverno-policy-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-04-04T22:35:09.74400453Z"
     description: A Helm chart to create kyverno policies
     digest: 899fd8b3eab8125da708d91705de42cd11480b8a2ffd5c800060ce4fdf431233
@@ -3876,4 +3886,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-04T22:35:09.744532792Z"
+generated: "2024-04-04T22:38:55.442263023Z"
