@@ -5,7 +5,7 @@ metadata:
   name: {{ $policyName }}
   {{- if $policy.annotations }}
   annotations:
-    {{ toYaml $policy.annotations }}
+{{ toYaml $policy.annotations | indent 4 }}
   {{- end }}
 spec:
 {{ toYaml (required "the spec is required" $policy.spec) | indent 2 }}
