@@ -1,0 +1,23 @@
+{{ range $nodeClassName, $nodeClassSpecs := .Values.nodeClass }}
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: {{ $nodeClassName }}
+spec:
+  amiFamily: {{ default "AL2" $nodeClassSpecs.amiFamily }}
+  subnetSelectorTerms:
+  - tags:
+      {{ $nodeClassSpecs.subnetSelectorTags }}
+  securityGroupSelectorTerms:
+    - tags:
+        {{ $nodeClassSpecs.securityGroupSelectorTags }}
+  instanceProfile: "{{ $nodeClassSpecs.instanceProfile }}"
+  tags:
+    {{ $nodeClassSpecs.tags | toYaml }}
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: {{ $nodeClassSpecs.volumeSize }}
+        volumeType: gp3
+        deleteOnTermination: true
+{{ end }}

@@ -1,0 +1,66 @@
+
+{{ range $nodePoolName, $nodePoolSpecs := .Values.nodePools }}
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: {{ $nodePoolName }}
+spec:
+  template:
+    metadata:
+      labels:
+        {{ $nodePoolSpecs.labels | toYaml }}
+      annotations:
+        {{ $nodePoolSpecs.annotations | toYaml }}
+    spec:
+      nodeClassRef:
+        apiVersion: karpenter.k8s.aws/v1beta1
+        kind: EC2NodeClass
+        name: {{ $nodePoolSpecs.nodeClass }}
+      {{ if $nodePoolSpecs.taints }}
+      taints:
+      {{ range $taintKey, $taintEffect := $nodePoolSpecs.taints -}}
+      - key: {{ $taintKey }}
+        effect: {{ $taintEffect }}
+      {{ end }}
+      {{ end }}
+      {{ if $nodePoolSpecs.startupTaints }}
+      startupTaints:
+      {{ range $startupTaintKey, $startupTaintEffect := $nodePoolSpecs.startupTaints -}}
+      - key: {{ $startupTaintKey }}
+        effect: {{ $startupTaintEffect }}
+      {{ end }}
+      {{ end }}
+      requirements:
+      {{ range $requirementsKey, $requirementsSpec := $nodePoolSpecs.requirements -}}
+      - key: {{ $requirementsKey }}
+        operator: {{ $requirementsSpec.operator }}
+        values:
+        {{ range $requirementKey, $requirementValue := $requirementsSpec.values -}}
+        - {{ $requirementKey }}
+        {{ end -}}
+      {{ end }}
+  {{ if $nodePoolSpecs.disruption }}
+  disruption:
+    consolidationPolicy: {{ $nodePoolSpecs.disruption.consolidationPolicy }} # WhenUnderutilized | WhenEmpty
+    consolidateAfter: {{ $nodePoolSpecs.disruption.consolidateAfter }} # 30s
+    expireAfter: {{ $nodePoolSpecs.disruption.expireAfter }} # 720h
+    budgets:
+    {{ range $budget := $nodePoolSpecs.disruption.budgets -}}
+    - nodes: {{ $budget.nodes }}
+      {{- if $budget.schedule }}
+      schedule: {{ $budget.schedule -}}
+      {{ end }}
+      {{- if $budget.duration }}
+      duration: {{ $budget.duration }}
+      {{ end -}}
+    {{ end }}
+  {{ end }}
+  limits:
+    {{ if $nodePoolSpecs.limits.cpu -}}
+    cpu: {{ $nodePoolSpecs.limits.cpu }}
+    {{ end -}}
+    {{ if $nodePoolSpecs.limits.memory -}}
+    memory: {{ $nodePoolSpecs.limits.memory }}
+    {{ end }}
+  weight: {{ default 0 $nodePoolSpecs.weight }}
+{{ end }}
