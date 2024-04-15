@@ -554,7 +554,7 @@ secret:
 # Service Monitor to collect Prometheus metrices
 ##########################################################
 serviceMonitor:
-  enabled: true
+  enabled: false
   #namespace: default
   # Additional labels
   additionalLabels:
