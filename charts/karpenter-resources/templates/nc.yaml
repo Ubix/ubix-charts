@@ -7,10 +7,10 @@ spec:
   amiFamily: {{ default "AL2" $nodeClassSpecs.amiFamily }}
   subnetSelectorTerms:
   - tags:
-      {{ $nodeClassSpecs.subnetSelectorTags }}
+{{ $nodeClassSpecs.subnetSelectorTags | toYaml | indent 6}}
   securityGroupSelectorTerms:
     - tags:
-        {{ $nodeClassSpecs.securityGroupSelectorTags }}
+{{ $nodeClassSpecs.securityGroupSelectorTags | toYaml | indent 6 }}
   instanceProfile: "{{ $nodeClassSpecs.instanceProfile }}"
   tags:
     {{ $nodeClassSpecs.tags | toYaml }}
