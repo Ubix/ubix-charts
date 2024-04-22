@@ -1,4 +1,4 @@
 apiVersion: v1
 name: karpenter-resources
 description: Generic Karpenter Resources helm chart
-version: 1.0.4
+version: 1.0.5
