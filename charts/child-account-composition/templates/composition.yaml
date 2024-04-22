@@ -4732,7 +4732,7 @@ spec:
                   "Action": "iam:TagInstanceProfile",
                   "Condition": {
                     "StringEquals": {
-                      "aws:ResourceTag/kubernetes.io/cluster/$s": "owned",
+                      "aws:ResourceTag/kubernetes.io/cluster/%s": "owned",
                       "aws:ResourceTag/topology.kubernetes.io/region": "%s",
                       "aws:RequestTag/kubernetes.io/cluster/%s": "owned",
                       "aws:RequestTag/topology.kubernetes.io/region": "%s"
