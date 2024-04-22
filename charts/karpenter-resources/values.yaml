@@ -1,42 +1,42 @@
-nodeClass:
-  my-node-class:
-    subnetSelectorTags:
-      karpenter.sh/discovery: "my-cluster"
-      environment: "my-env"
-    securityGroupSelectorTags:
-      karpenter.sh/discovery: "my-cluster"
-      environment: "my-env"
-    tags:
-      cluster_name: "my-cluster"
-    instanceProfile: "my-instance-profile"
-    volumeSize: 100Gi
-nodePools:
-  my-node-pool:
-    labels:
-      pool: my-node-pool
-    annotations:
-      pool-size: huge
-    nodeClass: my-node-class
-    taints:
-      example.com/special-taint: NoSchedule
-    startupTaints:
-      example.com/another-taint: NoSchedule
-    requirements:
-      karpenter.k8s.aws/instance-category:
-        operator: In
-        values:
-          c: {}
-          m: {}
-          r: {}
-    disruption:
-      consolidationPolicy: WhenUnderutilized
-      consolidateAfter: 30s
-      expireAfter: 720h
-      budgets:
-        my-budget:
-          nodes: 10%
-          schedule: "0 9 * * mon-fri"
-          duration: 8h
-    limits:
-      cpu: "1000"
-      memory: 1000Gi
+# nodeClass:
+#   my-node-class:
+#     subnetSelectorTags:
+#       karpenter.sh/discovery: "my-cluster"
+#       environment: "my-env"
+#     securityGroupSelectorTags:
+#       karpenter.sh/discovery: "my-cluster"
+#       environment: "my-env"
+#     tags:
+#       cluster_name: "my-cluster"
+#     instanceProfile: "my-instance-profile"
+#     volumeSize: 100Gi
+# nodePools:
+#   my-node-pool:
+#     labels:
+#       pool: my-node-pool
+#     annotations:
+#       pool-size: huge
+#     nodeClass: my-node-class
+#     taints:
+#       example.com/special-taint: NoSchedule
+#     startupTaints:
+#       example.com/another-taint: NoSchedule
+#     requirements:
+#       karpenter.k8s.aws/instance-category:
+#         operator: In
+#         values:
+#           c: {}
+#           m: {}
+#           r: {}
+#     disruption:
+#       consolidationPolicy: WhenUnderutilized
+#       consolidateAfter: 30s
+#       expireAfter: 720h
+#       budgets:
+#         my-budget:
+#           nodes: 10%
+#           schedule: "0 9 * * mon-fri"
+#           duration: 8h
+#     limits:
+#       cpu: "1000"
+#       memory: 1000Gi

@@ -1,5 +1,5 @@
 
-{{ range $nodePoolName, $nodePoolSpecs := .Values.nodePools }}
+{{ range $nodePoolName, $nodePoolSpecs := .Values.nodePool }}
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
 metadata:

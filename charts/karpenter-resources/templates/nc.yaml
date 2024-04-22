@@ -9,11 +9,11 @@ spec:
   - tags:
 {{ $nodeClassSpecs.subnetSelectorTags | toYaml | indent 6}}
   securityGroupSelectorTerms:
-    - tags:
+  - tags:
 {{ $nodeClassSpecs.securityGroupSelectorTags | toYaml | indent 6 }}
   instanceProfile: "{{ $nodeClassSpecs.instanceProfile }}"
   tags:
-    {{ $nodeClassSpecs.tags | toYaml }}
+{{ $nodeClassSpecs.tags | toYaml | indent 4}}
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
