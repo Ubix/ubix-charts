@@ -67,5 +67,5 @@ spec:
     {{- if $nodePoolSpecs.limits.memory }}
     memory: {{ $nodePoolSpecs.limits.memory }}
     {{- end }}
-  weight: {{ default 0 $nodePoolSpecs.weight }}
+  weight: {{ default 1 $nodePoolSpecs.weight }}
 {{- end }}
