@@ -9,9 +9,9 @@ spec:
   template:
     metadata:
       labels:
-        {{ $nodePoolSpecs.labels | toYaml }}
+{{ $nodePoolSpecs.labels | toYaml | indent 8 }}
       annotations:
-        {{ $nodePoolSpecs.annotations | toYaml }}
+{{ $nodePoolSpecs.annotations | toYaml | indent 8 }}
     spec:
       nodeClassRef:
         apiVersion: karpenter.k8s.aws/v1beta1
