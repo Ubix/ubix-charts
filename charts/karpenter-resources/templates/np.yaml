@@ -1,5 +1,5 @@
 
-{{ range $nodePoolName, $nodePoolSpecs := .Values.nodePool }}
+{{- range $nodePoolName, $nodePoolSpecs := .Values.nodePools }}
 ---
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
@@ -43,9 +43,9 @@ spec:
   {{- if $nodePoolSpecs.disruption }}
   disruption:
     consolidationPolicy: {{ $nodePoolSpecs.disruption.consolidationPolicy }} # WhenUnderutilized | WhenEmpty
-    {{ if $nodePoolSpecs.disruption.consolidateAfter }}
+    {{- if $nodePoolSpecs.disruption.consolidateAfter }}
     consolidateAfter: {{ $nodePoolSpecs.disruption.consolidateAfter }} # 30s
-    {{ end }}
+    {{- end }}
     expireAfter: {{ $nodePoolSpecs.disruption.expireAfter }} # 720h
     {{- if $nodePoolSpecs.disruption.budgets }}
     budgets:
