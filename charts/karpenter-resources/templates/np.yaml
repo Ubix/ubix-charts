@@ -37,7 +37,7 @@ spec:
         operator: {{ $requirementsSpec.operator }}
         values:
         {{- range $requirementKey, $requirementValue := $requirementsSpec.values }}
-        - {{ $requirementKey }}
+        - "{{ $requirementKey }}"
         {{- end }}
       {{- end }}
   {{- if $nodePoolSpecs.disruption }}
