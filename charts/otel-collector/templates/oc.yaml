@@ -3,13 +3,16 @@ kind: OpenTelemetryCollector
 metadata:
   name: {{ .Chart.Name }}
 spec:
-{{ if not (eq .Values.mode "sidecar" )}}
-{{ if .Values.volumes }}
+{{- if .Values.setup }}
+{{ .Values.setup | toYaml | indent 2 -}}
+{{ end }}
+{{- if not (eq .Values.mode "sidecar" )}}
+{{- if .Values.volumes }}
   volumes:
 {{ .Values.volumes | toYaml | indent 4 }}
   volumeMounts:
 {{ .Values.volumeMounts | toYaml | indent 4 }}
-{{ end }}
+{{- end }}
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -19,7 +22,7 @@ spec:
             operator: NotIn
             values:
             - fargate
-{{ end }}
+{{- end }}
   mode: {{ .Values.mode -}}
   {{ if eq .Values.mode "daemonset" }}
   priorityClassName: system-cluster-critical
