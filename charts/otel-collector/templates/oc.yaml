@@ -4,10 +4,12 @@ metadata:
   name: {{ .Chart.Name }}
 spec:
 {{ if not (eq .Values.mode "sidecar" )}}
+{{ if .Values.volumes }}
   volumes:
 {{ .Values.volumes | toYaml | indent 4 }}
-  volumeMounts: 
+  volumeMounts:
 {{ .Values.volumeMounts | toYaml | indent 4 }}
+{{ end }}
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
