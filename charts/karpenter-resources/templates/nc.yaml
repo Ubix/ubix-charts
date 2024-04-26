@@ -6,8 +6,10 @@ metadata:
   name: {{ $nodeClassName }}
 spec:
   amiFamily: {{ default "AL2" $nodeClassSpecs.amiFamily }}
+  {{- if .Values.nodeClass.amiSelector }}
   amiSelectorTerms:
 {{ toYaml $nodeClassSpecs.amiSelector | indent 4 }}
+  {{- end }}
   subnetSelectorTerms:
   - tags:
 {{ $nodeClassSpecs.subnetSelectorTags | toYaml | indent 6}}
