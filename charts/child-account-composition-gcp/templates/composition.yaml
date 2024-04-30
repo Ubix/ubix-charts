@@ -598,7 +598,7 @@ spec:
               - resourceType: 'cpu'
                 maximum: 1024
               - resourceType: 'memory'
-                maximum: 1024
+                maximum: 2048
               - resourceType: 'nvidia-tesla-t4'
                 maximum: 16
           databaseEncryption:
