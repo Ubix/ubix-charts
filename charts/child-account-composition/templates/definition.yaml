@@ -205,6 +205,9 @@ spec:
               postgresOperatorRoleName:
                 description: Role that makes sure Postgres can send compressed WAL files to the given S3 bucket
                 type: string
+              collosalAiRoleName:
+                description: Role to give s3 access to the cluster
+                type: string
               dataLineageRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
