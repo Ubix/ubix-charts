@@ -217,7 +217,7 @@ spec:
               dataServiceExternalRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
-              dataFlowListenerRoleName:
+              dataFlowRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
               execServicePythonRoleName:

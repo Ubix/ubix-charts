@@ -2849,7 +2849,7 @@ spec:
               }
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.dataFlowListenerRoleName
+        toFieldPath: status.dataFlowRoleName
 
   - name: exec-service-python-role
     base:
@@ -5518,7 +5518,7 @@ spec:
         policy:
           fromFieldPath: Required
       - type: FromCompositeFieldPath
-        fromFieldPath: status.dataFlowListenerRoleName
+        fromFieldPath: status.dataFlowRoleName
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
@@ -5549,7 +5549,7 @@ spec:
         policy:
           fromFieldPath: Required
       - type: FromCompositeFieldPath
-        fromFieldPath: status.dataFlowListenerRoleName
+        fromFieldPath: status.dataFlowRoleName
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
