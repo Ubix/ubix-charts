@@ -2790,13 +2790,13 @@ spec:
         fromFieldPath: status.atProvider.id
         toFieldPath: status.dataServiceRoleName
 
-  - name: dataflow-listener-role
+  - name: dataflow-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: dataflow-listener-role
+          crossplane.io/external-name: dataflow-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -2807,7 +2807,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-dataflow-listener"
+              fmt: "%s-dataflow"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -2839,7 +2839,8 @@ spec:
                     "Condition": {
                       "StringEquals": {
                           "%s:sub": [
-                          "system:serviceaccount:data-tooling:dataflow-listener"],
+                          "system:serviceaccount:data-tooling:dataflow-listener",
+                          "system:serviceaccount:data-tooling:dataflow-leader"],
                           "%s:aud": "sts.amazonaws.com"
                       }
                     }
@@ -2848,7 +2849,7 @@ spec:
               }
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.dataFlowListenerRoleName
+        toFieldPath: status.dataFlowRoleName
 
   - name: exec-service-python-role
     base:
@@ -5517,7 +5518,7 @@ spec:
         policy:
           fromFieldPath: Required
       - type: FromCompositeFieldPath
-        fromFieldPath: status.dataFlowListenerRoleName
+        fromFieldPath: status.dataFlowRoleName
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
@@ -5548,7 +5549,7 @@ spec:
         policy:
           fromFieldPath: Required
       - type: FromCompositeFieldPath
-        fromFieldPath: status.dataFlowListenerRoleName
+        fromFieldPath: status.dataFlowRoleName
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
@@ -6619,14 +6620,14 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-data-flow-warehouse'
+          fmt: '%s-dataflow-warehouse'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
       transforms:
       - type: string
         string:
-          fmt: "%s-dataflow-listener"
+          fmt: "%s-dataflow"
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.policyArnRef.name
