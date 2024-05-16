@@ -13,6 +13,9 @@ spec:
   volumeMounts:
 {{ .Values.volumeMounts | toYaml | indent 4 }}
 {{- end }}
+{{- end }}
+  mode: {{ .Values.mode -}}
+  {{ if eq .Values.mode "daemonset" }}
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -22,9 +25,6 @@ spec:
             operator: NotIn
             values:
             - fargate
-{{- end }}
-  mode: {{ .Values.mode -}}
-  {{ if eq .Values.mode "daemonset" }}
   priorityClassName: system-cluster-critical
   tolerations:
   - effect: NoSchedule
