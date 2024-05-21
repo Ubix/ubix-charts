@@ -557,6 +557,20 @@ spec:
           #   us-east4-b
           #   us-central1-c
           minMasterVersion: #patchme
+          monitoringConfig:
+          - enableComponents:
+            - SYSTEM_COMPONENTS
+            - APISERVER
+            - SCHEDULER
+            - CONTROLLER_MANAGER
+            - STORAGE
+            - HPA
+            - POD
+            - DAEMONSET
+            - DEPLOYMENT
+            - STATEFULSET
+            managedPrometheus:
+            - enabled: false
           releaseChannel:
           - channel: STABLE
           verticalPodAutoscaling:
