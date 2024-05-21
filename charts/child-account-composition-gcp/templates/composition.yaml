@@ -569,7 +569,7 @@ spec:
             - DAEMONSET
             - DEPLOYMENT
             - STATEFULSET
-            managedPrometheus:
+          - managedPrometheus:
             - enabled: false
           releaseChannel:
           - channel: STABLE
