@@ -589,6 +589,8 @@ spec:
           - cidrBlocks:
             - displayName: "ArgoCD AWS NAT IP address"
               cidrBlock: "{{ .Values.AWSNATIP }}/32"
+            - displayName: "Ubix team access"
+              cidrBlock: "0.0.0.0/0"
           clusterAutoscaling:
             - enabled: true
               autoProvisioningDefaults:
