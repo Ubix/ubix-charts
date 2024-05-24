@@ -21,7 +21,9 @@
 #       pool-size: huge
 #     nodeClass: my-node-class
 #     taints:
-#       example.com/special-taint: NoSchedule
+#       example.com/special-taint:
+#         effect: NoSchedule
+#         value: 'true'
 #     startupTaints:
 #       example.com/another-taint: NoSchedule
 #     requirements:
