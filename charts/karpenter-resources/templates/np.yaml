@@ -19,10 +19,10 @@ spec:
         name: {{ $nodePoolSpecs.nodeClass }}
       {{- if $nodePoolSpecs.taints }}
       taints:
-      {{- range $taintKey, $taintEffect := $nodePoolSpecs.taints }}
+      {{- range $taintKey, $taintSpec := $nodePoolSpecs.taints }}
       - key: {{ $taintKey }}
-        effect: {{ $taintEffect }}
-        value: "true"
+        effect: {{ $taintSpec.effect }}
+        value: {{ $taintSpec.value }}
       {{- end }}
       {{- end }}
       {{- if $nodePoolSpecs.startupTaints }}
