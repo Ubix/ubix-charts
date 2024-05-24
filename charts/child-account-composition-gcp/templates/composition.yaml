@@ -544,11 +544,6 @@ spec:
             resolve: "Always"
         deletionPolicy: Orphan
         forProvider:
-          loggingService: "none"
-          monitoringService: "none"
-          monitoringConfig:
-          - managedPrometheus:
-            - enabled: false
           addonsConfig:
           - dnsCacheConfig:
             - enabled: true
