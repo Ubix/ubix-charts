@@ -22,7 +22,13 @@ spec:
     name: {{ template "application.name" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  {{- with .Values.autoscaling.metrics }}
   metrics:
-    {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- with .Values.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}
 {{- end }}
