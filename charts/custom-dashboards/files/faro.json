@@ -1775,7 +1775,7 @@
           "type": "loki",
           "uid": "$datasource"
         },
-        "definition": "label_values(app_name)",
+        "definition": "",
         "hide": 0,
         "includeAll": false,
         "label": "Application",
@@ -1789,7 +1789,7 @@
           "type": 1
         },
         "refresh": 1,
-        "regex": "MainSpa",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
