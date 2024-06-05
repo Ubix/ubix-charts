@@ -102,7 +102,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \"ttfb\" | logfmt | unwrap ttfb [$__range]) by (Application)",
+          "expr": "avg_over_time({kind=\"measurement\",app_name=\"$app\"} |= \"ttfb\" | logfmt | unwrap ttfb [$__range]) by (Application)",
           "legendFormat": "TTFB",
           "queryType": "range",
           "refId": "A"
@@ -174,7 +174,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" fcp=\" | logfmt | unwrap fcp [$__range]) by (Application)",
+          "expr": "avg_over_time({kind=\"measurement\",app_name=\"$app\"} |= \" fcp=\" | logfmt | unwrap fcp [$__range]) by (Application)",
           "legendFormat": "FCP",
           "queryType": "range",
           "refId": "A"
@@ -248,7 +248,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \"cls\" | logfmt | unwrap cls [$__range]) by (Application)",
+          "expr": "avg_over_time({kind=\"measurement\",app_name=\"$app\"} |= \"cls\" | logfmt | unwrap cls [$__range]) by (Application)",
           "legendFormat": "CLS",
           "queryType": "range",
           "refId": "A"
@@ -320,7 +320,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" lcp=\" | logfmt | unwrap lcp [$__range]) by (Application)",
+          "expr": "avg_over_time({kind=\"measurement\",app_name=\"$app\"} |= \" lcp=\" | logfmt | unwrap lcp [$__range]) by (Application)",
           "legendFormat": "LCP",
           "queryType": "range",
           "refId": "A"
@@ -392,7 +392,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" fid=\" | logfmt | unwrap fid [$__range]) by (Application)",
+          "expr": "avg_over_time({kind=\"measurement\",app_name=\"$app\"} |= \" fid=\" | logfmt | unwrap fid [$__range]) by (Application)",
           "legendFormat": "FID",
           "queryType": "range",
           "refId": "A"
@@ -526,7 +526,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" ttfb=\" | logfmt | unwrap ttfb [5m]) by (Application)",
+          "expr": "quantile_over_time(0.75, {kind=\"measurement\",app_name=\"$app\"} |= \" ttfb=\" | logfmt | unwrap ttfb [5m]) by (Application)",
           "legendFormat": "TTFB",
           "queryType": "range",
           "refId": "A"
@@ -537,7 +537,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" fcp=\" | logfmt | unwrap fcp [5m]) by (app)",
+          "expr": "quantile_over_time(0.75, {kind=\"measurement\",app_name=\"$app\"} |= \" fcp=\" | logfmt | unwrap fcp [5m]) by (app)",
           "hide": false,
           "legendFormat": "FCP",
           "queryType": "range",
@@ -549,7 +549,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" lcp=\" | logfmt | unwrap lcp [5m]) by (app)",
+          "expr": "quantile_over_time(0.75, {kind=\"measurement\",app_name=\"$app\"} |= \" lcp=\" | logfmt | unwrap lcp [5m]) by (app)",
           "hide": false,
           "legendFormat": "LCP",
           "queryType": "range",
@@ -649,7 +649,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" cls=\" | logfmt | unwrap cls [5m]) by (Application)",
+          "expr": "quantile_over_time(0.75, {kind=\"measurement\",app_name=\"$app\"} |= \" cls=\" | logfmt | unwrap cls [5m]) by (Application)",
           "legendFormat": "CLS",
           "queryType": "range",
           "refId": "A"
@@ -749,7 +749,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" fid=\" | logfmt | unwrap fid [5m]) by (Application)",
+          "expr": "quantile_over_time(0.75, {kind=\"measurement\",app_name=\"$app\"} |= \" fid=\" | logfmt | unwrap fid [5m]) by (Application)",
           "legendFormat": "FID",
           "queryType": "range",
           "refId": "A"
@@ -828,7 +828,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({Environment=\"$env\",Application=\"$app\",kind=\"exception\"} [$__range])) by (Application)",
+          "expr": "sum(count_over_time({app_name=\"$app\",kind=\"exception\"} [$__range])) by (Application)",
           "queryType": "range",
           "refId": "A"
         }
@@ -937,7 +937,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "count_over_time({Environment=\"$env\",Application=\"$app\",kind=\"exception\"} [$__interval])",
+          "expr": "count_over_time({app_name=\"$app\",kind=\"exception\"} [$__interval])",
           "legendFormat": "errors",
           "queryType": "range",
           "refId": "A"
@@ -1026,7 +1026,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(10, count(count_over_time({kind=\"exception\",Environment=\"$env\",Application=\"$app\"} | logfmt [$__range])) by (value))",
+          "expr": "topk(10, count(count_over_time({kind=\"exception\",app_name=\"$app\"} | logfmt [$__range])) by (value))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -1129,7 +1129,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(10, count(count_over_time({kind=\"exception\",Environment=\"$env\",Application=\"$app\"} | logfmt [$__range])) by (page_url))",
+          "expr": "topk(10, count(count_over_time({kind=\"exception\",app_name=\"$app\"} | logfmt [$__range])) by (page_url))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -1245,7 +1245,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(10, count by (browser_name, browser_version) (count_over_time({kind=\"exception\",Environment=\"$env\",Application=\"$app\"} | logfmt [$__range])))",
+          "expr": "topk(10, count by (browser_name, browser_version) (count_over_time({kind=\"exception\",app_name=\"$app\"} | logfmt [$__range])))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -1351,7 +1351,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(10, count(count_over_time({Environment=\"$env\",Application=\"$app\",kind=\"measurement\"} |= \" ttfb=\" | logfmt [$__range])) by (browser_name, browser_version))",
+          "expr": "topk(10, count(count_over_time({app_name=\"$app\",kind=\"measurement\"} |= \" ttfb=\" | logfmt [$__range])) by (browser_name, browser_version))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -1476,7 +1476,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "count_over_time({Environment=\"$env\",Application=\"$app\",kind=\"measurement\"} |= \" ttfb=\" [$__interval])",
+          "expr": "count_over_time({app_name=\"$app\",kind=\"measurement\"} |= \" ttfb=\" [$__interval])",
           "legendFormat": "visits",
           "queryType": "range",
           "refId": "A"
@@ -1578,7 +1578,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(10, count(count_over_time({kind=\"event\",Environment=\"$env\",Application=\"$app\"} | logfmt [$__range])) by (event_name))",
+          "expr": "topk(10, count(count_over_time({kind=\"event\",app_name=\"$app\"} | logfmt [$__range])) by (event_name))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -1682,7 +1682,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(50, count(count_over_time({kind=\"event\",Environment=\"$env\",Application=\"$app\"} | logfmt | event_name = \"mainspa_mount\" [$__range])) by (user_id))",
+          "expr": "topk(50, count(count_over_time({kind=\"event\",app_name=\"$app\"} | logfmt | event_name = \"mainspa_mount\" [$__range])) by (user_id))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -1732,37 +1732,6 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
-      },
-      {
-        "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
-          "value": ""
-        },
-        "datasource": {
-          "type": "loki",
-          "uid": "$datasource"
-        },
-        "definition": "label_values(app_environment)",
-        "description": "",
-        "hide": 0,
-        "includeAll": false,
-        "label": "Environment",
-        "multi": false,
-        "name": "env",
-        "options": [],
-        "query": {
-          "label": "app_environment",
-          "refId": "LokiVariableQueryEditor-VariableQuery",
-          "stream": "",
-          "type": 1
-        },
-        "refresh": 1,
-        "regex": "K8S.*",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
       },
       {
         "current": {
