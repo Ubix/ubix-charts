@@ -46,7 +46,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "description": "TTFB is a metric that measures the time between the request for a resource and when the first byte of a response begins to arrive.\nhttps://web.dev/ttfb/",
       "fieldConfig": {
@@ -99,7 +99,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \"ttfb\" | logfmt | unwrap ttfb [$__range]) by (Application)",
@@ -114,7 +114,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "description": "The First Contentful Paint (FCP) metric measures the time from when the page starts loading to when any part of the page's content is rendered on the screen. For this metric, \"content\" refers to text, images (including background images), <svg> elements, or non-white <canvas> elements.\nhttps://web.dev/fcp/",
       "fieldConfig": {
@@ -171,7 +171,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" fcp=\" | logfmt | unwrap fcp [$__range]) by (Application)",
@@ -186,7 +186,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "description": "Cumulative Layout Shift (CLS): measures visual stability. To provide a good user experience, pages should maintain a CLS of 0.1. or less.\nhttps://web.dev/cls/",
       "fieldConfig": {
@@ -245,7 +245,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \"cls\" | logfmt | unwrap cls [$__range]) by (Application)",
@@ -260,7 +260,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "description": "Largest Contentful Paint (LCP): measures loading performance. To provide a good user experience, LCP should occur within 2.5 seconds of when the page first starts loading.\nhttps://web.dev/lcp/",
       "fieldConfig": {
@@ -317,7 +317,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" lcp=\" | logfmt | unwrap lcp [$__range]) by (Application)",
@@ -332,7 +332,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "description": "First Input Delay (FID): measures interactivity. To provide a good user experience, pages should have a FID of 100 milliseconds or less.\nhttps://web.dev/fid/",
       "fieldConfig": {
@@ -389,7 +389,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "avg_over_time({kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" fid=\" | logfmt | unwrap fid [$__range]) by (Application)",
@@ -404,7 +404,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "description": "",
       "gridPos": {
@@ -428,7 +428,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "avg_over_time({kind=\"measurement\",Application=\"$app\"} |= \" fid=\" | logfmt | unwrap fid [$__range]) by (Application)",
@@ -442,7 +442,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "description": "TTFB is a metric that measures the time between the request for a resource and when the first byte of a response begins to arrive.\nhttps://web.dev/ttfb/",
       "fieldConfig": {
@@ -523,7 +523,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" ttfb=\" | logfmt | unwrap ttfb [5m]) by (Application)",
@@ -534,7 +534,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" fcp=\" | logfmt | unwrap fcp [5m]) by (app)",
@@ -546,7 +546,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" lcp=\" | logfmt | unwrap lcp [5m]) by (app)",
@@ -562,7 +562,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "description": "Cumulative Layout Shift (CLS): measures visual stability. To provide a good user experience, pages should maintain a CLS of 0.1. or less.\nhttps://web.dev/cls/",
       "fieldConfig": {
@@ -646,7 +646,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" cls=\" | logfmt | unwrap cls [5m]) by (Application)",
@@ -661,7 +661,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "description": "First Input Delay (FID): measures interactivity. To provide a good user experience, pages should have a FID of 100 milliseconds or less.\nhttps://web.dev/fid/",
       "fieldConfig": {
@@ -746,7 +746,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "quantile_over_time(0.75, {kind=\"measurement\",Environment=\"$env\",Application=\"$app\"} |= \" fid=\" | logfmt | unwrap fid [5m]) by (Application)",
@@ -774,7 +774,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -825,7 +825,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "sum(count_over_time({Environment=\"$env\",Application=\"$app\",kind=\"exception\"} [$__range])) by (Application)",
@@ -839,7 +839,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -934,7 +934,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "count_over_time({Environment=\"$env\",Application=\"$app\",kind=\"exception\"} [$__interval])",
@@ -949,7 +949,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1023,7 +1023,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "topk(10, count(count_over_time({kind=\"exception\",Environment=\"$env\",Application=\"$app\"} | logfmt [$__range])) by (value))",
@@ -1052,7 +1052,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1126,7 +1126,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "topk(10, count(count_over_time({kind=\"exception\",Environment=\"$env\",Application=\"$app\"} | logfmt [$__range])) by (page_url))",
@@ -1156,7 +1156,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1242,7 +1242,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "topk(10, count by (browser_name, browser_version) (count_over_time({kind=\"exception\",Environment=\"$env\",Application=\"$app\"} | logfmt [$__range])))",
@@ -1287,7 +1287,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1348,7 +1348,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "topk(10, count(count_over_time({Environment=\"$env\",Application=\"$app\",kind=\"measurement\"} |= \" ttfb=\" | logfmt [$__range])) by (browser_name, browser_version))",
@@ -1378,7 +1378,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1473,7 +1473,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "count_over_time({Environment=\"$env\",Application=\"$app\",kind=\"measurement\"} |= \" ttfb=\" [$__interval])",
@@ -1501,7 +1501,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1575,7 +1575,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "topk(10, count(count_over_time({kind=\"event\",Environment=\"$env\",Application=\"$app\"} | logfmt [$__range])) by (event_name))",
@@ -1605,7 +1605,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -1679,7 +1679,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "ba0eed48-d1c3-4872-b9f4-9dfd446e881e"
+            "uid": "$datasource"
           },
           "editorMode": "code",
           "expr": "topk(50, count(count_over_time({kind=\"event\",Environment=\"$env\",Application=\"$app\"} | logfmt | event_name = \"mainspa_mount\" [$__range])) by (user_id))",
@@ -1753,7 +1753,7 @@
         "name": "env",
         "options": [],
         "query": {
-          "label": "Environment",
+          "label": "app_environment",
           "refId": "LokiVariableQueryEditor-VariableQuery",
           "stream": "",
           "type": 1
@@ -1783,7 +1783,7 @@
         "name": "app",
         "options": [],
         "query": {
-          "label": "Application",
+          "label": "app_name",
           "refId": "LokiVariableQueryEditor-VariableQuery",
           "stream": "",
           "type": 1
