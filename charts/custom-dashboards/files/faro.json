@@ -1754,7 +1754,7 @@
         "query": {
           "label": "app_name",
           "refId": "LokiVariableQueryEditor-VariableQuery",
-          "stream": "",
+          "stream": "{source=\"faro-sdk\"}",
           "type": 1
         },
         "refresh": 1,
