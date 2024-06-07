@@ -1697,9 +1697,10 @@
             },
             "indexByName": {},
             "renameByName": {
-              "Interactions": "Count",
-              "user_id": "User",
-              "user_email": "User Email",
+              "Value #A": "Count",
+              "user_id": "Id",
+              "user_username": "User",
+              "user_email": "User-Email",
               "value": "Error"
             }
           }
