@@ -1682,7 +1682,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(50, count(count_over_time({kind=\"event\",app_name=\"$app\"} | logfmt | user_id!=\"\" [$__range])) by (user_id))",
+          "expr": "topk(50, count(count_over_time({kind=\"event\",app_name=\"$app\"} | logfmt | user_id!=\"\" [$__range])) by (user_id,user_username,user_emai))",
           "queryType": "instant",
           "refId": "A"
         }
