@@ -1026,7 +1026,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(10, count(count_over_time({kind=\"exception\",app_name=\"$app\"} | logfmt [$__range])) by (value, page_url))",
+          "expr": "topk(10, count(count_over_time({kind=\"exception\",app_name=\"$app\"} | logfmt [$__range])) by (value))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -1042,7 +1042,6 @@
             "indexByName": {},
             "renameByName": {
               "Value #A": "Count",
-              "page_url": "URL",
               "value": "Error"
             }
           }
@@ -1130,7 +1129,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(10, count(count_over_time({kind=\"exception\",app_name=\"$app\"} | logfmt [$__range])) by (page_url))",
+          "expr": "topk(10, count(count_over_time({kind=\"exception\",app_name=\"$app\"} | logfmt [$__range])) by (page_url, value))",
           "queryType": "instant",
           "refId": "A"
         }
