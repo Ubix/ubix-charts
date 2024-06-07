@@ -1682,7 +1682,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "topk(50, count(count_over_time({kind=\"event\",app_name=\"$app\"} | logfmt | event_name = \"mainspa_mount\" [$__range])) by (user_id))",
+          "expr": "topk(50, count(count_over_time({kind=\"event\",app_name=\"$app\"} | logfmt | user_id!=\"\" [$__range])) by (user_id))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -1697,8 +1697,9 @@
             },
             "indexByName": {},
             "renameByName": {
-              "Value #A": "Count",
-              "event_name": "Name",
+              "Interactions": "Count",
+              "user_id": "User",
+              "user_email": "User Email",
               "value": "Error"
             }
           }
@@ -1707,7 +1708,7 @@
       "type": "table"
     }
   ],
-  "refresh": "5s",
+  "refresh": "10s",
   "schemaVersion": 38,
   "tags": [
     "grafana",
@@ -1766,7 +1767,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
