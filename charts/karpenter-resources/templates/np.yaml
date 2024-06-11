@@ -46,8 +46,9 @@ spec:
     consolidationPolicy: {{ $nodePoolSpecs.disruption.consolidationPolicy }} # WhenUnderutilized | WhenEmpty
     {{- if $nodePoolSpecs.disruption.consolidateAfter }}
     consolidateAfter: {{ $nodePoolSpecs.disruption.consolidateAfter }} # 30s
-    {{- end }}
+    {{- else }}
     expireAfter: {{ $nodePoolSpecs.disruption.expireAfter }} # 720h
+    {{- end }}
     {{- if $nodePoolSpecs.disruption.budgets }}
     budgets:
     {{- range $budget := $nodePoolSpecs.disruption.budgets }}
