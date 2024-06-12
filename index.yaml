@@ -4113,6 +4113,16 @@ entries:
   postgres-operator-instance:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-06-12T13:36:09.16815749Z"
+    description: A Helm chart for Kubernetes
+    digest: 30cb0f268c89ae09108dda47364404bd3f8c5eedf21d2be6b60f67bcfb357ad7
+    name: postgres-operator-instance
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/postgres-operator-instance-0.1.1/postgres-operator-instance-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-06-12T13:05:32.193238342Z"
     description: A Helm chart for Kubernetes
     digest: 5c20d22723427b7225e314b47c7cf0aa408082c6ce3f6c7b886041339d5fbfc1
@@ -4359,4 +4369,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-12T13:05:32.19381453Z"
+generated: "2024-06-12T13:36:09.168794999Z"
