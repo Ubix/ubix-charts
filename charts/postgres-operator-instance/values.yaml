@@ -1,0 +1,56 @@
+name: cluster-name
+spec:
+  teamId: "acid"
+  postgresql:
+    version: "15"
+    parameters:
+      wal_keep_segments: "200"
+  numberOfInstances: 2
+  users:
+    # default: []
+  databases:
+    # default: default
+  env:
+  # - name: USE_WALG_BACKUP
+  #   value: "true"
+  # - name: USE_WALG_RESTORE
+  #   value: "true"
+  # - name: BACKUP_SCHEDULE
+  #   value: "0 * * * *"
+  # - name: CLONE_METHOD
+  #   value: "CLONE_WITH_WALG"
+  # - name: CLONE_USE_WALG_RESTORE
+  #   value: "true"
+  # - name: CLONE_AWS_ROLE_ARN
+  #   value: arn:aws:iam::838845881915:role/postgres-pod-role
+  # - name: CLONE_AWS_WEB_IDENTITY_TOKEN_FILE
+  #   value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+  # - name: CLONE_AWS_STS_REGIONAL_ENDPOINTS
+  #   value: "regional"
+  # clone:
+  #   uid: 154ff5f7-951b-4a54-a451-1948a54af80f
+  #   cluster: postgres-backoffice-cluster
+  #   timestamp: "2024-01-31T10:00:00-03:00"
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: pool
+              operator: In
+              values:
+                - databases
+  tolerations:
+    - key: pool
+      operator: Equal
+      value: databases
+      effect: NoSchedule
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  volume:
+    size: "20Gi"
+    storageClass: "gp3"
