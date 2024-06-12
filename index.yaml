@@ -4110,6 +4110,17 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/otel-collector-1.0.1/otel-collector-1.0.1.tgz
     version: 1.0.1
+  postgres-operator-instance:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-06-12T13:05:32.193238342Z"
+    description: A Helm chart for Kubernetes
+    digest: 5c20d22723427b7225e314b47c7cf0aa408082c6ce3f6c7b886041339d5fbfc1
+    name: postgres-operator-instance
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/postgres-operator-instance-0.1.0/postgres-operator-instance-0.1.0.tgz
+    version: 0.1.0
   rabbitmq:
   - apiVersion: v1
     created: "2024-03-21T23:09:39.102280608Z"
@@ -4348,4 +4359,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-07T02:24:38.51624111Z"
+generated: "2024-06-12T13:05:32.19381453Z"
