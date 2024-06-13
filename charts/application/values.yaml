@@ -583,7 +583,7 @@ serviceMonitor:
 ##########################################################
 autoscaling:
 # enabled is a boolean flag for enabling or disabling autoscaling 
-  enabled: true
+  enabled: false
 # additionalLabels defines additional labels
   additionalLabels: 
     # key: value
