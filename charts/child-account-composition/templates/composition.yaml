@@ -28,7 +28,7 @@ spec:
           region: #patchme
         providerConfigRef:
           name: root
-        deletionPolicy: Orphan
+        deletionPolicy: Delete
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
