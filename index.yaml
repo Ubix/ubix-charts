@@ -3415,6 +3415,27 @@ entries:
   data-lineage:
   - apiVersion: v2
     appVersion: "1.0"
+    created: "2024-06-19T13:46:29.882556843Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.1.2
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.8.1
+    digest: bdc3f71d900756ef081fc0f05ec4a6e08e73f1cb1f5201efa7e8ef7791854d7a
+    name: data-lineage
+    sources:
+    - https://github.com/MarquezProject/marquez
+    - https://marquezproject.github.io/marquez/
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/data-lineage-0.36.1/data-lineage-0.36.1.tgz
+    version: 0.36.1
+  - apiVersion: v2
+    appVersion: "1.0"
     created: "2023-12-18T18:31:46.035486032Z"
     dependencies:
     - name: common
@@ -4398,4 +4419,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-17T23:33:37.706572447Z"
+generated: "2024-06-19T13:46:29.883064274Z"
