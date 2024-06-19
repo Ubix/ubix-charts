@@ -92,6 +92,12 @@ web:
     requests: {}
     #    memory: 256Mi
     #    cpu: 250m
+  configMap:
+    enabled: false  # Set to true to enable the ConfigMap
+    # annotations:
+    #   example.com/annotation: "value"
+    # data:
+    #   value1: "value"
 
 ## PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
