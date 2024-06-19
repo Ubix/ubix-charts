@@ -37,6 +37,11 @@ spec:
             httpGet:
               path: /healthcheck
               port: http
+          {{- if .Values.web.configMap.enabled }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "common.names.fullname" . }}-web
+          {{- end }}
           env:
             - name: MARQUEZ_HOST
               value: {{ include "common.names.fullname" . }}
