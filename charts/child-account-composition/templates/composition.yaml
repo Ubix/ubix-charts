@@ -22,6 +22,7 @@ spec:
       kind: Account
       spec:
         forProvider:
+          closeOnDeletion: true
           email: awsaccountadmin+crossplane.customername@ubixlabs.com
           name: crossplanecreated
           parentId: {{ .Values.parentId }}
