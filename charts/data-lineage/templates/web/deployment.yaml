@@ -60,6 +60,9 @@ spec:
                 secretKeyRef:
                   name: {{ include "marquez.postgresql.secretName" . }}
                   key: {{ include "marquez.database.existingsecret.key" . }}
+            {{- with .Values.web.additionalEnvs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- if .Values.web.resources }}
           resources: {{- toYaml .Values.web.resources | nindent 12 }}
           {{- end }}

@@ -98,6 +98,14 @@ web:
     #   example.com/annotation: "value"
     # data:
     #   value1: "value"
+  additionalEnvs: []
+  # - name: REDIS_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: redis-cluster-secret
+  #       key: redis-password
+  # - name: ENV_VAR
+  #   value: "value"
 
 ## PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
