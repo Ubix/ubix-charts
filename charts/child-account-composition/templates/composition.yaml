@@ -8712,3 +8712,27 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
+  - name: request-gpu-quota
+    base:
+      apiVersion: servicequotas.aws.upbound.io/v1beta1
+      kind: ServiceQuota
+      spec:
+        forProvider:
+          quotaCode: L-DB2E81BA
+          serviceCode: ec2
+          value: 240
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-gpu-quota'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
