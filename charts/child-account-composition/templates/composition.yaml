@@ -2421,6 +2421,65 @@ spec:
         fromFieldPath: status.atProvider.id
         toFieldPath: status.postgresOperatorRoleName
 
+  - name: airbyte-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: airbyte-admin
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-airbyte"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.assumeRolePolicy
+        policy:
+          fromFieldPath: Required
+        combine:
+          variables:
+            - fromFieldPath: status.id
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+          strategy: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                      "StringEquals": {
+                          "%s:sub": ["system:serviceaccount:airbyte:airbyte-admin"],
+                          "%s:aud": "sts.amazonaws.com"
+                      }
+                    }
+                  }
+                ]
+              }
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.airbyteAdminRoleName
+
   - name: mlflow-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -4012,6 +4071,54 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.postgresOperatorS3PolicyArn
 
+  - name: airbyte-artifacts-full-access-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        annotations:
+          crossplane.io/external-name: airbyte-artifacts-bucket-read-write-policy
+      spec:
+        forProvider:
+          policy: "{}" #patchme
+    patches:
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: |
+              {
+                  "Statement": [
+                      {
+                          "Action": [
+                              "s3:*"
+                          ],
+                          "Effect": "Allow",
+                          "Resource": [
+                              "arn:aws:s3:::airbyte-artifacts-%s",
+                              "arn:aws:s3:::airbyte-artifacts-%s/*"
+                          ]
+                      }
+                  ],
+                  "Version": "2012-10-17"
+              }
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-airbyte-artifacts-bucket-full-access"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.airbyteArtifactsFullAccessS3PolicyArn
+
   - name: ingestion-artifacts-s3-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -5365,6 +5472,37 @@ spec:
           fromFieldPath: Required
       - type: FromCompositeFieldPath
         fromFieldPath: status.postgresOperatorRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: airbyte-admin-airbyte-artifacts-bucket-full-access-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-airbyte-admin-airbyte-artifacts-bucket-full-access"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.airbyteArtifactsFullAccessS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.airbyteAdminRoleName
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
@@ -7112,6 +7250,68 @@ spec:
         - type: string
           string:
             fmt: '%s-execution-artifacts-bucket-policy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.executionArtifactsBucketName
+      toFieldPath: spec.forProvider.bucket
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: airbyte-artifacts-bucket
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        forProvider:
+          region: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-airbyte-artifacts"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      transforms:
+        - type: string
+          string:
+            fmt: "airbyte-artifacts-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: airbyte-artifacts-bucket-policies
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPublicAccessBlock
+      spec:
+        forProvider:
+          blockPublicAcls: true
+          blockPublicPolicy: true
+          ignorePublicAcls: true
+          restrictPublicBuckets: true
+          bucket: #patched
+          region: #patched
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-airbyte-artifacts-bucket-policy'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
