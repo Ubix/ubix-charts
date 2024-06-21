@@ -172,6 +172,9 @@ spec:
               vpcCniRoleName:
                 description: Role to attach to VPC CNI service account
                 type: string
+              airbyteAdminRoleName:
+                description: Role to attach to Airbyte Admin service account
+                type: string
               fargateExecRoleArn:
                 description: Role to give fargate execution perms
                 type: string
@@ -224,6 +227,9 @@ spec:
                 description: Role to give s3 access to the cluster
                 type: string
               executionArtifactsS3PolicyArn:
+                description: Policy to give s3 access to the cluster
+                type: string
+              airbyteArtifactsFullAccessS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
               ingestionArtifactsS3PolicyArn:
