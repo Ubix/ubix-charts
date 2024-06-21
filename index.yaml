@@ -3887,6 +3887,17 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/karpenter-resources-1.0.0/karpenter-resources-1.0.0.tgz
     version: 1.0.0
+  keda-scaled-object:
+  - apiVersion: v2
+    appVersion: 2.14.0
+    created: "2024-06-21T14:05:51.270808149Z"
+    description: A Helm chart for Kubernetes
+    digest: 8c20ed4afc042fd631de089a951aaac0751f3d7671c1d4c415dbd564521fc838
+    name: keda-scaled-object
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/keda-scaled-object-0.1.0/keda-scaled-object-0.1.0.tgz
+    version: 0.1.0
   kyverno-policy:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -4450,4 +4461,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-20T07:05:09.893147241Z"
+generated: "2024-06-21T14:05:51.271582776Z"
