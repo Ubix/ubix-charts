@@ -3,4 +3,4 @@ kind: Kafka
 metadata:
   name: {{ .Values.name }}
 spec:
-    {{- toYaml .Values.Kafka.spec | nindent 2 }}
+    {{- toYaml .Values.kafka.spec | nindent 2 }}
