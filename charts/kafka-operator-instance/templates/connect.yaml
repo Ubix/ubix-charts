@@ -2,37 +2,5 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaConnect
 metadata:
   name: {{ .Values.name }}
-spec: 
-  replicas: 3
-  config:
-    group.id: kafka-connect-cluster
-    offset.storage.topic: kafka-connect-cluster-offsets 
-    config.storage.topic: kafka-connect-cluster-configs
-    status.storage.topic: kafka-connect-cluster-status
-    key.converter: org.apache.kafka.connect.json.JsonConverter
-    value.converter: org.apache.kafka.connect.json.JsonConverter
-    key.converter.schemas.enable: true
-    value.converter.schemas.enable: true
-    config.storage.replication.factor: 3
-    offset.storage.replication.factor: 3
-    status.storage.replication.factor: 3
-  build:
-    output: 
-      type: docker
-      image: casanovathiago/kafka-connect:latest
-    plugins:
-      - name: s3-connector-for-apache-kafka
-        artifacts:
-          - type: tgz
-            url: https://github.com/Aiven-Open/s3-connector-for-apache-kafka/releases/download/v2.15.0/s3-connector-for-apache-kafka-2.15.0.tar
-            sha512sum: 7a053ddf48b01b4d76b23bc660fc35c150e4075d93fcbc724b4087143ad1db58a83727e004a77895254547349d67f36afadff457fe1c56fed726e8b73ff20814
-  
-  # template:
-  #   serviceAccount:
-  #     metadata:
-  #       annotations:
-  #         eks.amazonaws.com/role-arn: arn:aws:iam::123456789010:role/data-kafka-connect
-  #   buildServiceAccount:
-  #     metadata:
-  #       annotations:
-  #         eks.amazonaws.com/role-arn: arn:aws:iam::123456789010:role/data-kafka-connect-build
+spec:
+    {{- toYaml .Values.spec | nindent 2 }}
