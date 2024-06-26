@@ -23,6 +23,9 @@ spec:
   {{- if $job.backoffLimit }}
   backoffLimit: {{ $job.backoffLimit }}
   {{- end }}
+  {{- if $job.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ $job.ttlSecondsAfterFinished }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -34,7 +37,7 @@ spec:
 {{- end }}
       restartPolicy: {{ $job.restartPolicy | default "OnFailure" }}
 {{- if $job.imagePullSecrets}}
-      imagePullSecrets: 
+      imagePullSecrets:
 {{ toYaml $job.imagePullSecrets | indent 8 }}
 {{- end }}
 {{- with $job.volumes }}
