@@ -592,44 +592,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: node-security-group-rule-ingress-efs
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: SecurityGroupRule
-      spec:
-        forProvider:
-          cidrBlocks:
-          - 0.0.0.0/0
-          description: Allow efs ingress communication
-          fromPort: 2049
-          protocol: tcp
-          toPort: 2049
-          type: ingress
-          region: #patchme
-          securityGroupIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-sg-rule-node-ingress-efs'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.securityGroupIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-node-sg'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
   - name: node-security-group-ingress-cluster-4443
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -1974,31 +1936,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
-
-  - name: efs
-    base:
-      apiVersion: efs.aws.upbound.io/v1beta1
-      kind: FileSystem
-      spec:
-        forProvider:
-          region: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-efs'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.efsID
 
   - name: eks-kms-key
     base:
