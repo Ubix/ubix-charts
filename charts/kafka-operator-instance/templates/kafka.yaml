@@ -1,6 +1,6 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
-  name: {{ .Values.name }}
+  name: {{ .Values.kafka.name }}
 spec:
     {{- toYaml .Values.kafka.spec | nindent 2 }}
