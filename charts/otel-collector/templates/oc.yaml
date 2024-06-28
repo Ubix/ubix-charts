@@ -29,5 +29,5 @@ spec:
   - effect: NoSchedule
     operator: Exists
   {{- end }}
-  config: |-
+  config: |
 {{ .Values.config | toYaml | indent 4 }}
