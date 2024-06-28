@@ -4041,6 +4041,14 @@ entries:
     version: 0.1.0
   otel-collector:
   - apiVersion: v1
+    created: "2024-06-28T21:41:01.676735626Z"
+    description: Generic Otel Collector helm chart
+    digest: 6d39672dd8865fab07998bf65a24ec49a82f1331f3dbf0909144e56baee25cdf
+    name: otel-collector
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/otel-collector-1.1.4/otel-collector-1.1.4.tgz
+    version: 1.1.4
+  - apiVersion: v1
     created: "2024-06-28T18:00:00.95800287Z"
     description: Generic Otel Collector helm chart
     digest: bc5c339177eaaa3545b2b5bf094bd4df0748e224d420f764255c2344e39ed215
@@ -4547,4 +4555,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-28T18:00:00.958858369Z"
+generated: "2024-06-28T21:41:01.6774988Z"
