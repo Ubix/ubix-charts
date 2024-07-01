@@ -2145,66 +2145,6 @@ spec:
         fromFieldPath: status.atProvider.id
         toFieldPath: status.airbyteAdminRoleName
 
-  
-  - name: kafkaConnect-role
-    base:
-      apiVersion: iam.aws.upbound.io/v1beta1
-      kind: Role
-      metadata:
-        annotations:
-          crossplane.io/external-name: kafkaConnect-admin
-      spec:
-        forProvider:
-          assumeRolePolicy: ""
-    patches:
-      - type: FromCompositeFieldPath
-        fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-kafkaConnect"
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
-        policy:
-          fromFieldPath: Required
-      - type: CombineFromComposite
-        toFieldPath: spec.forProvider.assumeRolePolicy
-        policy:
-          fromFieldPath: Required
-        combine:
-          variables:
-            - fromFieldPath: status.id
-            - fromFieldPath: status.clusterOIDC
-            - fromFieldPath: status.clusterOIDC
-            - fromFieldPath: status.clusterOIDC
-          strategy: string
-          string:
-            fmt: |
-              {
-                "Version": "2012-10-17",
-                "Statement": [
-                  {
-                    "Sid": "",
-                    "Effect": "Allow",
-                    "Principal": {
-                      "Federated": "arn:aws:iam::%s:oidc-provider/%s"
-                    },
-                    "Action": "sts:AssumeRoleWithWebIdentity",
-                    "Condition": {
-                      "StringEquals": {
-                          "%s:sub": ["system:serviceaccount:kafkaConnect:kafkaConnect-admin"],
-                          "%s:aud": "sts.amazonaws.com"
-                      }
-                    }
-                  }
-                ]
-              }
-      - type: ToCompositeFieldPath
-        fromFieldPath: status.atProvider.id
-        toFieldPath: status.kafkaConnectAdminRoleName
-
   - name: mlflow-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -3787,54 +3727,6 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.airbyteArtifactsFullAccessS3PolicyArn
 
-  - name: kafkaConnect-artifacts-full-access-policy
-    base:
-      apiVersion: iam.aws.upbound.io/v1beta1
-      kind: Policy
-      metadata:
-        annotations:
-          crossplane.io/external-name: kafkaConnect-artifacts-bucket-read-write-policy
-      spec:
-        forProvider:
-          policy: "{}" #patchme
-    patches:
-    - type: CombineFromComposite
-      toFieldPath: spec.forProvider.policy
-      combine:
-        variables:
-        - fromFieldPath: status.id
-        - fromFieldPath: status.id
-        strategy: string
-        string:
-          fmt: |
-              {
-                  "Statement": [
-                      {
-                          "Action": [
-                              "s3:*"
-                          ],
-                          "Effect": "Allow",
-                          "Resource": [
-                              "arn:aws:s3:::kafkaConnect-artifacts-%s",
-                              "arn:aws:s3:::kafkaConnect-artifacts-%s/*"
-                          ]
-                      }
-                  ],
-                  "Version": "2012-10-17"
-              }
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-kafkaConnect-artifacts-bucket-full-access"
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.kafkaConnectArtifactsFullAccessS3PolicyArn
-
   - name: ingestion-artifacts-s3-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -5157,38 +5049,6 @@ spec:
         policy:
           fromFieldPath: Required
 
-  
-  - name: kafkaConnect-admin-kafkaConnect-artifacts-bucket-full-access-policy-attachment
-    base:
-      apiVersion: iam.aws.upbound.io/v1beta1
-      kind: RolePolicyAttachment
-      spec:
-        forProvider:
-          policyArn: #patchme
-          role: #patchme
-    patches:
-      - fromFieldPath: spec.id
-        toFieldPath: metadata.name
-        transforms:
-          - type: string
-            string:
-              fmt: "%s-kafkaConnect-admin-kafkaConnect-artifacts-bucket-full-access"
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.kafkaConnectArtifactsFullAccessS3PolicyArn
-        toFieldPath: spec.forProvider.policyArn
-        policy:
-          fromFieldPath: Required
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.kafkaConnectAdminRoleName
-        toFieldPath: spec.forProvider.role
-        policy:
-          fromFieldPath: Required
-      - type: FromCompositeFieldPath
-        fromFieldPath: status.id
-        toFieldPath: spec.providerConfigRef.name
-        policy:
-          fromFieldPath: Required
-  
   - name: load-balancer-controller-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -6999,68 +6859,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: kafkaConnect-artifacts-bucket
-    base:
-      apiVersion: s3.aws.upbound.io/v1beta1
-      kind: Bucket
-      metadata:
-        annotations:
-          crossplane.io/external-name: #patchme
-      spec:
-        forProvider:
-          region: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-kafkaConnect-artifacts"
-      toFieldPath: metadata.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      transforms:
-        - type: string
-          string:
-            fmt: "kafkaConnect-artifacts-%s"
-      toFieldPath: metadata.annotations[crossplane.io/external-name]
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
-  - name: kafkaConnect-artifacts-bucket-policies
-    base:
-      apiVersion: s3.aws.upbound.io/v1beta1
-      kind: BucketPublicAccessBlock
-      spec:
-        forProvider:
-          blockPublicAcls: true
-          blockPublicPolicy: true
-          ignorePublicAcls: true
-          restrictPublicBuckets: true
-          bucket: #patched
-          region: #patched
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-kafkaConnect-artifacts-bucket-policy'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.executionArtifactsBucketName
-      toFieldPath: spec.forProvider.bucket
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-    
   # - name: execution-artifacts-bucket-acl
   #   base:
   #     apiVersion: s3.aws.upbound.io/v1beta1
