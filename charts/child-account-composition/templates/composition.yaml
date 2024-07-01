@@ -6426,7 +6426,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-kafkaConnect-warehouse-full-access'
+          fmt: '%s-kafka-connect-warehouse-full-access'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
