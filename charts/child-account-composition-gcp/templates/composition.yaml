@@ -2741,7 +2741,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: 'serviceAccount:%s.svc.id.goog[databases/exec-service-python]'
+          fmt: 'serviceAccount:%s.svc.id.goog[services/exec-service-python]'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
