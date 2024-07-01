@@ -3511,7 +3511,7 @@ spec:
                   "Action": "sts:AssumeRoleWithWebIdentity",
                   "Condition": {
                     "StringEquals": {
-                        "%s:sub": "system:serviceaccount:data-tooling:kafkaConnect",
+                        "%s:sub": "system:serviceaccount:kafka:kafka-connect-connect",
                         "%s:aud": "sts.amazonaws.com"
                     }
                   }
