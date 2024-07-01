@@ -3471,7 +3471,7 @@ spec:
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: kafkaConnect
+          crossplane.io/external-name: kafka-connect
         labels:
           role: kafkaConnect
       spec:
