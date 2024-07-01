@@ -6433,7 +6433,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-kafkaConnect'
+          fmt: '%s-kafka-connect'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.policyArnRef.name
