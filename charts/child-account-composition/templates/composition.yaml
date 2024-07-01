@@ -3484,7 +3484,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-kafkaConnect"
+          fmt: "%s-kafka-connect"
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
