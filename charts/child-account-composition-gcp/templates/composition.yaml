@@ -2705,36 +2705,46 @@ spec:
   #                 regex: 'PROJECT_ID'
   #               with: '%s'
 
-  - name: serviceAccountTokenCreator-ksa-rolebinding
+  - name: workload-identity-exec-service-python-iambinding
     base:
-      apiVersion: storage.gcp.upbound.io/v1beta1
-      kind: ServiceAccountPolicy
-    spec:
-      forProvider:
-        project: 
-        policy:
-          bindings:
-            - members: 
-              - serviceAccount:PROJECT_ID.svc.id.goog[services/exec-services-python]
-              role: roles/iam.serviceAccountTokenCreator
-        serviceAccountRef:
-          name: exec-service-python-sa
-      providerConfigRef:
-        name: root-gcp
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccountIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          role: roles/iam.serviceAccountTokenCreator
+          serviceAccountIdRef: 
+            name: #patchme
     patches:
-      - type: FromCompositeFieldPath
-        fromFieldPath: spec.id
-        toFieldPath: spec.forProvider.project.policy.bindings.members
-        transforms:
-          - type: map
-            map:
-              - type: string
-                string:
-                  fmt: '%s'
-              - type: replace
-                replace:
-                  regex: 'PROJECT_ID'
-                with: '%s'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-workload-identity-exec-service-python-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.serviceAccountIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-exec-service-python-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s.svc.id.goog[databases/exec-service-python]'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
 # #####
 # # ArgoCD
 # #####
