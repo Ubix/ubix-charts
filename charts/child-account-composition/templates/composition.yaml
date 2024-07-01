@@ -3465,7 +3465,7 @@ spec:
               ]
             }
 
-  - name: iamrole-kafkaConnect-thrift-server
+  - name: iamrole-kafka-connect-thrift-server
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
