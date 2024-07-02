@@ -3,4 +3,7 @@ kind: KafkaConnector
 metadata:
   name: {{ .Values.connector.name }}
 spec:
-    {{- toYaml .Values.connector.spec | nindent 2 }}
+{{- range .Values.connectors }}
+  - name: {{ .name }}
+    {{- toYaml .spec | nindent 4 }}
+{{- end }}
