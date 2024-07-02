@@ -2627,6 +2627,46 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: dataspace-backend-warehouse-readonly-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-dataspace-backend-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-warehouse-read-only-role'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:dataspace-backend-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: gcs-velero-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
