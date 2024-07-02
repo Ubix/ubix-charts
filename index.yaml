@@ -3878,6 +3878,16 @@ entries:
   kafka-operator-instance:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-07-02T20:36:34.583458537Z"
+    description: A Helm chart for Kubernetes
+    digest: 4b00b64def04b5887ae971e0022caf36d1931b1ae0c7f857dcce229b61c629f2
+    name: kafka-operator-instance
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/kafka-operator-instance-1.0.0/kafka-operator-instance-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-06-27T19:24:34.288043684Z"
     description: A Helm chart for Kubernetes
     digest: 6d3795faa53c3ec4c9dca517164e145288a563aa79401967a970e652ec7d9c1a
@@ -4633,4 +4643,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-02T07:52:17.541281377Z"
+generated: "2024-07-02T20:36:34.584356531Z"
