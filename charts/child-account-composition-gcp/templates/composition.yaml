@@ -2645,7 +2645,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-dataspace-backend-rolebinding'
+          fmt: '%s-dataspace-backend-warehouse-readonly-rolebinding'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       policy:
