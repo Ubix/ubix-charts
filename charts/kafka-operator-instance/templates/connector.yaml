@@ -1,0 +1,6 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: {{ .Values.connector.name }}
+spec:
+    {{- toYaml .Values.connector.spec | nindent 2 }}

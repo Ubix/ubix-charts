@@ -1,6 +1,6 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaConnect
 metadata:
-  name: {{ .Values.kafkaConnect.name }}
+  name: {{ .Values.connect.name }}
 spec:
-    {{- toYaml .Values.kafkaConnect.spec | nindent 2 }}
+    {{- toYaml .Values.connect.spec | nindent 2 }}
