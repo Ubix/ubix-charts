@@ -4,4 +4,4 @@ description: Generic application helm chart
 
 # Helm chart Version
 
-version: 1.2.5
+version: 1.2.6
