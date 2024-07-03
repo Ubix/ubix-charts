@@ -90,7 +90,7 @@ spec:
         type: string
     - type: PatchSet
       patchSetName: providerconfigref-patch
-    
+
   - name: Enable GKE API
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -187,7 +187,7 @@ spec:
           ipCidrRange: 10.0.64.0/20
           networkRef:
             name: # patched
-          region: # patched 
+          region: # patched
           privateIpGoogleAccess: true
           secondaryIpRange:
             - ipCidrRange: 10.8.0.0/14
@@ -610,6 +610,10 @@ spec:
                     maxUnavailable: 0
                   oauthScopes:
                   - "https://www.googleapis.com/auth/cloud-platform"
+                  - "https://www.googleapis.com/auth/logging.write"
+                  - "https://www.googleapis.com/auth/monitoring"
+                  - "https://www.googleapis.com/auth/devstorage.read_only"
+                  - "https://www.googleapis.com/auth/compute"
               resourceLimits:
               - resourceType: 'cpu'
                 maximum: 1024
@@ -737,7 +741,7 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.gkeNodePoolSAEmail
-      
+
   - name: workload-identity-iambinding-nodepool
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -751,7 +755,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -974,7 +978,7 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.postgresOperatorGCSSAEmail
-    
+
   - name: mlflow-artifcats-sa
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -2717,10 +2721,10 @@ spec:
   #     kind: ServiceAccountPolicy
   #   spec:
   #     forProvider:
-  #       project: 
+  #       project:
   #       policy:
   #         bindings:
-  #           - members: 
+  #           - members:
   #             - serviceAccount:PROJECT_ID.svc.id.goog[data-tooling/spark]
   #             - serviceAccount:PROJECT_ID.svc.id.goog[data-tooling/spark-historyserver]
   #             - serviceAccount:PROJECT_ID.svc.id.goog[data-tooling/dataflow-leader]
@@ -2758,7 +2762,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3061,7 +3065,7 @@ spec:
           location: #patchme
           publicAccessPrevention: "enforced"
           cors:
-          - origin: 
+          - origin:
               - #patchme
             method:
               - "PUT"
@@ -3352,7 +3356,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
