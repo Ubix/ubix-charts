@@ -18,7 +18,7 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Values.clusterName }}
+      app.kubernetes.io/instance: {{ .Values.clusterName }}-server
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
