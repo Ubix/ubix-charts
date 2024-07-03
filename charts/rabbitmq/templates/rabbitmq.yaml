@@ -3,18 +3,6 @@ kind: RabbitmqCluster
 metadata:
   name: {{ .Values.clusterName }}
   annotations:
-    rabbitmq.com/topology-allowed-namespaces: "*"
+    {{ .Values.rabbitmq.annotations | toYaml | indent 4 }}
 spec:
-  imagePullSecrets:
-  - name: {{ .Values.imagePullSecret }}
-  persistence:
-    storageClassName: {{ .Values.persistence.storageClassName }}
-    storage: {{ .Values.persistence.storage }}
-  resources:
-    requests:
-      cpu: {{ .Values.resources.requests.cpu }}
-      memory: {{ .Values.resources.requests.memory }}
-    limits:
-      memory: {{ .Values.resources.limits.memory }}
-  tolerations:
-{{ .Values.tolerations | toYaml | indent 2}}
+{{ .Values.rabbitmq.spec | toYaml | indent 2 }}
