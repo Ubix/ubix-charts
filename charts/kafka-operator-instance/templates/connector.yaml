@@ -1,0 +1,11 @@
+{{- range .Values.connectors }}
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: {{ .name }}
+  labels:
+    # connect cluster to create the connectors
+    strimzi.io/cluster: {{ $.Values.connect.name | quote }}
+spec:
+    {{- toYaml .spec | nindent 2 }}
+{{- end }}

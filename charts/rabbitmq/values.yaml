@@ -1,44 +1,94 @@
-clusterName: rabbitmq-backoffice
-persistence:
-  storageClassName: gp3
-  storage: 8Gi
-resources:
-  requests:
-    cpu: 500m
-    memory: 1Gi
-  limits:
-    memory: 2Gi
-queues:
-  account-status:
-    autoDelete: false
-    durable: false
-    exchanges:
-      account-status:
-        vhost: "/"
-        type: fanout
-        autoDelete: false
-        durable: true
-users:
-  account-provisioner:
-    vhost: "/"
-    tags:
-      administrator: {}
-    permissions:
-      write: ".*"
-      configure: ".*"
-      read: ".*"
-    credentialsNamespaces:
-      data-tooling: {}
-      services: {}
-imagePullSecret: docker-registry-secret
+clusterName: rabbitmq
+rabbitmq:
+  annotations:
+    rabbitmq.com/topology-allowed-namespaces: "*"
+  spec:
+    replicas: 1
+    imagePullSecrets: 
+    - name: docker-registry-secret
+    # rabbitmq:
+    #   addtionnalConfig: |
+    #     vm_memory_high_watermark.relative = 0.8
+    persistence:
+      storageClassName: gp3
+      storage: 8Gi
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        memory: 2Gi
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: pool
+              operator: In
+              values:
+              - databases
+    tolerations:
+      - key: pool
+        operator: Equal
+        value: databases
+        effect: NoSchedule
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: kube-prometheus-stack
+  endpoints:
+    - port: prometheus
+      path: /metrics/per-object
+      scheme: http
+      interval: 15s
+      scrapeTimeout: 14s
+
+queues: {}
+  # account-status:
+  #   autoDelete: false
+  #   durable: false
+  #   exchanges:
+  #     account-status:
+  #       vhost: "/"
+  #       type: fanout
+  #       autoDelete: false
+  #       durable: true
+  # chatubix-request:
+  #   autoDelete: false
+  #   durable: false
+  #   exchanges:
+  #     chatubix-request:
+  #       vhost: "/"
+  #       type: fanout
+  #       autoDelete: false
+  #       durable: true
+users: {}
+  # account-provisioner:
+  #   vhost: "/"
+  #   tags:
+  #     administrator: {}
+  #   permissions:
+  #     write: ".*"
+  #     configure: ".*"
+  #     read: ".*"
+  #   credentialsNamespaces:
+  #     data-tooling: {}
+  #     services: {}
+  # chatubix-user:
+  #   vhost: "/"
+  #   tags:
+  #     administrator: {}
+  #   permissions:
+  #     write: ".*"
+  #     configure: ".*"
+  #     read: ".*"
+  #   credentialsNamespaces:
+  #     data-tooling: {}
+  #     services: {}
 policies:
   remove-amq-gen-queues:
     pattern: "^amq.gen*"
     applyTo: "queues"
     definition:
       expires: 600
-tolerations:
-- key: databases
-  operator: Equal
-  value: "true"
-  effect: NoSchedule
