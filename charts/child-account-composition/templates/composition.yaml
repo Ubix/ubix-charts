@@ -2636,13 +2636,13 @@ spec:
         fromFieldPath: status.atProvider.id
         toFieldPath: status.execServicePythonRoleName
 
-  - name: colossal-ai-role
+  - name: chatubix-api-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
       metadata:
         annotations:
-          crossplane.io/external-name: colossal-ai-role
+          crossplane.io/external-name: chatubix-api-role
       spec:
         forProvider:
           assumeRolePolicy: ""
@@ -2653,7 +2653,7 @@ spec:
         transforms:
           - type: string
             string:
-              fmt: "%s-colossal-ai"
+              fmt: "%s-chatubix-api"
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -2685,7 +2685,7 @@ spec:
                     "Condition": {
                       "StringEquals": {
                           "%s:sub": [
-                          "system:serviceaccount:data-tooling:colossal-ai"],
+                          "system:serviceaccount:data-tooling:chatubix-api"],
                           "%s:aud": "sts.amazonaws.com"
                       }
                     }
@@ -2694,7 +2694,7 @@ spec:
               }
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.colossalAiRoleName
+        toFieldPath: status.chatUbixApiRoleName
 
   - name: organization-role
     base:
@@ -5422,7 +5422,7 @@ spec:
         policy:
           fromFieldPath: Required
 
-  - name: colossal-ai-warehouse-read-only-policy-attachment
+  - name: chatubix-api-warehouse-read-only-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -5439,14 +5439,14 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-colossal-ai-warehouse'
+          fmt: '%s-chatubix-api-warehouse'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-colossal-ai'
+          fmt: '%s-chatubix-api'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.policyArnRef.name
