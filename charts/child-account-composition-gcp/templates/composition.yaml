@@ -571,6 +571,8 @@ spec:
             - STATEFULSET
           - managedPrometheus:
             - enabled: false
+          monitoringService: monitoring.googleapis.com/kubernetes
+          loggingService: logging.googleapis.com/kubernetes
           releaseChannel:
           - channel: STABLE
           verticalPodAutoscaling:
