@@ -2663,7 +2663,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-warehouse-read-only-role'
+          fmt: '%s-warehouseß'
     - type: FromCompositeFieldPath
       fromFieldPath: status.projectName
       policy:
