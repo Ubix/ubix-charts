@@ -2663,7 +2663,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-warehouseß'
+          fmt: '%s-warehouse'
     - type: FromCompositeFieldPath
       fromFieldPath: status.projectName
       policy:
