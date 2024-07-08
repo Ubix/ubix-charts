@@ -52,6 +52,9 @@ spec:
       fromFieldPath: status.atProvider.projectId
       toFieldPath: status.id
     - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.projectId
+      toFieldPath: status.projectName
+    - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.number
       toFieldPath: status.projectNumber
     - type: ToCompositeFieldPath
