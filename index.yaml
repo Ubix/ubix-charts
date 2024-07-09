@@ -4126,6 +4126,16 @@ entries:
   keda-scaled-object:
   - apiVersion: v2
     appVersion: 2.14.0
+    created: "2024-07-09T01:37:23.622125924Z"
+    description: A Helm chart for Kubernetes
+    digest: 298e8545ec6a8fcf117d85dab8bbbfdb0bc288f220524bf5de22bd274c723a20
+    name: keda-scaled-object
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/keda-scaled-object-0.1.1/keda-scaled-object-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 2.14.0
     created: "2024-06-21T14:05:51.270808149Z"
     description: A Helm chart for Kubernetes
     digest: 8c20ed4afc042fd631de089a951aaac0751f3d7671c1d4c415dbd564521fc838
@@ -4745,4 +4755,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-08T19:32:10.369488223Z"
+generated: "2024-07-09T01:37:23.622817954Z"
