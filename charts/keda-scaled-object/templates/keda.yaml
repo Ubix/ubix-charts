@@ -3,4 +3,4 @@ kind: ScaledObject
 metadata:
   name: {{ .Values.name }}
 spec:
-    {{- toYaml .Values.spec | nindent 2 }}
+{{- toYaml .Values.scale | nindent 4 }}
