@@ -4051,7 +4051,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-harbor-iambinding
+  - name: token-creator-harbor-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
