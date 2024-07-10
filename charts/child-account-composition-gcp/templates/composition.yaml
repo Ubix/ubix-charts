@@ -4110,7 +4110,7 @@ spec:
         forProvider:
           project: ubix-crossplane-gcp
           member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
+          role: roles/artifactregistry.reader
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -4118,7 +4118,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-gke-nodepool-token-creator-rolebinding'
+          fmt: '%s-gke-nodepool-artifact-registry-reader-rolebinding'
     - type: FromCompositeFieldPath
       fromFieldPath: status.projectName
       policy:
