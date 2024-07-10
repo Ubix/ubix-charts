@@ -1,0 +1,8 @@
+{{ if .Values.auth }}
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: {{ .Values.name }}
+spec:
+{{- toYaml .Values.auth | nindent 4 }}
+{{ end }}

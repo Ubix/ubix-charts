@@ -18,6 +18,7 @@ metadata:
   name: {{ $clusterName }}-{{ $exchangeName }}
 spec:
 {{ $exchangeSpec | toYaml | indent 2 }}
+  name: {{ $exchangeName }}
   rabbitmqClusterReference:
     name: {{ $clusterName }}
 ---

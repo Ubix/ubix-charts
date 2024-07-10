@@ -59,6 +59,9 @@ spec:
               id:
                 description: The GCP project id
                 type: string
+              projectName:
+                description: The GCP project name
+                type: string
               projectNumber:
                 description: The GCP project number
                 type: string
