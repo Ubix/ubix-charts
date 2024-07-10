@@ -2804,7 +2804,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -2844,7 +2844,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -2924,7 +2924,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -2964,7 +2964,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3004,7 +3004,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3044,7 +3044,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3084,7 +3084,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3124,7 +3124,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3151,7 +3151,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-spark-iambinding
+  - name: token-creator-spark-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
@@ -3164,7 +3164,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3191,7 +3191,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-spark-historyserver-iambinding
+  - name: token-creator-spark-historyserver-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
@@ -3204,7 +3204,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3244,7 +3244,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3271,7 +3271,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-dataflow-leader-iambinding
+  - name: token-creator-dataflow-leader-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
@@ -3284,7 +3284,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -3311,7 +3311,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-dataflow-listener-iambinding
+  - name: token-creator-dataflow-listener-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
@@ -3324,7 +3324,7 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef: 
+          serviceAccountIdRef:
             name: #patchme
     patches:
     - type: FromCompositeFieldPath
@@ -4017,6 +4017,40 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: gke-nodepool-token-creator-rolebinding-ubix-crossplane-gcp
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          project: ubix-crossplane-gcp
+          member: #patchme
+          role: roles/iam.serviceAccountTokenCreator
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-nodepool-token-creator-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:gke-nodepool-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: workload-identity-harbor-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -4029,7 +4063,7 @@ spec:
             resolve: "Always"
         forProvider:
           member: #patchme
-          role: roles/iam.workloadIdentityUser
+          role: roles/iam.serviceAccountTokenCreator
           serviceAccountIdRef:
             name: #patchme
     patches:
