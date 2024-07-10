@@ -3398,7 +3398,7 @@ spec:
         forProvider:
           project: #patchme
           member: #patchme
-          role: roles/compute.admin
+          role: roles/compute.storageAdmin
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
