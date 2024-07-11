@@ -2470,6 +2470,80 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: spark-sa-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          member: #patchme
+          role: roles/iam.serviceAccountTokenCreator
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-spark-sa-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:spark-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: spark-historyserver-sa-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          member: #patchme
+          role: roles/iam.serviceAccountTokenCreator
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-spark-historyserver-sa-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:spark-history-server-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: api-service-execution-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
