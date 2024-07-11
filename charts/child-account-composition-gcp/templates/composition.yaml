@@ -2494,11 +2494,6 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
-      fromFieldPath: status.externalDnsRoleId
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.role
-    - type: FromCompositeFieldPath
       fromFieldPath: status.projectName
       policy:
         fromFieldPath: Required
@@ -2535,11 +2530,6 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.certManagerRoleId
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.role
     - type: FromCompositeFieldPath
       fromFieldPath: status.projectName
       policy:
