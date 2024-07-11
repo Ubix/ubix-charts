@@ -2864,7 +2864,7 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
-      fromFieldPath: status.id
+      fromFieldPath: status.projectName
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.member
