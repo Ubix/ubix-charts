@@ -107,6 +107,9 @@ spec:
               warehouseReadOnlyRoleId:
                 description: Role to allow read-only access to warehouse buckets
                 type: string
+              executionArtifactsReadOnlyRoleId:
+                description: Role to allow read-only access to warehouse buckets
+                type: string
               postgresOperatorGCSSAEmail:
                 description: email of the postgres-operator-gcs-backups service-account
                 type: string

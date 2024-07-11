@@ -226,6 +226,9 @@ spec:
               executionArtifactsS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
+              executionArtifactsS3PolicyReadonlyArn:
+                description: Policy to give s3 access to the cluster
+                type: string
               airbyteArtifactsFullAccessS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
