@@ -1459,6 +1459,38 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: metastore-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: metastore-sa
+        labels:
+          service-account: metastore-sa
+      spec:
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          displayName: "metastore-sa"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-metastore-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: spark-thrift-server-sa
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -1947,6 +1979,46 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: metastore-warehouse-full-access-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-metastore-warehouse-full-access-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-warehouse'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:metastore-sa@%s.iam.gserviceaccount.com'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
@@ -2875,6 +2947,46 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: workload-identity-metastore-iambinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccountIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          role: roles/iam.workloadIdentityUser
+          serviceAccountIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-workload-identity-metastore-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.serviceAccountIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-metastore-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/metastore]'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: workload-identity-spark-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -3312,6 +3424,46 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s.svc.id.goog[databases/postgres-pod]'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: token-creator-metastore-iambinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccountIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          role: roles/iam.serviceAccountTokenCreator
+          serviceAccountIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-workload-identity-metastore-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.serviceAccountIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-metastore-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/metastore]'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
