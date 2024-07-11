@@ -3367,7 +3367,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-gke-workload-identity-spark-rolebinding'
+          fmt: '%s-gke-token-creator-spark-rolebinding'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.serviceAccountIdRef.name
@@ -3447,7 +3447,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-gke-workload-identity-spark-historyserver-rolebinding'
+          fmt: '%s-gke-token-creator-spark-historyserver-rolebinding'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.serviceAccountIdRef.name
