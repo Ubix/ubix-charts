@@ -1830,6 +1830,46 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: data-flow-listener-execution-artifacts-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-flow-listener-execution-artifacts-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-execution-artifacts'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dataFlowListenerSAEmail
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: data-flow-listener-ingestion-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
