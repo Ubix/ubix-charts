@@ -2396,6 +2396,90 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: dns-administrator-external-dns-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          member: #patchme
+          role: roles/dns.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-external-dns'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.externalDnsRoleId
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:external-dns-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: dns-administrator-cert-manager-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          member: #patchme
+          role: roles/dns.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-cert-manager'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.certManagerRoleId
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.role
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:cert-manager-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: api-service-execution-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
