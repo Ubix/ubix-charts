@@ -2417,7 +2417,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-external-dns'
+          fmt: '%s-external-dns-administrator'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
@@ -2459,7 +2459,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-cert-manager'
+          fmt: '%s-cert-manager-administrator'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
@@ -2851,7 +2851,7 @@ spec:
         forProvider:
           project: #patchme
           member: #patchme
-          role: roles/serviceAccountTokenCreator
+          role: roles/iam.serviceAccountTokenCreator
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3024,7 +3024,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-dataflow-leader-sa'
+          fmt: '%s-dataflow-listener-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.member
@@ -3384,7 +3384,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-spark-historyserver-sa'
+          fmt: '%s-spark-history-server-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.member
