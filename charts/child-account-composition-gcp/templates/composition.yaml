@@ -2470,80 +2470,6 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: spark-sa-rolebinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ProjectIAMMember
-      spec:
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        deletionPolicy: Orphan
-        forProvider:
-          project: #patchme
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-spark-sa-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.projectName
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:spark-sa@%s.iam.gserviceaccount.com'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: spark-historyserver-sa-rolebinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ProjectIAMMember
-      spec:
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        deletionPolicy: Orphan
-        forProvider:
-          project: #patchme
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-spark-historyserver-sa-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.projectName
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:spark-history-server-sa@%s.iam.gserviceaccount.com'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
   - name: api-service-execution-artifacts-rolebinding
     base:
       apiVersion: storage.gcp.upbound.io/v1beta1
@@ -2902,43 +2828,6 @@ spec:
   #                 regex: 'PROJECT_ID'
   #               with: '%s'
 
-  - name: exec-service-python-rolebinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ProjectIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          project: #patchme
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-exec-service-python-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.projectName
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:exec-service-python-sa@%s.iam.gserviceaccount.com'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
   - name: workload-identity-spark-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -3019,7 +2908,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-spark-historyserver-iambinding
+  - name: workload-identity-spark-history-server-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
@@ -3041,14 +2930,14 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-gke-workload-identity-spark-historyserver-rolebinding'
+          fmt: '%s-gke-workload-identity-spark-history-server-rolebinding'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.serviceAccountIdRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-spark-historyserver-sa'
+          fmt: '%s-spark-history-server-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.member
