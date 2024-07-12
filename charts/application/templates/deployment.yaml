@@ -15,7 +15,7 @@ metadata:
 {{- if .Values.deployment.annotations }}
 {{ toYaml .Values.deployment.annotations | indent 4 }}
 {{- end }}
-{{- if .Values.deployment.reloadOnChange }} 
+{{- if .Values.deployment.reloadOnChange }}
     reloader.stakater.com/auto: "true"
 {{- end }}
   name: {{ template "application.name" . }}
@@ -29,7 +29,11 @@ spec:
 {{ include "application.labels.selector" . | indent 6 }}
   {{- if .Values.deployment.strategy }}
   strategy:
-{{ toYaml .Values.deployment.strategy | indent 4 }}
+    type: {{ .Values.deployment.strategy.type }}
+{{- if .Values.deployment.strategy.rollingUpdate }}
+    rollingUpdate:
+{{ toYaml .Values.deployment.strategy.rollingUpdate | indent 6 }}
+{{ end }}
   {{- end }}
   template:
     metadata:
@@ -73,7 +77,7 @@ spec:
 {{- end }}
     spec:
       {{- if .Values.deployment.hostAliases }}
-      hostAliases:      
+      hostAliases:
 {{ toYaml .Values.deployment.hostAliases | indent 6 }}
       {{- end }}
       {{- if .Values.deployment.initContainers }}
@@ -99,7 +103,7 @@ spec:
       topologySpreadConstraints:
 {{ toYaml .Values.deployment.topologySpreadConstraints | indent 8 -}}
       {{- end }}
-      {{- if .Values.deployment.imagePullSecrets }}      
+      {{- if .Values.deployment.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.deployment.imagePullSecrets }}
       {{- end }}
@@ -121,7 +125,7 @@ spec:
           name: proxy
         volumeMounts:
         - mountPath: /etc/tls/private
-          name: proxy-tls 
+          name: proxy-tls
         {{- end }}
       - name: {{ template "application.name" . }}
         image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
@@ -186,7 +190,7 @@ spec:
             {{- toYaml .Values.deployment.startupProbe.tcpSocket | nindent 12 }}
           {{- end }}
         {{- end }}
-        {{- if .Values.deployment.livenessProbe.enabled }} 
+        {{- if .Values.deployment.livenessProbe.enabled }}
         livenessProbe:
           failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold }}
           periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds }}
@@ -204,7 +208,7 @@ spec:
             {{- toYaml .Values.deployment.livenessProbe.tcpSocket | nindent 12 }}
           {{- end }}
         {{- end }}
-        {{- if .Values.deployment.readinessProbe.enabled }} 
+        {{- if .Values.deployment.readinessProbe.enabled }}
         readinessProbe:
           failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold }}
           periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
@@ -222,7 +226,7 @@ spec:
             {{- toYaml .Values.deployment.readinessProbe.tcpSocket | nindent 12 }}
           {{- end }}
         {{- end }}
-      {{- if or (.Values.deployment.volumeMounts) (and (eq .Values.persistence.enabled true) (eq .Values.persistence.mountPVC true) )}} 
+      {{- if or (.Values.deployment.volumeMounts) (and (eq .Values.persistence.enabled true) (eq .Values.persistence.mountPVC true) )}}
         volumeMounts:
         {{- if (eq .Values.persistence.mountPVC true) }}
         - mountPath: {{ .Values.persistence.mountPath }}
@@ -231,7 +235,7 @@ spec:
         {{- if .Values.deployment.volumeMounts }}
         {{- range $key, $value := .Values.deployment.volumeMounts }}
         - name: {{ $key }}
-{{  include "application.tplvalues.render" ( dict "value" $value "context" $ ) | indent 10 }} 	
+{{  include "application.tplvalues.render" ( dict "value" $value "context" $ ) | indent 10 }}
         {{- end }}
         {{- end }}
       {{- end }}
@@ -240,14 +244,14 @@ spec:
 {{ toYaml .Values.deployment.additionalContainers | indent 6 }}
         {{- end }}
         {{- if .Values.deployment.securityContext }}
-      securityContext:      
+      securityContext:
 {{ toYaml .Values.deployment.securityContext | indent 8 }}
           {{- end }}
       {{- if .Values.deployment.dnsConfig }}
-      dnsConfig:      
+      dnsConfig:
 {{ toYaml .Values.deployment.dnsConfig | indent 8 }}
           {{- end }}
-      {{- if or (.Values.deployment.openshiftOAuthProxy.enabled) (.Values.deployment.volumes) (and (eq .Values.persistence.enabled true) (eq .Values.persistence.mountPVC true) )}} 
+      {{- if or (.Values.deployment.openshiftOAuthProxy.enabled) (.Values.deployment.volumes) (and (eq .Values.persistence.enabled true) (eq .Values.persistence.mountPVC true) )}}
       volumes:
         {{- if .Values.deployment.openshiftOAuthProxy.enabled }}
       - name: proxy-tls
@@ -271,5 +275,5 @@ spec:
         {{- else }}
       serviceAccountName: {{ template "application.name" . }}
       {{- end }}
-{{- end }}   
+{{- end }}
 {{- end }}
