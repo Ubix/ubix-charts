@@ -73,6 +73,14 @@ entries:
     version: 0.1.0
   application:
   - apiVersion: v1
+    created: "2024-07-12T20:45:50.766245828Z"
+    description: Generic application helm chart
+    digest: 261ab38f1d7bc7f0af50ec9e47d60450d7cb8727aec6cb30590f06b1c21fc538
+    name: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/application-1.2.7/application-1.2.7.tgz
+    version: 1.2.7
+  - apiVersion: v1
     created: "2024-07-03T13:22:10.505221997Z"
     description: Generic application helm chart
     digest: 6bda11dfac0d9838820c7e2db09f5156187eb58057b5de4a5a2eefedc97f0259
@@ -5065,4 +5073,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-12T16:41:34.372899872Z"
+generated: "2024-07-12T20:45:50.876007802Z"
