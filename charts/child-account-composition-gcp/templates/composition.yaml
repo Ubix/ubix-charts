@@ -3256,7 +3256,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-mlflow-iambinding
+  - name: workload-identity-mlflow-artifacts-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
@@ -3278,14 +3278,14 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-gke-workload-identity-mlflow-rolebinding'
+          fmt: '%s-gke-workload-identity-mlflow-artifacts-rolebinding'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.serviceAccountIdRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-mlflow-sa'
+          fmt: '%s-mlflow-artifacts-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.member
@@ -3325,7 +3325,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-colossal-sa'
+          fmt: '%s-colossal-ai-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.member
@@ -3365,7 +3365,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-postgres-pod-sa'
+          fmt: '%s-postgres-operator-gcs-backups-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.member
