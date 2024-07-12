@@ -6434,7 +6434,7 @@ spec:
         policy:
           fromFieldPath: Required
       - type: FromCompositeFieldPath
-        fromFieldPath: status.dataflowRoleName
+        fromFieldPath: status.dataFlowRoleName
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
