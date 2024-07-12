@@ -5307,6 +5307,37 @@ spec:
         policy:
           fromFieldPath: Required
 
+  - name: data-flow-listener-execution-artifacts-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-data-flow-listener-execution-artifacts"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.executionArtifactsS3PolicyArn
+        toFieldPath: spec.forProvider.policyArn
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.dataFlowRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
   - name: data-flow-listener-mlflow-artifacts-policy-attachment
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
