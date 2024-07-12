@@ -3859,6 +3859,117 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: metastore-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          project: #patchme
+          member: #patchme
+          role: roles/storage.objectAdmin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-metastore-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:metastore-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: spark-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          project: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-spark-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:spark-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: spark-token-creator-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          project: #patchme
+          member: #patchme
+          role: roles/iam.serviceAccountTokenCreator
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-spark-token-creator-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:spark-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: gke-nodepool-sa-artifact-registry-rolebinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
