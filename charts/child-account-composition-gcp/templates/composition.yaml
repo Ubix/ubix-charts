@@ -2904,43 +2904,6 @@ spec:
   #                 regex: 'PROJECT_ID'
   #               with: '%s'
 
-  - name: exec-service-python-rolebinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ProjectIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          project: #patchme
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-exec-service-python-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.projectName
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:exec-service-python-sa@%s.iam.gserviceaccount.com'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
   - name: workload-identity-spark-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -2981,7 +2944,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-spark-historyserver-iambinding
+  - name: workload-identity-metastore-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
@@ -3003,25 +2966,25 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-gke-workload-identity-spark-historyserver-rolebinding'
+          fmt: '%s-gke-workload-identity-metastore-rolebinding'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.serviceAccountIdRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-spark-historyserver-sa'
+          fmt: '%s-metastore-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.member
       transforms:
       - type: string
         string:
-          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/spark-historyserver]'
+          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/metastore]'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-exec-service-python-iambinding
+  - name: workload-identity-spark-history-server-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccountIAMMember
@@ -3033,7 +2996,7 @@ spec:
             resolve: "Always"
         forProvider:
           member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
+          role: roles/iam.workloadIdentityUser
           serviceAccountIdRef:
             name: #patchme
     patches:
@@ -3043,21 +3006,21 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-gke-workload-identity-exec-service-python-rolebinding'
+          fmt: '%s-gke-workload-identity-spark-history-server-rolebinding'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.serviceAccountIdRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-exec-service-python-sa'
+          fmt: '%s-spark-history-server-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.member
       transforms:
       - type: string
         string:
-          fmt: 'serviceAccount:%s.svc.id.goog[services/exec-service-python]'
+          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/spark-historyserver]'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
@@ -3181,46 +3144,6 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: token-creator-cert-manager-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-workload-identity-cert-manager-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-cert-manager-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[addons/cert-manager]'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
   - name: workload-identity-external-dns-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -3234,46 +3157,6 @@ spec:
         forProvider:
           member: #patchme
           role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-workload-identity-external-dns-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-external-dns-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[addons/external-dns]'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: token-creator-external-dns-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
           serviceAccountIdRef:
             name: #patchme
     patches:
@@ -3378,206 +3261,6 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:%s.svc.id.goog[databases/postgres-pod]'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: token-creator-spark-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-workload-identity-spark-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-spark-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/spark]'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: token-creator-spark-historyserver-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-workload-identity-spark-historyserver-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-spark-history-server-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/spark-historyserver]'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: workload-identity-gcs-velero-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-workload-identity-gcs-velero-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gcs-velero-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[addons/s3-velero-sa]'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: token-creator-dataflow-leader-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-workload-identity-dataflow-leader-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-dataflow-leader-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/dataflow-leader]'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: token-creator-dataflow-listener-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-workload-identity-dataflow-listener-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-dataflow-listener-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/dataflow-listener]'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
@@ -4278,46 +3961,6 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:gke-nodepool-sa@%s.iam.gserviceaccount.com'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: token-creator-harbor-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-workload-identity-harbor-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-harbor-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[databases/harbor]'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
