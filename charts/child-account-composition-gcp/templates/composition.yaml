@@ -945,6 +945,42 @@ spec:
         fromFieldPath: status.atProvider.id
         toFieldPath: status.warehouseReadOnlyRoleId
 
+  - name: execution-artifacts-readonly-role
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMCustomRole
+      metadata:
+        annotations:
+          crossplane.io/external-name: execution_artifacts_read_only_role
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          permissions:
+           - storage.buckets.list
+           - storage.objects.get
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-execution-artifacts-read-only-role"
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.project
+      - fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.title
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-execution-artifacts-read-only-role"
+      - type: PatchSet
+        patchSetName: providerconfigref-patch
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.executionArtifactsReadOnlyRoleId
+
 # ########
 # # IAM Service Accounts
 # ########
@@ -1820,6 +1856,46 @@ spec:
           fmt: '%s-ingestion-artifacts'
     - type: FromCompositeFieldPath
       fromFieldPath: status.dataServiceExternalSAEmail
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: data-flow-listener-execution-artifacts-rolebinding-readonly
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-data-flow-listener-execution-artifacts-rolebinding-read-only'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-execution-artifacts'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dataFlowListenerSAEmail
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.member

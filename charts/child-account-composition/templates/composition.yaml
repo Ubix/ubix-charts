@@ -3878,6 +3878,55 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.executionArtifactsS3PolicyArn
 
+  - name: execution-artifacts-s3-policy-readonly
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        annotations:
+          crossplane.io/external-name: execution-artifacts-s3-read-only
+      spec:
+        forProvider:
+          policy: "{}" #patchme
+    patches:
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      combine:
+        variables:
+        - fromFieldPath: status.id
+        - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: |
+              {
+                  "Statement": [
+                      {
+                          "Action": [
+                              "s3:GetObject",
+                              "s3:ListBucket"
+                          ],
+                          "Effect": "Allow",
+                          "Resource": [
+                              "arn:aws:s3:::execution-artifacts-%s",
+                              "arn:aws:s3:::execution-artifacts-%s/*"
+                          ]
+                      }
+                  ],
+                  "Version": "2012-10-17"
+              }
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-execution-artifacts-s3-read-only"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.executionArtifactsS3PolicyReadonlyArn
+
   - name: load-balancer-controller-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -6332,6 +6381,37 @@ spec:
       toFieldPath: spec.providerConfigRef.name
       policy:
         fromFieldPath: Required
+
+  - name: dataflow-execution-artifacts-policy-attachment-readonly
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-dataflow-execution-artifacts-read-only"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.executionArtifactsS3PolicyReadonlyArn
+        toFieldPath: spec.forProvider.policyArn
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.dataflowRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
 
   - name: iamattachment-dataflow-warehouse-full-access
     base:
