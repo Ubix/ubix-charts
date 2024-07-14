@@ -3216,46 +3216,6 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: sa-token-creator-dataspace-backend-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.serviceAccountTokenCreator
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-sa-token-creator-dataspace-backend-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-dataspace-backend-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[services/dataspace-backend]'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
   - name: workload-identity-data-lineage-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -4402,6 +4362,43 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:trino-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: dataspace-backend-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          project: #patchme
+          member: #patchme
+          role: roles/iam.serviceAccountTokenCreator
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-dataspace-backend-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:dataspace-backend-sa@%s.iam.gserviceaccount.com'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
