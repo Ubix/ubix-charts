@@ -3216,6 +3216,46 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: sa-token-creator-dataspace-backend-iambinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccountIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          role: roles/iam.serviceAccountTokenCreator
+          serviceAccountIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-sa-token-creator-dataspace-backend-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.serviceAccountIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-dataspace-backend-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s.svc.id.goog[services/dataspace-backend]'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: workload-identity-data-lineage-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
