@@ -4365,7 +4365,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: dataspace-backend-rolebinding
+  - name: dataspace-backend-token-creator-rolebinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ProjectIAMMember
@@ -4386,7 +4386,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-dataspace-backend-rolebinding'
+          fmt: '%s-dataspace-backend-token-craetor-rolebinding'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
