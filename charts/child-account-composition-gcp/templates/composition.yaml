@@ -600,7 +600,7 @@ spec:
             - enabled: true
               autoProvisioningDefaults:
                 - bootDiskKmsKey: #patchme
-                  diskSize: 50
+                  diskSize: 100
                   diskType: pd-standard
                   serviceAccount: #patchme
                   management:
@@ -1654,6 +1654,9 @@ spec:
       toFieldPath: spec.forProvider.project
     - type: PatchSet
       patchSetName: providerconfigref-patch
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.colossalAiEmail
 
 # ########
 # # IAM Role-Binding
@@ -1728,7 +1731,7 @@ spec:
         string:
           fmt: '%s-colossal-ai'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.colossal-aiEmail
+      fromFieldPath: status.colossalAiEmail
       policy:
         fromFieldPath: Required
       toFieldPath: spec.forProvider.member
