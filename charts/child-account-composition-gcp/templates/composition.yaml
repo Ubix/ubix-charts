@@ -1702,46 +1702,6 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: colossal-ai-rolebinding
-    base:
-      apiVersion: storage.gcp.upbound.io/v1beta1
-      kind: BucketIAMMember
-      spec:
-        deletionPolicy: Orphan
-        forProvider:
-          bucketRef:
-            name: #patchme
-          member: #patchme
-          role: roles/storage.admin
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-colossal-ai-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.projectName
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.bucketRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-colossal-ai'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.colossalAiEmail
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
   - name: load-balancer-controller-rolebinding-1
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
