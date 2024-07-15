@@ -155,6 +155,9 @@ spec:
               clusterCertificateAuthorityData:
                 description: Base64 encoded certificate data required to communicate with your cluster.
                 type: string
+              colossalAiEmail:
+                description: Base64 encoded certificate data required to communicate with your cluster.
+                type: string
               GCPLBGKERoleID:
                 description: Role-id to give load balancer controller access to the cluster
                 type: string
