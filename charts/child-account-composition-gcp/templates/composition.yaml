@@ -600,7 +600,7 @@ spec:
             - enabled: true
               autoProvisioningDefaults:
                 - bootDiskKmsKey: #patchme
-                  diskSize: 100
+                  diskSize: 200
                   diskType: pd-standard
                   serviceAccount: #patchme
                   management:
