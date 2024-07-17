@@ -298,6 +298,12 @@ spec:
               ACMArn:
                 description: ARN of the certificate that is being validated.
                 type: string
+              certificateArn:
+                description: ARN of the certificate that is being validated.
+                type: string
+              certificateFQDN:
+                description: ARN of the certificate that is being validated.
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
