@@ -3762,7 +3762,9 @@ spec:
       toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
     - type: PatchSet
       patchSetName: providerconfigref-patch
-
+      policy:
+        fromFieldPath: Required
+        
   - name: dnsauthorization-gcp
     base:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
@@ -3801,6 +3803,7 @@ spec:
       toFieldPath: status.dnsAuthorizationLocation
     - type: PatchSet
       patchSetName: providerconfigref-patch
+
 # #####
 # # GCP LB Resources
 # #####
