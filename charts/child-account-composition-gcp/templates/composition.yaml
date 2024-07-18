@@ -3832,7 +3832,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: '*.%s.ubix.io'
+            fmt: '%s.ubix.io'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 # #####
