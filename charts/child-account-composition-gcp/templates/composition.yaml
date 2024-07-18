@@ -3882,7 +3882,9 @@ spec:
         - type: string
           string:
             fmt: '*.%s.ubix.io'
-
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+      
   - name: dnsauthorization-gcp
     base:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
@@ -3912,6 +3914,8 @@ spec:
         - type: string
           string:
             fmt: '*.%s.ubix.io'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 # #####
 # # GCP LB Resources
 # #####
