@@ -142,6 +142,30 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: Enable Certificate Manager API
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectService
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          disableDependentServices: false
+          service: certificatemanager.googleapis.com # patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - string:
+          fmt: '%s-project-certificate-manager-service-api'
+        type: string
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
 # ########
 # # VPC
 # ########
@@ -3884,7 +3908,7 @@ spec:
             fmt: '*.%s.ubix.io'
     - type: PatchSet
       patchSetName: providerconfigref-patch
-      
+
   - name: dnsauthorization-gcp
     base:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
