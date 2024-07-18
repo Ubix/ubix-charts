@@ -3734,7 +3734,7 @@ spec:
           description: The default cert
           managed:
             - dnsAuthorizations:
-                - projects/official-provider-testing/locations/global/dnsAuthorizations/instance
+                - #patchme
               domains:
                 - #patchme
           scope: DEFAULT
@@ -3757,6 +3757,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dnsAuthorizationLocation
+      toFieldPath: spec.forProvider.managed.dnsAuthorizations
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
@@ -3793,6 +3796,9 @@ spec:
         - type: string
           string:
             fmt: '%s.ubix.io'
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.Id
+      toFieldPath: status.dnsAuthorizationLocation
     - type: PatchSet
       patchSetName: providerconfigref-patch
 # #####

@@ -182,6 +182,9 @@ spec:
               postgresBackupsBucketName:
                 description: GCS Bucket for Postgres backups
                 type: string
+              dnsAuthorizationLocation:
+                description: Location of the dnsAuthorization within the project
+                type: string
     additionalPrinterColumns:
     - name: GCPProjectID
       type: string
