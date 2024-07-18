@@ -3331,46 +3331,6 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: workload-identity-dataflow-leader-iambinding
-    base:
-      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
-      kind: ServiceAccountIAMMember
-      spec:
-        deletionPolicy: Orphan
-        providerConfigRef:
-          name: #patchme
-          policy:
-            resolve: "Always"
-        forProvider:
-          member: #patchme
-          role: roles/iam.workloadIdentityUser
-          serviceAccountIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gke-workload-identity-dataflow-leader-rolebinding'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.serviceAccountIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-dataflow-listener-sa'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.member
-      transforms:
-      - type: string
-        string:
-          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/dataflow-leader]'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
   - name: workload-identity-dataflow-listener-iambinding
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
