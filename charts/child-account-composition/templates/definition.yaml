@@ -286,18 +286,6 @@ spec:
               ebsKmsArn:
                 description: EBS csi driver KMS key
                 type: string
-              ACMresourceRecordName:
-                description: The name of the DNS record to create to validate the certificate
-                type: string
-              ACMresourceRecordValue:
-                description: The type of DNS record to create
-                type: string
-              ACMresourceRecordType:
-                description: The value the DNS record needs to have
-                type: string
-              ACMArn:
-                description: ARN of the certificate that is being validated.
-                type: string
               certificateArn:
                 description: ARN of the certificate that is being validated.
                 type: string
