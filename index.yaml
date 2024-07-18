@@ -4807,6 +4807,16 @@ entries:
   nvidia-device-plugin-daemonset:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-07-18T22:26:04.546751606Z"
+    description: Chart to deploy the nvidia plugin daemonset
+    digest: 11ef7e2b13d39adac447bfce6fb7497b006018ee8f5fef67bf6c26654d31e3e7
+    name: nvidia-device-plugin-daemonset
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/nvidia-device-plugin-daemonset-0.1.2/nvidia-device-plugin-daemonset-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-07-18T22:16:10.478627888Z"
     description: Chart to deploy the nvidia plugin daemonset
     digest: a3b7ffb540196ff8e8a83dc6bfd21cb09d7a7ae6cc9635796e370a8dffccf7bf
@@ -5373,4 +5383,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-18T22:16:10.479420181Z"
+generated: "2024-07-18T22:26:04.547493176Z"
