@@ -3856,7 +3856,7 @@ spec:
           upjet.upbound.io/manual-intervention: Certificate requires a real DNS authorization ID
         labels:
           testing.upbound.io/example-name: certificate
-        name: certificate
+        name: #patchme
       spec:
         forProvider:
           description: The default cert
@@ -3865,8 +3865,23 @@ spec:
             - dnsAuthorizations:
                 - projects/official-provider-testing/locations/global/dnsAuthorizations/instance
               domains:
-                - *.master-gcp-01.ubix.io
+                - #patchme
           scope: DEFAULT
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed.domains
+      transforms:
+        - type: string
+          string:
+            fmt: '*.%s.ubix.io'
 
   - name: dnsauthorization-gcp
     base:
@@ -3877,12 +3892,26 @@ spec:
           meta.upbound.io/example-id: certificatemanager/v1beta1/certificate
         labels:
           testing.upbound.io/example-name: certificate
-        name: dnsauthorization
+        name: #patchme
       spec:
         forProvider:
           description: The default dnss
-          domain: *.master-gcp-01.ubix.io
-
+          domain: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-dns-authorization'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.domain
+      transforms:
+        - type: string
+          string:
+            fmt: '*.%s.ubix.io'
 # #####
 # # GCP LB Resources
 # #####
