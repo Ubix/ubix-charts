@@ -3749,7 +3749,7 @@ spec:
           fmt: '%s-certificate'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed.domains
+      toFieldPath: spec.forProvider.managed[0].domains
       transforms:
         - type: string
           string:
@@ -3759,7 +3759,7 @@ spec:
       toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
       fromFieldPath: status.dnsAuthorizationLocation
-      toFieldPath: spec.forProvider.managed.dnsAuthorizations
+      toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
