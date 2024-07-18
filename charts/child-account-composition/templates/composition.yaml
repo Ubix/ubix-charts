@@ -8342,7 +8342,7 @@ spec:
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.certificateArn
     - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.domainValidationOptions.domainName
+      fromFieldPath: status.atProvider.domainValidationOptions[0].domainName
       toFieldPath: status.certificateFQDN
 
   - name: child-account-certificate-validation
