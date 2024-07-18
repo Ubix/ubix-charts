@@ -3843,6 +3843,80 @@ spec:
           fromFieldPath: Required
 
 # #####
+# # Certificate Resources
+# #####
+
+  - name: certificate-gcp
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: Certificate
+      metadata:
+        annotations:
+          meta.upbound.io/example-id: certificatemanager/v1beta1/certificate
+          upjet.upbound.io/manual-intervention: Certificate requires a real DNS authorization ID
+        labels:
+          testing.upbound.io/example-name: certificate
+        name: #patchme
+      spec:
+        forProvider:
+          description: The default cert
+          location: global
+          managed:
+            - dnsAuthorizations:
+                - projects/official-provider-testing/locations/global/dnsAuthorizations/instance
+              domains:
+                - #patchme
+          scope: DEFAULT
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed.domains
+      transforms:
+        - type: string
+          string:
+            fmt: '*.%s.ubix.io'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+      
+  - name: dnsauthorization-gcp
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: DNSAuthorization
+      metadata:
+        annotations:
+          meta.upbound.io/example-id: certificatemanager/v1beta1/certificate
+        labels:
+          testing.upbound.io/example-name: certificate
+        name: #patchme
+      spec:
+        forProvider:
+          description: The default dnss
+          domain: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-dns-authorization'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.domain
+      transforms:
+        - type: string
+          string:
+            fmt: '*.%s.ubix.io'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+# #####
 # # GCP LB Resources
 # #####
 
