@@ -14,14 +14,12 @@ spec:
       labels:
         name: nvidia-device-plugin-ds
     spec:
-      nodeSelector:
-        karpenter.sh/provisioner-name: gpu
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: karpenter.sh/provisioner-name
+              - key: pool
                 operator: In
                 values:
                 - gpu
