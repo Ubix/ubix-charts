@@ -8378,7 +8378,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: status.certificateFQDN
+      fromFieldPath: status.certificateResourceRecordName
       toFieldPath: spec.forProvider.validationRecordFqdns[0]
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
