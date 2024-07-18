@@ -292,6 +292,15 @@ spec:
               certificateFQDN:
                 description: ARN of the certificate that is being validated.
                 type: string
+              certificateResourceRecordName:
+                description: Certificate that is being validated.
+                type: string
+              certificateResourceRecordValue:
+                description: Certificate that is being validated.
+                type: string
+              certificateResourceRecordType:
+                description: Certificate that is being validated.
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string

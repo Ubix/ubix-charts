@@ -7771,6 +7771,47 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+
+  - name: cname-validation-record
+    base:
+      apiVersion: route53.aws.upbound.io/v1beta1
+      kind: Record
+      metadata:
+        labels:
+          resource: Record
+          type: CNAME
+      spec:
+        forProvider:
+          ttl: 300
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-cname-validation-record'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - fromFieldPath: status.zoneId
+      toFieldPath: spec.forProvider.zoneId
+    - fromFieldPath: status.certificateResourceRecordName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.name
+    - fromFieldPath: status.certificateResourceRecordValue
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.records[0]
+    - fromFieldPath: status.certificateResourceRecordType
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.type
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 ### AWS LB resources
 
   - name: aws-lb-role
@@ -8303,6 +8344,15 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.domainValidationOptions[0].domainName
       toFieldPath: status.certificateFQDN
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.domainValidationOptions[0].resourceRecordName
+      toFieldPath: status.certificateResourceRecordName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.domainValidationOptions[0].resourceRecordValue
+      toFieldPath: status.certificateResourceRecordValue
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.domainValidationOptions[0].resourceRecordType
+      toFieldPath: status.certificateResourceRecordType
 
   - name: child-account-certificate-validation
     base:
