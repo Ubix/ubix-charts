@@ -2563,8 +2563,7 @@ spec:
                     "Action": "sts:AssumeRoleWithWebIdentity",
                     "Condition": {
                       "StringEquals": {
-                          "%s:sub": [
-                          "system:serviceaccount:data-tooling:dataflow-listener",
+                          "%s:sub": "system:serviceaccount:data-tooling:dataflow-listener",
                           "%s:aud": "sts.amazonaws.com"
                       }
                     }
