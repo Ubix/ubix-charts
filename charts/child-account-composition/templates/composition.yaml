@@ -2565,7 +2565,6 @@ spec:
                       "StringEquals": {
                           "%s:sub": [
                           "system:serviceaccount:data-tooling:dataflow-listener",
-                          "system:serviceaccount:data-tooling:dataflow-leader"],
                           "%s:aud": "sts.amazonaws.com"
                       }
                     }
