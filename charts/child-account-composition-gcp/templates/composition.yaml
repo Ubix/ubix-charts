@@ -3749,7 +3749,7 @@ spec:
           fmt: '%s-certificate'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains
+      toFieldPath: spec.forProvider.managed[0].domains[0]
       transforms:
         - type: string
           string:
@@ -3764,7 +3764,7 @@ spec:
       patchSetName: providerconfigref-patch
       policy:
         fromFieldPath: Required
-        
+
   - name: dnsauthorization-gcp
     base:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
@@ -3799,7 +3799,7 @@ spec:
           string:
             fmt: '%s.ubix.io'
     - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.Id
+      fromFieldPath: status.atProvider.id
       toFieldPath: status.dnsAuthorizationLocation
     - type: PatchSet
       patchSetName: providerconfigref-patch
