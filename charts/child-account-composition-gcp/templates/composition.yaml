@@ -3727,6 +3727,7 @@ spec:
       spec:
         forProvider:
           description: The default cert
+          location: global
           managed:
             - dnsAuthorizations:
                 - #patchme
