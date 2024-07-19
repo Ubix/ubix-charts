@@ -1845,6 +1845,7 @@ spec:
         annotations:
           crossplane.io/external-name: coredns
       spec:
+        deletionPolicy: Orphan
         forProvider:
           addonName: coredns
           clusterNameRef:
@@ -1881,6 +1882,7 @@ spec:
         annotations:
           crossplane.io/external-name: vpc-cni
       spec:
+        deletionPolicy: Orphan
         forProvider:
           addonName: vpc-cni
           clusterNameRef:
@@ -1913,6 +1915,7 @@ spec:
         annotations:
           crossplane.io/external-name: kube-proxy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           addonName: kube-proxy
           clusterNameRef:
