@@ -3718,91 +3718,91 @@ spec:
 # # Certificate Resources
 # #####
 
-  - name: certificate-gcp
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: Certificate
-      metadata:
-        annotations:
-          meta.upbound.io/example-id: certificatemanager/v1beta1/certificate
-          upjet.upbound.io/manual-intervention: Certificate requires a real DNS authorization ID
-        labels:
-          testing.upbound.io/example-name: certificate
-        name: #patchme
-      spec:
-        forProvider:
-          description: The default cert
-          managed:
-            - dnsAuthorizations:
-                - #patchme
-              domains:
-                - #patchme
-          scope: DEFAULT
-          project: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-certificate'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[0]
-      transforms:
-        - type: string
-          string:
-            fmt: '*.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.dnsAuthorizationLocation
-      toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-      policy:
-        fromFieldPath: Required
+  # - name: certificate-gcp
+  #   base:
+  #     apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+  #     kind: Certificate
+  #     metadata:
+  #       annotations:
+  #         meta.upbound.io/example-id: certificatemanager/v1beta1/certificate
+  #         upjet.upbound.io/manual-intervention: Certificate requires a real DNS authorization ID
+  #       labels:
+  #         testing.upbound.io/example-name: certificate
+  #       name: #patchme
+  #     spec:
+  #       forProvider:
+  #         description: The default cert
+  #         managed:
+  #           - dnsAuthorizations:
+  #               - #patchme
+  #             domains:
+  #               - #patchme
+  #         scope: DEFAULT
+  #         project: #patchme
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-certificate'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[0]
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: '*.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.project
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.dnsAuthorizationLocation
+  #     toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
+  #   - type: PatchSet
+  #     patchSetName: providerconfigref-patch
+  #     policy:
+  #       fromFieldPath: Required
 
-  - name: dnsauthorization-gcp
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: DNSAuthorization
-      metadata:
-        annotations:
-          meta.upbound.io/example-id: certificatemanager/v1beta1/certificate
-        labels:
-          testing.upbound.io/example-name: certificate
-        name: #patchme
-      spec:
-        forProvider:
-          description: The default dnss
-          domain: #patchme
-          project: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-dns-authorization'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.domain
-      transforms:
-        - type: string
-          string:
-            fmt: '%s.ubix.io'
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.dnsAuthorizationLocation
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
+  # - name: dnsauthorization-gcp
+  #   base:
+  #     apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+  #     kind: DNSAuthorization
+  #     metadata:
+  #       annotations:
+  #         meta.upbound.io/example-id: certificatemanager/v1beta1/certificate
+  #       labels:
+  #         testing.upbound.io/example-name: certificate
+  #       name: #patchme
+  #     spec:
+  #       forProvider:
+  #         description: The default dnss
+  #         domain: #patchme
+  #         project: #patchme
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-dns-authorization'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.project
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.domain
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: '%s.ubix.io'
+  #   - type: ToCompositeFieldPath
+  #     fromFieldPath: status.atProvider.id
+  #     toFieldPath: status.dnsAuthorizationLocation
+  #   - type: PatchSet
+  #     patchSetName: providerconfigref-patch
 
 # #####
 # # GCP LB Resources
