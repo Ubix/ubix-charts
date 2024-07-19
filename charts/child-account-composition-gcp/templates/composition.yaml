@@ -3718,47 +3718,45 @@ spec:
 # # Certificate Resources
 # #####
 
-  - name: certificate-gcp
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: Certificate
-      metadata:
-        name: #patchme
-      spec:
-        forProvider:
-          description: The default cert
-          managed:
-            - dnsAuthorizations:
-                - #patchme
-              domains:
-                - #patchme
-          scope: DEFAULT
-          project: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-certificate'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[0]
-      transforms:
-        - type: string
-          string:
-            fmt: '*.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.dnsAuthorizationLocation
-      toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-      policy:
-        fromFieldPath: Required
+  # - name: certificate-gcp
+  #   base:
+  #     apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+  #     kind: Certificate
+  #     metadata:
+  #       name: #patchme
+  #     spec:
+  #       forProvider:
+  #         description: The default cert
+  #         managed:
+  #           - dnsAuthorizations:
+  #               - #patchme
+  #             domains:
+  #               - #patchme
+  #         scope: DEFAULT
+  #         project: #patchme
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-certificate'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[0]
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: '*.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.project
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.dnsAuthorizationLocation
+  #     toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
+  #   - type: PatchSet
+  #     patchSetName: providerconfigref-patch
 
   - name: dnsauthorization-gcp
     base:
@@ -3768,7 +3766,6 @@ spec:
         name: #patchme
       spec:
         forProvider:
-          description: The default dnss
           domain: #patchme
           project: #patchme
     patches:
