@@ -1837,105 +1837,105 @@ spec:
         string:
           fmt: '%s-private-1c'
 
-  - name: core-dns-addon
-    base:
-      apiVersion: eks.aws.upbound.io/v1beta1
-      kind: Addon
-      metadata:
-        annotations:
-          crossplane.io/external-name: coredns
-      spec:
-        forProvider:
-          addonName: coredns
-          clusterNameRef:
-            name: #patchme
-          region: #patchme
-          configurationValues: |
-            {
-              "computeType": "Fargate"
-            }
-          resolveConflicts: OVERWRITE
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-core-dns'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.clusterNameRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: core-dns-addon
+  #   base:
+  #     apiVersion: eks.aws.upbound.io/v1beta1
+  #     kind: Addon
+  #     metadata:
+  #       annotations:
+  #         crossplane.io/external-name: coredns
+  #     spec:
+  #       forProvider:
+  #         addonName: coredns
+  #         clusterNameRef:
+  #           name: #patchme
+  #         region: #patchme
+  #         configurationValues: |
+  #           {
+  #             "computeType": "Fargate"
+  #           }
+  #         resolveConflicts: OVERWRITE
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-core-dns'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.clusterNameRef.name
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
-  - name: vpc-cni-addon
-    base:
-      apiVersion: eks.aws.upbound.io/v1beta1
-      kind: Addon
-      metadata:
-        annotations:
-          crossplane.io/external-name: vpc-cni
-      spec:
-        forProvider:
-          addonName: vpc-cni
-          clusterNameRef:
-            name: #patchme
-          region: #patchme
-          resolveConflicts: OVERWRITE
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-vpc-cni'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.clusterNameRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: vpc-cni-addon
+  #   base:
+  #     apiVersion: eks.aws.upbound.io/v1beta1
+  #     kind: Addon
+  #     metadata:
+  #       annotations:
+  #         crossplane.io/external-name: vpc-cni
+  #     spec:
+  #       forProvider:
+  #         addonName: vpc-cni
+  #         clusterNameRef:
+  #           name: #patchme
+  #         region: #patchme
+  #         resolveConflicts: OVERWRITE
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-vpc-cni'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.clusterNameRef.name
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
-  - name: kube-proxy-addon
-    base:
-      apiVersion: eks.aws.upbound.io/v1beta1
-      kind: Addon
-      metadata:
-        annotations:
-          crossplane.io/external-name: kube-proxy
-      spec:
-        forProvider:
-          addonName: kube-proxy
-          clusterNameRef:
-            name: #patchme
-          region: #patchme
-          resolveConflicts: OVERWRITE
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-kube-proxy'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.clusterNameRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: kube-proxy-addon
+  #   base:
+  #     apiVersion: eks.aws.upbound.io/v1beta1
+  #     kind: Addon
+  #     metadata:
+  #       annotations:
+  #         crossplane.io/external-name: kube-proxy
+  #     spec:
+  #       forProvider:
+  #         addonName: kube-proxy
+  #         clusterNameRef:
+  #           name: #patchme
+  #         region: #patchme
+  #         resolveConflicts: OVERWRITE
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-kube-proxy'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.clusterNameRef.name
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
   - name: eks-kms-key
     base:
