@@ -3796,8 +3796,7 @@ spec:
             matchLabels:
               account: #patchme
           name: #patchme
-          ttl: 300
-          type: A
+          type: CNAME
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -3808,7 +3807,7 @@ spec:
             fmt: "%s-records"
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managedZoneRef.name
+      toFieldPath: spec.forProvider.managedZone
       transforms:
         - type: string
           string:
