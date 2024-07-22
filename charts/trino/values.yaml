@@ -411,8 +411,9 @@ coordinator:
     query:
       maxMemoryPerNode: "1GB"
 
-  # priorityClassName:
   # For pod-priority based graceful shutdown
+  priorityClassName: ""
+
 
   additionalJVMConfig: []
 
@@ -554,8 +555,9 @@ worker:
     query:
       maxMemoryPerNode: "1GB"
   
-  # priorityClassName:
   # For pod-priority based graceful shutdown
+  priorityClassName: ""
+
 
   additionalJVMConfig: []
 
