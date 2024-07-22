@@ -3796,6 +3796,7 @@ spec:
             matchLabels:
               account: #patchme
           name: #patchme
+          ttl: 30
           type: CNAME
     patches:
     - type: FromCompositeFieldPath
