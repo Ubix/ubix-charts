@@ -197,6 +197,9 @@ spec:
               certificateLocation:
                 description: Location of the certificate within the project
                 type: string
+              dnsRecord:
+                description: CNAME given by DNS-Authorization
+                type: string
     additionalPrinterColumns:
     - name: GCPProjectID
       type: string

@@ -3784,6 +3784,43 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.zoneId
 
+  - name: cloud-dns-record
+    base:
+      apiVersion: dns.gcp.upbound.io/v1beta1
+      kind: RecordSet
+      metadata:
+        name: #patchme
+      spec:
+        forProvider:
+          managedZoneSelector:
+            matchLabels:
+              account: #patchme
+          name: #patchme
+          ttl: 300
+          type: A
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-records"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managedZoneSelector.matchLabels.account
+      transforms:
+        - type: string
+          string:
+            fmt: "%s"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dnsRecord
+      toFieldPath: spec.forProvider.name
+      policy:
+        fromFieldPath: Required
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
   - name: route53-record
     base:
       apiVersion: route53.aws.upbound.io/v1beta1
@@ -4032,6 +4069,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.dnsAuthorizationLocation
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.dnsResourceRecord[1].name
+      toFieldPath: status.dnsRecord
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
