@@ -1,4 +1,4 @@
-{{- if .Values.worker.priorityClass.enabled -}}
+{{- if .Values.worker.priorityClass.enabled }}
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:

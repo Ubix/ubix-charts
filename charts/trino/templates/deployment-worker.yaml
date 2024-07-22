@@ -150,7 +150,7 @@ spec:
       {{- if .Values.sidecarContainers.worker }}
         {{- toYaml .Values.sidecarContainers.worker | nindent 8 }}
       {{- end }}
-      {{- if .Values.worker.priorityClass.enabled -}}
+      {{- if .Values.worker.priorityClass.enabled }}
       priorityClassName: {{ .Values.worker.priorityClass.name }}-worker
       {{- end }}
       {{- with .Values.worker.nodeSelector }}

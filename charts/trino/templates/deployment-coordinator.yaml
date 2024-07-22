@@ -213,7 +213,7 @@ spec:
       {{- if .Values.sidecarContainers.coordinator }}
         {{- toYaml .Values.sidecarContainers.coordinator | nindent 8 }}
       {{- end }}
-      {{- if .Values.coordinator.priorityClass.enabled -}}
+      {{- if .Values.coordinator.priorityClass.enabled }}
       priorityClassName: {{ .Values.coordinator.priorityClass.name }}-coordinator
       {{- end }}
       {{- with .Values.coordinator.nodeSelector }}
