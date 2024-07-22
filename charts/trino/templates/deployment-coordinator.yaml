@@ -214,7 +214,7 @@ spec:
         {{- toYaml .Values.sidecarContainers.coordinator | nindent 8 }}
       {{- end }}
       {{- with .Values.coordinator.nodeSelector }}
-      {{- if .Values.coordinator.priorityClassName }}
+      {{- if and .Values.coordinator.priorityClassName (ne .Values.coordinator.priorityClassName "") }}
       priorityClassName: {{ .Values.coordinator.priorityClassName }}
       {{- end }}
       nodeSelector:

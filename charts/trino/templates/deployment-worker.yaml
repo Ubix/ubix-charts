@@ -151,8 +151,9 @@ spec:
         {{- toYaml .Values.sidecarContainers.worker | nindent 8 }}
       {{- end }}
       {{- with .Values.worker.nodeSelector }}
-      {{- if .Values.worker.priorityClassName }}
+      {{- if and .Values.worker.priorityClassName (ne .Values.worker.priorityClassName "") }}
       priorityClassName: {{ .Values.worker.priorityClassName }}
+      {{- end }}
       {{- end }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
