@@ -412,7 +412,12 @@ coordinator:
       maxMemoryPerNode: "1GB"
 
   # For pod-priority based graceful shutdown
-  priorityClassName: ""
+  priorityClass:
+    enabled: false
+    name: ""
+    value: 1
+    globalDefault: false
+    description: ""
 
 
   additionalJVMConfig: []
@@ -556,7 +561,12 @@ worker:
       maxMemoryPerNode: "1GB"
   
   # For pod-priority based graceful shutdown
-  priorityClassName: ""
+  priorityClass:
+    enabled: false
+    name: ""
+    value: 1
+    globalDefault: false
+    description: ""
 
 
   additionalJVMConfig: []
@@ -809,10 +819,3 @@ ingress:
   #    hosts:
   #      - chart-example.local
   # ```
-
-priorityClass:
-  enabled: false
-  name: ""
-  value: 1
-  globalDefault: false
-  description: ""
