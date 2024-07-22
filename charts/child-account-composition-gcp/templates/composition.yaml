@@ -3816,6 +3816,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.dnsRecord
       toFieldPath: spec.forProvider.name
+      policy:
+        fromFieldPath: Required
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
