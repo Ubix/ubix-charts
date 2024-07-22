@@ -3821,7 +3821,11 @@ spec:
             matchLabels:
               account: #patchme
           matcher: PRIMARY
+          project: #patchme
     patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -3859,7 +3863,11 @@ spec:
             matchLabels:
               account: #patchme
           matcher: PRIMARY
+          project: #patchme
     patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
