@@ -1706,8 +1706,8 @@ spec:
                           "Action": "sts:AssumeRoleWithWebIdentity",
                           "Condition": {
                               "StringEquals": {
-                                  "accounts.google.com:aud": "%s"
-                                  "accounts.google.com:sub": "%s"
+                                  "accounts.google.com:aud": "%s",
+                                  "accounts.google.com:sub": "%s",
                                   "accounts.google.com:oaud": "exec-service-python"
                                   
                               }
