@@ -1,0 +1,11 @@
+{{- if .Values.coordinator.priorityClass.enabled -}}
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ .Values.coordinator.priorityClass.name }}-coordinator
+value: {{ default 1000000 .Values.coordinator.priorityClass.value }}
+globalDefault: {{ default false .Values.coordinator.priorityClass.globalDefault }}
+{{- if .Values.coordinator.priorityClass.description }}
+description: {{ .Values.coordinator.priorityClass.description }}
+{{- end }}
+{{- end }}
