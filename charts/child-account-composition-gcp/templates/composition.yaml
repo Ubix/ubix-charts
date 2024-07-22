@@ -3808,7 +3808,7 @@ spec:
             fmt: "%s-records"
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managedZoneSelector.matchLabels.account
+      toFieldPath: spec.forProvider.managedZoneRef.name
       transforms:
         - type: string
           string:
