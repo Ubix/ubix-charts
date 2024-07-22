@@ -4059,7 +4059,7 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.dnsAuthorizationLocation
     - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.dnsResourceRecord[1].name
+      fromFieldPath: status.atProvider.dnsResourceRecord[0].name
       toFieldPath: status.dnsRecord
     - type: PatchSet
       patchSetName: providerconfigref-patch
