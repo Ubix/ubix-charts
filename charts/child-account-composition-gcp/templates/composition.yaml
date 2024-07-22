@@ -1253,6 +1253,9 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.execServicePythonSAEmail
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.uniqueId
+      toFieldPath: status.execServicePythonSAUniqueId
 
   - name: data-lineage-sa
     base:
@@ -1649,6 +1652,100 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.email
       toFieldPath: status.colossalAiEmail
+
+# ########
+# # IAM AWS Role
+# ########
+  
+  - name: exec-service-python-aws-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: aws-iam-role
+      spec:
+        forProvider:
+          assumeRolePolicy: ""
+        providerConfigRef:
+          name: ubix-backoffice
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.projectName
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-exec-service-python"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.projectName
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-exec-service-python"
+        toFieldPath: metadata.annotations[crossplane.io/external-name]
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.assumeRolePolicy
+        policy:
+          fromFieldPath: Required
+        combine:
+          variables:
+            - fromFieldPath: status.execServicePythonSAUniqueId
+            - fromFieldPath: status.execServicePythonSAUniqueId
+          strategy: string
+          string:
+            fmt: |
+              {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                      {
+                          "Effect": "Allow",
+                          "Principal": {
+                              "Federated": "accounts.google.com"
+                          },
+                          "Action": "sts:AssumeRoleWithWebIdentity",
+                          "Condition": {
+                              "StringEquals": {
+                                  "accounts.google.com:aud": "%s"
+                                  "accounts.google.com:sub": "%s"
+                                  "accounts.google.com:oaud": "exec-service-python"
+                                  
+                              }
+                          }
+                      }
+                  ]
+              }
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.arn
+        toFieldPath: status.execServicePythonAwsRoleArn
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.execServicePythonAwsRoleName
+
+  - name: exec-service-python-nix-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        providerConfigRef:
+          name: ubix-backoffice
+        forProvider:
+          policyArn: arn:aws:iam::882490700787:policy/s3-write-nix
+          role: #patchme
+    patches:
+      - fromFieldPath: status.projectName
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-exec-service-python-nix"
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.execServicePythonAwsRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
 
 # ########
 # # IAM Role-Binding

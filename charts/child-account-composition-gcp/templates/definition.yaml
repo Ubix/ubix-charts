@@ -131,6 +131,15 @@ spec:
               execServicePythonSAEmail:
                 description: email of the execution service python service-account
                 type: string
+              execServicePythonSAUniqueId:
+                description: unique id of the service python service-account
+                type: string
+              execServicePythonAwsRoleArn:
+                description: aws role arn of the service python service-account
+                type: string
+              execServicePythonAwsRoleName:
+                description: aws role name of the service python service-account
+                type: string
               dataLineageSAEmail:
                 description: email of the data lineage service-account
                 type: string
