@@ -3852,182 +3852,182 @@ spec:
 # # Certificate Resources
 # #####
 
-  # - name: certificate-gcp
-  #   base:
-  #     apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-  #     kind: Certificate
-  #     metadata:
-  #       name: #patchme
-  #     spec:
-  #       forProvider:
-  #         description: The default cert
-  #         location: global
-  #         managed:
-  #           - dnsAuthorizations:
-  #               - #patchme
-  #             domains:
-  #               - #patchme
-  #               - #patchme
-  #         scope: DEFAULT
-  #         project: #patchme
-  #   patches:
-  #   - type: ToCompositeFieldPath
-  #     fromFieldPath: status.atProvider.id
-  #     toFieldPath: status.certificateLocation
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-certificate'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[0]
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: '*.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[1]
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: '%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.project
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.dnsAuthorizationLocation
-  #     toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
-  #     policy:
-  #       fromFieldPath: Required
-  #   - type: PatchSet
-  #     patchSetName: providerconfigref-patch
-  #     policy:
-  #       fromFieldPath: Required
+  - name: certificate-gcp
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: Certificate
+      metadata:
+        name: #patchme
+      spec:
+        forProvider:
+          description: The default cert
+          location: global
+          managed:
+            - dnsAuthorizations:
+                - #patchme
+              domains:
+                - #patchme
+                - #patchme
+          scope: DEFAULT
+          project: #patchme
+    patches:
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.certificateLocation
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[0]
+      transforms:
+        - type: string
+          string:
+            fmt: '*.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[1]
+      transforms:
+        - type: string
+          string:
+            fmt: '%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.dnsAuthorizationLocation
+      toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
+      policy:
+        fromFieldPath: Required
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+      policy:
+        fromFieldPath: Required
 
-  # - name: certificate-map
-  #   base:
-  #     apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-  #     kind: CertificateMap
-  #     metadata:
-  #       name: #patchme
-  #     spec:
-  #       forProvider:
-  #         project: #patchme
-  #         labels:
-  #           account: #patchme
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.project
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-certificate-map'
-  #   - type: PatchSet
-  #     patchSetName: providerconfigref-patch
+  - name: certificate-map
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: CertificateMap
+      metadata:
+        name: #patchme
+      spec:
+        forProvider:
+          project: #patchme
+          labels:
+            account: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
-  # - name: certificate-map-entry-common
-  #   base:
-  #     apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-  #     kind: CertificateMapEntry
-  #     metadata:
-  #       name: #patchme
-  #     spec:
-  #       forProvider:
-  #         map: #patchme
-  #         certificates:
-  #           - #patchme
-  #         mapSelector:
-  #           matchLabels:
-  #             account: #patchme
-  #         project: #patchme
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.project
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.map
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-certificate-map'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-certificate-map-entry'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.hostname
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.certificateLocation
-  #     toFieldPath: spec.forProvider.certificates[0]
-  #     policy:
-  #       fromFieldPath: Required
-  #   - type: PatchSet
-  #     patchSetName: providerconfigref-patch
+  - name: certificate-map-entry-common
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: CertificateMapEntry
+      metadata:
+        name: #patchme
+      spec:
+        forProvider:
+          map: #patchme
+          certificates:
+            - #patchme
+          mapSelector:
+            matchLabels:
+              account: #patchme
+          project: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.map
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map-entry'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.hostname
+      transforms:
+      - type: string
+        string:
+          fmt: '%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.certificateLocation
+      toFieldPath: spec.forProvider.certificates[0]
+      policy:
+        fromFieldPath: Required
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
-  # - name: certificate-map-entry-wildcard
-  #   base:
-  #     apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-  #     kind: CertificateMapEntry
-  #     metadata:
-  #       name: #patchme
-  #     spec:
-  #       forProvider:
-  #         map: #patchme
-  #         certificates:
-  #           - #patchme
-  #         mapSelector:
-  #           matchLabels:
-  #             account: #patchme
-  #         project: #patchme
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.project
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.mapRef.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-certificate-map'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-certificate-map-entry-wildcard'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.hostname
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '*.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.certificateLocation
-  #     toFieldPath: spec.forProvider.certificates[0]
-  #     policy:
-  #       fromFieldPath: Required
-  #   - type: PatchSet
-  #     patchSetName: providerconfigref-patch
+  - name: certificate-map-entry-wildcard
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: CertificateMapEntry
+      metadata:
+        name: #patchme
+      spec:
+        forProvider:
+          map: #patchme
+          certificates:
+            - #patchme
+          mapSelector:
+            matchLabels:
+              account: #patchme
+          project: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.mapRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map-entry-wildcard'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.hostname
+      transforms:
+      - type: string
+        string:
+          fmt: '*.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.certificateLocation
+      toFieldPath: spec.forProvider.certificates[0]
+      policy:
+        fromFieldPath: Required
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: dnsauthorization-gcp
     base:
