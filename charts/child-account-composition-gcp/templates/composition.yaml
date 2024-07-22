@@ -3817,8 +3817,13 @@ spec:
           string:
             fmt: "%s"
     - type: FromCompositeFieldPath
-      fromFieldPath: status.dnsRecord
+      fromFieldPath: status.certificateDnsRecord
       toFieldPath: spec.forProvider.name
+      policy:
+        fromFieldPath: Required
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.certificateDnsData
+      toFieldPath: spec.forProvider.rrdatas[0]
       policy:
         fromFieldPath: Required
     - type: PatchSet
@@ -4065,7 +4070,10 @@ spec:
       toFieldPath: status.dnsAuthorizationLocation
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.dnsResourceRecord[0].name
-      toFieldPath: status.dnsRecord
+      toFieldPath: status.certificateDnsRecord
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.dnsResourceRecord[0].data
+      toFieldPath: status.certificateDnsData
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
