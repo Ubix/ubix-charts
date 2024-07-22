@@ -3888,7 +3888,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '*.%s-certificate-map-entry'
+          fmt: '%s-certificate-map-entry-wildcard'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.mapSelector.matchLabels.account
