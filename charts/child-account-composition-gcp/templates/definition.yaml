@@ -185,6 +185,9 @@ spec:
               dnsAuthorizationLocation:
                 description: Location of the dnsAuthorization within the project
                 type: string
+              certificateLocation:
+                description: Location of the certificate within the project
+                type: string
     additionalPrinterColumns:
     - name: GCPProjectID
       type: string

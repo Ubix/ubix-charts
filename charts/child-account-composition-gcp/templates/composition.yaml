@@ -3733,9 +3733,13 @@ spec:
                 - #patchme
               domains:
                 - #patchme
+                - #patchme
           scope: DEFAULT
           project: #patchme
     patches:
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.certificateLocation
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -3752,6 +3756,13 @@ spec:
             fmt: '*.%s.ubix.io'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[1]
+      transforms:
+        - type: string
+          string:
+            fmt: '%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
       fromFieldPath: status.dnsAuthorizationLocation
@@ -3762,6 +3773,108 @@ spec:
       patchSetName: providerconfigref-patch
       policy:
         fromFieldPath: Required
+
+  - name: certificate-map
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: CertificateMap
+      metadata:
+        name: #patchme
+      spec:
+        forProvider:
+          labels:
+            account: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.labels.account
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: certificate-map-entry-master-gcp-01
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: CertificateMapEntry
+      metadata:
+        name: #patchme
+      spec:
+        forProvider:
+          certificates:
+            - #patchme
+          mapSelector:
+            matchLabels:
+              account: #patchme
+          matcher: PRIMARY
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map-entry'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.mapSelector.matchLabels.account
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.certificateLocation
+      toFieldPath: spec.forProvider.certificates[0]
+      policy:
+        fromFieldPath: Required
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: certificate-map-entry-*.master-gcp-01
+    base:
+      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
+      kind: CertificateMapEntry
+      metadata:
+        name: #patchme
+      spec:
+        forProvider:
+          certificates:
+            - #patchme
+          mapSelector:
+            matchLabels:
+              account: #patchme
+          matcher: PRIMARY
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '*.%s-certificate-map-entry'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.mapSelector.matchLabels.account
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.certificateLocation
+      toFieldPath: spec.forProvider.certificates[0]
+      policy:
+        fromFieldPath: Required
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
   - name: dnsauthorization-gcp
     base:
