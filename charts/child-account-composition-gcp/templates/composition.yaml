@@ -1656,7 +1656,7 @@ spec:
 # ########
 # # IAM AWS Role
 # ########
-  
+
   - name: exec-service-python-aws-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -1709,7 +1709,7 @@ spec:
                                   "accounts.google.com:aud": "%s",
                                   "accounts.google.com:sub": "%s",
                                   "accounts.google.com:oaud": "exec-service-python"
-                                  
+
                               }
                           }
                       }
@@ -3930,17 +3930,10 @@ spec:
       - type: string
         string:
           fmt: '%s-certificate-map'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.labels.account
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-certificate-map'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: certificate-map-entry-master-gcp-01
+  - name: certificate-map-entry-common
     base:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
       kind: CertificateMapEntry
@@ -3976,11 +3969,11 @@ spec:
           fmt: '%s-certificate-map-entry'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.mapSelector.matchLabels.account
+      toFieldPath: spec.forProvider.hostname
       transforms:
       - type: string
         string:
-          fmt: '%s-certificate-map'
+          fmt: '%s.ubix.io'
     - type: FromCompositeFieldPath
       fromFieldPath: status.certificateLocation
       toFieldPath: spec.forProvider.certificates[0]
@@ -3989,7 +3982,7 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
-  - name: certificate-map-entry-*.master-gcp-01
+  - name: certificate-map-entry-wildcard
     base:
       apiVersion: certificatemanager.gcp.upbound.io/v1beta1
       kind: CertificateMapEntry
@@ -4011,7 +4004,7 @@ spec:
       toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.map
+      toFieldPath: spec.forProvider.mapRef.name
       transforms:
       - type: string
         string:
@@ -4025,11 +4018,11 @@ spec:
           fmt: '%s-certificate-map-entry-wildcard'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.mapSelector.matchLabels.account
+      toFieldPath: spec.forProvider.hostname
       transforms:
       - type: string
         string:
-          fmt: '%s-certificate-map'
+          fmt: '*.%s.ubix.io'
     - type: FromCompositeFieldPath
       fromFieldPath: status.certificateLocation
       toFieldPath: spec.forProvider.certificates[0]
