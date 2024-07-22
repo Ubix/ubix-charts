@@ -3814,7 +3814,7 @@ spec:
         name: #patchme
       spec:
         forProvider:
-          map: test
+          map: #patchme
           certificates:
             - #patchme
           mapSelector:
@@ -3826,6 +3826,13 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.map
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -3856,7 +3863,7 @@ spec:
         name: #patchme
       spec:
         forProvider:
-          map: test-1
+          map: #patchme
           certificates:
             - #patchme
           mapSelector:
@@ -3868,6 +3875,13 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.map
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-certificate-map'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
