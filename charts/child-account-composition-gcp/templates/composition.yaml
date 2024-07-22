@@ -3814,6 +3814,7 @@ spec:
         name: #patchme
       spec:
         forProvider:
+          map: test
           certificates:
             - #patchme
           mapSelector:
@@ -3851,6 +3852,7 @@ spec:
         name: #patchme
       spec:
         forProvider:
+          map: test-1
           certificates:
             - #patchme
           mapSelector:
