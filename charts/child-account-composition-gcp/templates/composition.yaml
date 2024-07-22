@@ -3782,9 +3782,13 @@ spec:
         name: #patchme
       spec:
         forProvider:
+          project: #patchme
           labels:
             account: #patchme
     patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: metadata.name
