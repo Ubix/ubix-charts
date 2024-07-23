@@ -3784,51 +3784,6 @@ spec:
       fromFieldPath: status.atProvider.id
       toFieldPath: status.zoneId
 
-  - name: cloud-dns-record
-    base:
-      apiVersion: dns.gcp.upbound.io/v1beta1
-      kind: RecordSet
-      metadata:
-        name: #patchme
-      spec:
-        forProvider:
-          managedZoneSelector:
-            matchLabels:
-              account: #patchme
-          name: #patchme
-          ttl: 30
-          type: CNAME
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-records"
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managedZone
-      transforms:
-        - type: string
-          string:
-            fmt: "%s"
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.certificateDnsRecord
-      toFieldPath: spec.forProvider.name
-      policy:
-        fromFieldPath: Required
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.certificateDnsData
-      toFieldPath: spec.forProvider.rrdatas[0]
-      policy:
-        fromFieldPath: Required
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
   - name: route53-record
     base:
       apiVersion: route53.aws.upbound.io/v1beta1
@@ -3857,77 +3812,109 @@ spec:
           fromFieldPath: Required
 
 # #####
-# # Certificate Resources
+# # GCP Certificate Resources
 # #####
 
-  - name: certificate-gcp
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: Certificate
+  - name: gcp-managedsslcertificates
+    base: 
+      apiVersion: compute.gcp.upbound.io/v1beta1
+      kind: ManagedSSLCertificate
       metadata:
         name: #patchme
       spec:
         forProvider:
-          description: The default cert
-          location: global
           managed:
-            - dnsAuthorizations:
-                - #patchme
-              domains:
+            - domains:
                 - #patchme
                 - #patchme
-          scope: DEFAULT
+                - #patchme
+                - #patchme
+                - #patchme
+                - #patchme
+                - #patchme
+                - #patchme
+                - #patchme
+                - #patchme
+                - #patchme
           project: #patchme
     patches:
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.certificateLocation
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-certificate'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.managed[0].domains[0]
       transforms:
-        - type: string
-          string:
-            fmt: '*.%s.ubix.io'
+      - type: string
+        string:
+          fmt: 'alloy.%s.ubix.io'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.managed[0].domains[1]
       transforms:
-        - type: string
-          string:
-            fmt: '%s.ubix.io'
+      - type: string
+        string:
+          fmt: 'grafana.%s.ubix.io'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
+      toFieldPath: spec.forProvider.managed[0].domains[2]
+      transforms:
+      - type: string
+        string:
+          fmt: 'colossal-ai.%s.ubix.io'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.dnsAuthorizationLocation
-      toFieldPath: spec.forProvider.managed[0].dnsAuthorizations[0]
-      policy:
-        fromFieldPath: Required
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-      policy:
-        fromFieldPath: Required
-
-  - name: certificate-map
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: CertificateMap
-      metadata:
-        name: #patchme
-      spec:
-        forProvider:
-          project: #patchme
-          labels:
-            account: #patchme
-    patches:
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[3]
+      transforms:
+      - type: string
+        string:
+          fmt: 'data-service.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[4]
+      transforms:
+      - type: string
+        string:
+          fmt: 'pgadmin.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[5]
+      transforms:
+      - type: string
+        string:
+          fmt: 'chatubix.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[6]
+      transforms:
+      - type: string
+        string:
+          fmt: 'datalineage.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[7]
+      transforms:
+      - type: string
+        string:
+          fmt: 'dataspace.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[8]
+      transforms:
+      - type: string
+        string:
+          fmt: 'modelspace.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[9]
+      transforms:
+      - type: string
+        string:
+          fmt: 'productionspace.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.managed[0].domains[10]
+      transforms:
+      - type: string
+        string:
+          fmt: 'solutionspace.%s.ubix.io'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
@@ -3937,143 +3924,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-certificate-map'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: certificate-map-entry-common
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: CertificateMapEntry
-      metadata:
-        name: #patchme
-      spec:
-        forProvider:
-          map: #patchme
-          certificates:
-            - #patchme
-          mapSelector:
-            matchLabels:
-              account: #patchme
-          project: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.map
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-certificate-map'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-certificate-map-entry'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.hostname
-      transforms:
-      - type: string
-        string:
-          fmt: '%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.certificateLocation
-      toFieldPath: spec.forProvider.certificates[0]
-      policy:
-        fromFieldPath: Required
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: certificate-map-entry-wildcard
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: CertificateMapEntry
-      metadata:
-        name: #patchme
-      spec:
-        forProvider:
-          map: #patchme
-          certificates:
-            - #patchme
-          mapSelector:
-            matchLabels:
-              account: #patchme
-          project: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.mapRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-certificate-map'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-certificate-map-entry-wildcard'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.hostname
-      transforms:
-      - type: string
-        string:
-          fmt: '*.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.certificateLocation
-      toFieldPath: spec.forProvider.certificates[0]
-      policy:
-        fromFieldPath: Required
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
-
-  - name: dnsauthorization-gcp
-    base:
-      apiVersion: certificatemanager.gcp.upbound.io/v1beta1
-      kind: DNSAuthorization
-      metadata:
-        name: #patchme
-      spec:
-        forProvider:
-          domain: #patchme
-          project: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-dns-authorization'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.domain
-      transforms:
-        - type: string
-          string:
-            fmt: '%s.ubix.io'
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.id
-      toFieldPath: status.dnsAuthorizationLocation
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.dnsResourceRecord[0].name
-      toFieldPath: status.certificateDnsRecord
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.dnsResourceRecord[0].data
-      toFieldPath: status.certificateDnsData
+          fmt: '%s-managed-certificate'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
