@@ -3815,118 +3815,118 @@ spec:
 # # GCP Certificate Resources
 # #####
 
-  - name: gcp-managedsslcertificates
-    base: 
-      apiVersion: compute.gcp.upbound.io/v1beta1
-      kind: ManagedSSLCertificate
-      metadata:
-        name: #patchme
-      spec:
-        forProvider:
-          managed:
-            - domains:
-                - #patchme
-                - #patchme
-                - #patchme
-                - #patchme
-                - #patchme
-                - #patchme
-                - #patchme
-                - #patchme
-                - #patchme
-                - #patchme
-                - #patchme
-          project: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[0]
-      transforms:
-      - type: string
-        string:
-          fmt: 'alloy.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[1]
-      transforms:
-      - type: string
-        string:
-          fmt: 'grafana.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[2]
-      transforms:
-      - type: string
-        string:
-          fmt: 'colossal-ai.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[3]
-      transforms:
-      - type: string
-        string:
-          fmt: 'data-service.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[4]
-      transforms:
-      - type: string
-        string:
-          fmt: 'pgadmin.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[5]
-      transforms:
-      - type: string
-        string:
-          fmt: 'chatubix.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[6]
-      transforms:
-      - type: string
-        string:
-          fmt: 'datalineage.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[7]
-      transforms:
-      - type: string
-        string:
-          fmt: 'dataspace.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[8]
-      transforms:
-      - type: string
-        string:
-          fmt: 'modelspace.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[9]
-      transforms:
-      - type: string
-        string:
-          fmt: 'productionspace.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.managed[0].domains[10]
-      transforms:
-      - type: string
-        string:
-          fmt: 'solutionspace.%s.ubix.io'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.project
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-managed-certificate'
-    - type: PatchSet
-      patchSetName: providerconfigref-patch
+  # - name: gcp-managedsslcertificates
+  #   base:
+  #     apiVersion: compute.gcp.upbound.io/v1beta1
+  #     kind: ManagedSSLCertificate
+  #     metadata:
+  #       name: #patchme
+  #     spec:
+  #       forProvider:
+  #         managed:
+  #           - domains:
+  #               - #patchme
+  #               - #patchme
+  #               - #patchme
+  #               - #patchme
+  #               - #patchme
+  #               - #patchme
+  #               - #patchme
+  #               - #patchme
+  #               - #patchme
+  #               - #patchme
+  #               - #patchme
+  #         project: #patchme
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[0]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'alloy.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[1]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'grafana.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[2]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'colossal-ai.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[3]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'data-service.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[4]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'pgadmin.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[5]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'chatubix.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[6]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'datalineage.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[7]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'dataspace.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[8]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'modelspace.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[9]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'productionspace.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.managed[0].domains[10]
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: 'solutionspace.%s.ubix.io'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.project
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-managed-certificate'
+  #   - type: PatchSet
+  #     patchSetName: providerconfigref-patch
 
 # #####
 # # GCP LB Resources
