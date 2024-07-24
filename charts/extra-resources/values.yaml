@@ -1,0 +1,15 @@
+# extra:
+#   spark-conf:
+#     apiVersion: v1
+#     kind: ConfigMap
+#     metadata:
+#       name: spark-conf
+#     data:
+#       key: value
+#   spark-env:
+#     apiVersion: v1
+#     kind: ConfigMap
+#     metadata:
+#       name: spark-env
+#     data:
+#       key: value

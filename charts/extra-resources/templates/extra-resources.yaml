@@ -1,0 +1,4 @@
+{{- range $name, $data := .Values.extra }}
+{{ toYaml $data }}
+---
+{{ end }}
