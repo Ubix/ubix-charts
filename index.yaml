@@ -4816,6 +4816,17 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/eventstore-0.2.5/eventstore-0.2.5.tgz
     version: 0.2.5
+  extra-resources:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-07-24T18:30:05.135450216Z"
+    description: A Helm chart for Kubernetes
+    digest: f16e2ef436964c6aa55afbb93fef95d7520d7451111717d75b8b644958213d09
+    name: extra-resources
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/extra-resources-0.1.0/extra-resources-0.1.0.tgz
+    version: 0.1.0
   gateway:
   - apiVersion: v2
     appVersion: 1.0.0
@@ -5824,4 +5835,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-24T00:59:39.130184516Z"
+generated: "2024-07-24T18:30:05.136179244Z"
