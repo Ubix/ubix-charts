@@ -669,9 +669,6 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.gke.version
-      toFieldPath: spec.forProvider.minMasterVersion
-    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.networkRef.name
     - type: FromCompositeFieldPath
