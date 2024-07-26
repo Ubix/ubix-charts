@@ -101,6 +101,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPC
       spec:
+        deletionPolicy: Orphan
         forProvider:
           enableDnsHostnames: true
           cidrBlock: 10.0.0.0/16
@@ -128,6 +129,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroup
       spec:
+        deletionPolicy: Orphan
         forProvider:
           tags:
             karpenter.sh/discovery: #patchme
@@ -172,6 +174,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           cidrBlocks:
           - 0.0.0.0/0
@@ -212,6 +215,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: Allow node to communicate with each other
           fromPort: 0
@@ -257,6 +261,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: Allow worker Kubelets and pods to receive communication from
             the cluster control plane
@@ -303,6 +308,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroup
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: Cluster communication with worker nodes
           name: #patchme
@@ -342,6 +348,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: Allow pods to communicate with the cluster API Server -
           fromPort: 443
@@ -387,6 +394,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: Cluster API to node groups
           fromPort: 443
@@ -432,6 +440,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: Allow pods to communicate with using ephemeral ports.
           fromPort: 1025
@@ -477,6 +486,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: Allow pods to communicate with CoreDNS
           fromPort: 53
@@ -517,6 +527,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: Allow pods to communicate with CoreDNS
           fromPort: 53
@@ -557,6 +568,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: Allow nodes to communicate to fargate pods
           fromPort: 0
@@ -597,6 +609,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: "Allow access from control plane to webhook for metrics server."
           fromPort: 4443
@@ -642,6 +655,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: "Allow access from control plane for Prometheus Server."
           fromPort: 6443
@@ -687,6 +701,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: "Allow access from control plane for Karpenter."
           fromPort: 8443
@@ -732,6 +747,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: "Allow access from control plane to webhook port of AWS load balancer/NGINX controller."
           fromPort: 9443
@@ -777,6 +793,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: "Allow access from control plane to webhook port 10260(cert-manage-webhook)."
           fromPort: 10260
@@ -822,6 +839,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           description: "Allow access from control plane to webhook port 10250."
           fromPort: 10250
@@ -872,6 +890,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patched
           availabilityZone: #patched
@@ -917,6 +936,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patched
           availabilityZone: #patched
@@ -962,6 +982,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patched
           availabilityZone: #patched
@@ -1007,6 +1028,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patched
           availabilityZone: #pached
@@ -1055,6 +1077,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patched
           availabilityZone: #patched
@@ -1103,6 +1126,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Subnet
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patched
           availabilityZone: #patched
@@ -1151,6 +1175,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: EIP
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
           vpc: true
@@ -1177,6 +1202,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: NATGateway
       spec:
+        deletionPolicy: Orphan
         forProvider:
           allocationIdRef:
             name: #patchme
@@ -1223,6 +1249,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: InternetGateway
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
           vpcIdRef:
@@ -1252,6 +1279,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTable
       spec:
+        deletionPolicy: Orphan
         forProvider:
           vpcIdRef:
             name: #patchme
@@ -1285,6 +1313,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTable
       spec:
+        deletionPolicy: Orphan
         forProvider:
           vpcIdRef:
             name: #patchme
@@ -1318,6 +1347,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Route
       spec:
+        deletionPolicy: Orphan
         forProvider:
           routeTableIdRef:
             name: #patchme
@@ -1354,6 +1384,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: Route
       spec:
+        deletionPolicy: Orphan
         forProvider:
           routeTableIdRef:
             name: #patchme
@@ -1395,6 +1426,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTableAssociation
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
           routeTableIdRef:
@@ -1435,6 +1467,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTableAssociation
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
           routeTableIdRef:
@@ -1475,6 +1508,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTableAssociation
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
           routeTableId: #patchme
@@ -1513,6 +1547,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTableAssociation
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
           routeTableIdRef:
@@ -1553,6 +1588,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTableAssociation
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
           routeTableIdRef:
@@ -1593,6 +1629,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTableAssociation
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
           routeTableIdRef:
@@ -1636,6 +1673,7 @@ spec:
       apiVersion: eks.aws.upbound.io/v1beta1
       kind: Cluster
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
           version: #patchme
@@ -1752,6 +1790,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: OpenIDConnectProvider
       spec:
+        deletionPolicy: Orphan
         forProvider:
           url: ""
           clientIdList:
@@ -1779,6 +1818,7 @@ spec:
       kind: FargateProfile
       metadata:
       spec:
+        deletionPolicy: Orphan
         forProvider:
           clusterNameRef:
             name: #patchme
@@ -1837,114 +1877,12 @@ spec:
         string:
           fmt: '%s-private-1c'
 
-  # - name: core-dns-addon
-  #   base:
-  #     apiVersion: eks.aws.upbound.io/v1beta1
-  #     kind: Addon
-  #     metadata:
-  #       annotations:
-  #         crossplane.io/external-name: coredns
-  #     spec:
-  #       deletionPolicy: Orphan
-  #       forProvider:
-  #         addonName: coredns
-  #         clusterNameRef:
-  #           name: #patchme
-  #         region: #patchme
-  #         configurationValues: |
-  #           {
-  #             "computeType": "Fargate"
-  #           }
-  #         resolveConflicts: OVERWRITE
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-core-dns'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.clusterNameRef.name
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
-
-  # - name: vpc-cni-addon
-  #   base:
-  #     apiVersion: eks.aws.upbound.io/v1beta1
-  #     kind: Addon
-  #     metadata:
-  #       annotations:
-  #         crossplane.io/external-name: vpc-cni
-  #     spec:
-  #       deletionPolicy: Orphan
-  #       forProvider:
-  #         addonName: vpc-cni
-  #         clusterNameRef:
-  #           name: #patchme
-  #         region: #patchme
-  #         resolveConflicts: OVERWRITE
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-vpc-cni'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.clusterNameRef.name
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
-
-  # - name: kube-proxy-addon
-  #   base:
-  #     apiVersion: eks.aws.upbound.io/v1beta1
-  #     kind: Addon
-  #     metadata:
-  #       annotations:
-  #         crossplane.io/external-name: kube-proxy
-  #     spec:
-  #       deletionPolicy: Orphan
-  #       forProvider:
-  #         addonName: kube-proxy
-  #         clusterNameRef:
-  #           name: #patchme
-  #         region: #patchme
-  #         resolveConflicts: OVERWRITE
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-kube-proxy'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.clusterNameRef.name
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
-
   - name: eks-kms-key
     base:
       apiVersion: kms.aws.upbound.io/v1beta1
       kind: Key
       spec:
+        deletionPolicy: Orphan
         forProvider:
           #enableKeyRotation: true
           #policy: |-
@@ -1972,6 +1910,7 @@ spec:
       apiVersion: kms.aws.upbound.io/v1beta1
       kind: Key
       spec:
+        deletionPolicy: Orphan
         forProvider:
           #enableKeyRotation: true
           #policy: |-
@@ -2003,6 +1942,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: InstanceProfile
       spec:
+        deletionPolicy: Orphan
         forProvider:
           roleRef:
             name: #patchme
@@ -2037,6 +1977,7 @@ spec:
         annotations:
           crossplane.io/external-name: postgres-pod-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2097,6 +2038,7 @@ spec:
         annotations:
           crossplane.io/external-name: airbyte-admin
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2158,6 +2100,7 @@ spec:
         labels:
           role: mlflow-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2220,6 +2163,7 @@ spec:
         labels:
           role: api-service-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2282,6 +2226,7 @@ spec:
         labels:
           role: data-service-external-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2344,6 +2289,7 @@ spec:
         labels:
           role: data-lineage-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2406,6 +2352,7 @@ spec:
         labels:
           role: load-balancer-controller-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2466,6 +2413,7 @@ spec:
         annotations:
           crossplane.io/external-name: data-service-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2526,6 +2474,7 @@ spec:
         annotations:
           crossplane.io/external-name: dataflow-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2585,6 +2534,7 @@ spec:
         annotations:
           crossplane.io/external-name: exec-service-python-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2645,6 +2595,7 @@ spec:
         annotations:
           crossplane.io/external-name: colossal-ai-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2743,6 +2694,7 @@ spec:
         annotations:
           crossplane.io/external-name: fargate-profile-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: |
             {
@@ -2784,6 +2736,7 @@ spec:
         annotations:
           crossplane.io/external-name: karpenter-irsa-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2844,6 +2797,7 @@ spec:
         labels:
           role: karpenter-cluster-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: |
             {
@@ -2887,6 +2841,7 @@ spec:
         labels:
           role: vpc-cni-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -2945,6 +2900,7 @@ spec:
         annotations:
           crossplane.io/external-name: controlplane-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: |
             {
@@ -2995,6 +2951,7 @@ spec:
         labels:
           role: nodegroup-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: |
             {
@@ -3038,6 +2995,7 @@ spec:
         labels:
           role: ebs-csi-driver-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -3092,6 +3050,7 @@ spec:
         labels:
           role: external-dns-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -3149,6 +3108,7 @@ spec:
         labels:
           role: cert-manager-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -3206,6 +3166,7 @@ spec:
         labels:
           role: external-data-upload-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
           maxSessionDuration: 43200
@@ -3256,6 +3217,7 @@ spec:
         labels:
           role: dataspace-backend-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
           maxSessionDuration: 43200
@@ -3314,6 +3276,7 @@ spec:
         labels:
           role: s3-velero-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -3368,6 +3331,7 @@ spec:
         labels:
           role: warehouse-role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -3422,6 +3386,7 @@ spec:
         labels:
           role: spark
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -3476,6 +3441,7 @@ spec:
         labels:
           role: kafka-connect
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -3531,6 +3497,7 @@ spec:
         labels:
           role: metastore
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -3585,6 +3552,7 @@ spec:
         labels:
           role: trino
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: ""
     patches:
@@ -3641,6 +3609,7 @@ spec:
         annotations:
           crossplane.io/external-name: postgres-operator-s3-backups-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}" #patchme
     patches:
@@ -3689,6 +3658,7 @@ spec:
         annotations:
           crossplane.io/external-name: airbyte-artifacts-bucket-read-write-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}" #patchme
     patches:
@@ -3737,6 +3707,7 @@ spec:
         annotations:
           crossplane.io/external-name: ingestion-artifacts-s3-full-access
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}" #patchme
     patches:
@@ -3786,6 +3757,7 @@ spec:
         annotations:
           crossplane.io/external-name: execution-artifacts-s3-full-access
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}" #patchme
     patches:
@@ -3834,6 +3806,7 @@ spec:
         annotations:
           crossplane.io/external-name: execution-artifacts-s3-read-only
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}" #patchme
     patches:
@@ -3883,6 +3856,7 @@ spec:
         annotations:
           crossplane.io/external-name: AmazonEKS_AWS_Load_Balancer_Controller
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: |
                 {
@@ -4134,6 +4108,7 @@ spec:
         annotations:
           crossplane.io/external-name: mlflow-artifacts-s3-full-access
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}" #patchme
     patches:
@@ -4186,6 +4161,7 @@ spec:
         annotations:
           crossplane.io/external-name: karpenter-irsa-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}"
     patches:
@@ -4318,6 +4294,7 @@ spec:
         annotations:
           crossplane.io/external-name: karpenter-irsa-policy-v1beta1
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}"
     patches:
@@ -4619,6 +4596,7 @@ spec:
         annotations:
           crossplane.io/external-name: external-dns-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}"
     patches:
@@ -4669,6 +4647,7 @@ spec:
         annotations:
           crossplane.io/external-name: cert-manager-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: |
             {
@@ -4714,6 +4693,7 @@ spec:
         annotations:
           crossplane.io/external-name: ingestion-artifacts-s3-write-access
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}"
     patches:
@@ -4775,6 +4755,7 @@ spec:
         annotations:
           crossplane.io/external-name: dataspace-backend-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}"
     patches:
@@ -4840,6 +4821,7 @@ spec:
         annotations:
           crossplane.io/external-name: s3-velero-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}"
     patches:
@@ -4899,6 +4881,7 @@ spec:
         annotations:
           crossplane.io/external-name: warehouse-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}"
     patches:
@@ -4956,6 +4939,7 @@ spec:
         annotations:
           crossplane.io/external-name: nix-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: |
             {
@@ -4994,6 +4978,7 @@ spec:
         annotations:
           crossplane.io/external-name: warehouse-read-only-policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: "{}"
     patches:
@@ -5043,6 +5028,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5074,6 +5060,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5105,6 +5092,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5136,6 +5124,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5167,6 +5156,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5198,6 +5188,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5229,6 +5220,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5260,6 +5252,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5291,6 +5284,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5322,6 +5316,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5353,6 +5348,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5386,6 +5382,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -5424,6 +5421,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -5455,6 +5453,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -5493,6 +5492,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
           roleRef:
@@ -5523,6 +5523,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           roleRef:
@@ -5553,6 +5554,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
           roleRef:
@@ -5583,6 +5585,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
           roleRef:
@@ -5613,6 +5616,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
           roleRef:
@@ -5643,6 +5647,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           roleRef:
@@ -5673,6 +5678,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
@@ -5711,6 +5717,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme # arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
@@ -5749,6 +5756,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
           roleRef:
@@ -5779,6 +5787,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSServicePolicy
           roleRef:
@@ -5812,6 +5821,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
           roleRef:
@@ -5845,6 +5855,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           roleRef:
@@ -5875,6 +5886,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
           roleRef:
@@ -5908,6 +5920,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
           roleRef:
@@ -5938,6 +5951,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -5976,6 +5990,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6014,6 +6029,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -6045,6 +6061,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6083,6 +6100,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -6114,6 +6132,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -6145,6 +6164,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -6176,6 +6196,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6214,6 +6235,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6252,6 +6274,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6290,6 +6313,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6328,6 +6352,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6366,6 +6391,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArn: #patchme
           role: #patchme
@@ -6397,6 +6423,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6435,6 +6462,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6473,6 +6501,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6511,6 +6540,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6549,6 +6579,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6587,6 +6618,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policyArnRef:
             name: #patchme
@@ -6776,12 +6808,12 @@ spec:
       apiVersion: route53.aws.upbound.io/v1beta1
       kind: Zone
       spec:
+        deletionPolicy: Orphan
         forProvider:
           name: #patchme
           config:
             comment: #patchme
             privateZone: false
-        deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -6818,6 +6850,7 @@ spec:
       apiVersion: route53.aws.upbound.io/v1beta1
       kind: Record
       spec:
+        deletionPolicy: Orphan
         forProvider:
           name: #patchme
           type: NS
@@ -6853,6 +6886,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
     patches:
@@ -6885,6 +6919,7 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
       spec:
+        deletionPolicy: Orphan
         forProvider:
           blockPublicAcls: true
           blockPublicPolicy: true
@@ -6918,6 +6953,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
     patches:
@@ -6947,6 +6983,7 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
       spec:
+        deletionPolicy: Orphan
         forProvider:
           blockPublicAcls: true
           blockPublicPolicy: true
@@ -6972,33 +7009,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  # - name: execution-artifacts-bucket-acl
-  #   base:
-  #     apiVersion: s3.aws.upbound.io/v1beta1
-  #     kind: BucketACL
-  #     spec:
-  #       forProvider:
-  #         acl: private
-  #         bucket: #patched
-  #         region: #patched
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: 'execution-artifacts-bucket-acl-%s'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.executionArtifactsBucketName
-  #     toFieldPath: spec.forProvider.bucket
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
-
   - name: ingestion-artifacts-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
@@ -7007,6 +7017,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
     patches:
@@ -7039,6 +7050,7 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
       spec:
+        deletionPolicy: Orphan
         forProvider:
           blockPublicAcls: true
           blockPublicPolicy: true
@@ -7069,6 +7081,7 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketCorsConfiguration
       spec:
+        deletionPolicy: Orphan
         forProvider:
           bucketRef:
             name: #patchme
@@ -7109,33 +7122,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  # - name: ingestion-artifacts-bucket-acl
-  #   base:
-  #     apiVersion: s3.aws.upbound.io/v1beta1
-  #     kind: BucketACL
-  #     spec:
-  #       forProvider:
-  #         acl: private
-  #         bucket: #patched
-  #         region: #patched
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: '%s-ingestion-artifacts-bucket-acl'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.ingestionArtifactsBucketName
-  #     toFieldPath: spec.forProvider.bucket
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
-
   - name: mlflow-artifacts-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
@@ -7144,6 +7130,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
     patches:
@@ -7176,6 +7163,7 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
       spec:
+        deletionPolicy: Orphan
         forProvider:
           blockPublicAcls: true
           blockPublicPolicy: true
@@ -7201,33 +7189,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  # - name: mlflow-artifacts-bucket-acl
-  #   base:
-  #     apiVersion: s3.aws.upbound.io/v1beta1
-  #     kind: BucketACL
-  #     spec:
-  #       forProvider:
-  #         acl: private
-  #         bucket: #patched
-  #         region: #patched
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: '%s-mlflow-artifacts-bucket-acl'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.mlflowArtifactsBucketName
-  #     toFieldPath: spec.forProvider.bucket
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
-
   - name: postgres-backups-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
@@ -7236,6 +7197,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
     patches:
@@ -7268,6 +7230,7 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
       spec:
+        deletionPolicy: Orphan
         forProvider:
           blockPublicAcls: true
           blockPublicPolicy: true
@@ -7293,33 +7256,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  # - name: postgres-backups-bucket-acl
-  #   base:
-  #     apiVersion: s3.aws.upbound.io/v1beta1
-  #     kind: BucketACL
-  #     spec:
-  #       forProvider:
-  #         acl: private
-  #         bucket: #patched
-  #         region: #patched
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: '%s-postgres-backups-bucket-acl'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.parameters.region
-  #     toFieldPath: spec.forProvider.region
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.postgresBackupsBucketName
-  #     toFieldPath: spec.forProvider.bucket
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: status.id
-  #     toFieldPath: spec.providerConfigRef.name
-
   - name: velero-s3-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
@@ -7328,6 +7264,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
     patches:
@@ -7357,6 +7294,7 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
       spec:
+        deletionPolicy: Orphan
         forProvider:
           blockPublicAcls: true
           blockPublicPolicy: true
@@ -7394,6 +7332,7 @@ spec:
         annotations:
           crossplane.io/external-name: #patchme
       spec:
+        deletionPolicy: Orphan
         forProvider:
           region: #patchme
     patches:
@@ -7423,6 +7362,7 @@ spec:
       apiVersion: s3.aws.upbound.io/v1beta1
       kind: BucketPublicAccessBlock
       spec:
+        deletionPolicy: Orphan
         forProvider:
           blockPublicAcls: true
           blockPublicPolicy: true
@@ -7573,6 +7513,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           cidrBlocks:
           - 0.0.0.0/0
@@ -7613,6 +7554,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       spec:
+        deletionPolicy: Orphan
         forProvider:
           cidrBlocks:
           - 10.0.0.0/16
@@ -7680,6 +7622,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPCEndpoint
       spec:
+        deletionPolicy: Orphan
         forProvider:
           vpcEndpointType: Interface
           privateDnsEnabled: true
@@ -7735,6 +7678,7 @@ spec:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPCEndpoint
       spec:
+        deletionPolicy: Orphan
         forProvider:
           vpcEndpointType: Gateway
           policy: |
@@ -7784,6 +7728,7 @@ spec:
           resource: Record
           type: CNAME
       spec:
+        deletionPolicy: Orphan
         forProvider:
           ttl: 300
     patches:
@@ -7871,6 +7816,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: |
             {
@@ -8191,6 +8137,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
       spec:
+        deletionPolicy: Orphan
         forProvider:
           policy: |
             {
@@ -8266,6 +8213,7 @@ spec:
       apiVersion: wafregional.aws.upbound.io/v1beta1
       kind: WebACL
       spec:
+        deletionPolicy: Orphan
         forProvider:
           defaultAction:
           - type: "ALLOW"
@@ -8292,6 +8240,7 @@ spec:
       apiVersion: servicequotas.aws.upbound.io/v1beta1
       kind: ServiceQuota
       spec:
+        deletionPolicy: Orphan
         forProvider:
           quotaCode: L-DB2E81BA
           serviceCode: ec2
@@ -8316,6 +8265,7 @@ spec:
       apiVersion: acm.aws.upbound.io/v1beta1
       kind: Certificate
       spec:
+        deletionPolicy: Orphan
         forProvider:
           domainName: # patchme
           region: # patchme
@@ -8362,6 +8312,7 @@ spec:
       apiVersion: acm.aws.upbound.io/v1beta1
       kind: CertificateValidation
       spec:
+        deletionPolicy: Orphan
         forProvider:
           domainName: # patchme
           region: # patchme
