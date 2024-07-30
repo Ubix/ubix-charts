@@ -645,11 +645,11 @@ spec:
                   - "https://www.googleapis.com/auth/compute"
               resourceLimits:
               - resourceType: 'cpu'
-                maximum: 1024
+                maximum: # patchme (1024)
               - resourceType: 'memory'
-                maximum: 2048
+                maximum: # patchme (2048)
               - resourceType: 'nvidia-tesla-t4'
-                maximum: 16
+                maximum: # patchme (16)
           databaseEncryption:
           - keyName: #patchme
             state: "ENCRYPTED"
@@ -668,6 +668,15 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.gke.maxClusterMemory
+      toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[0].maximum
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.gke.maxClusterCpu
+      toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[1].maximum
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.gke.maxClusterGpu
+      toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[2].maximum
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.networkRef.name
