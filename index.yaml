@@ -4437,6 +4437,16 @@ entries:
   composition-instance-gcp:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-07-30T02:17:31.34915939Z"
+    description: Child account CRD helm chart
+    digest: 0cf080e86292c1d952090c7dba0a8ba86f1b09e636dade70679a340c84354175
+    name: composition-instance-gcp
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/composition-instance-gcp-0.2.6/composition-instance-gcp-0.2.6.tgz
+    version: 0.2.6
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-07-30T02:02:56.876909586Z"
     description: Child account CRD helm chart
     digest: c16b0bc851b8120e0f5697c0eda4d1cb6b419c3de975495f9b18d93a1cc8b488
@@ -5965,4 +5975,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-30T02:13:12.483096128Z"
+generated: "2024-07-30T02:17:31.350121437Z"
