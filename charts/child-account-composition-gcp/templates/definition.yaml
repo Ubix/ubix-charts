@@ -51,6 +51,10 @@ spec:
                     description: The Kubernetes version for the cluster.
                     type: string
                     default: "1.27.3-gke.100"
+                  enableNAP:
+                    description: Whether enabled Node Autoprovisioning or not.
+                    type: boolean
+                    default: true
                   maxClusterMemory:
                     description: The maximum amount of memory in the cluster.
                     type: integer

@@ -669,6 +669,9 @@ spec:
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.gke.enableNAP
+      toFieldPath: spec.forProvider.clusterAutoscaling[0].enabled
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.gke.maxClusterMemory
       toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[0].maximum
     - type: FromCompositeFieldPath

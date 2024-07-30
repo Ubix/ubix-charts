@@ -17,6 +17,7 @@ spec:
     providerconfig: {{ .Values.spec.parameters.providerconfig }}
   gke:
     version: {{ quote .Values.spec.gke.version }}
+    enableNAP: {{ .Values.spec.gke.enableNAP }}
     maxClusterMemory: {{ .Values.spec.gke.maxClusterMemory }}
     maxClusterCpu: {{ .Values.spec.gke.maxClusterCpu }}
     maxClusterGpu: {{ .Values.spec.gke.maxClusterGpu }}
