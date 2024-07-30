@@ -643,13 +643,13 @@ spec:
                   - "https://www.googleapis.com/auth/monitoring"
                   - "https://www.googleapis.com/auth/devstorage.read_only"
                   - "https://www.googleapis.com/auth/compute"
-              resourceLimits:
-              - resourceType: 'cpu'
-                maximum: # patchme (1024)
-              - resourceType: 'memory'
-                maximum: # patchme (2048)
-              - resourceType: 'nvidia-tesla-t4'
-                maximum: # patchme (16)
+              resourceLimits: # patchme
+              # - resourceType: 'cpu'
+              #   maximum: # patchme (1024)
+              # - resourceType: 'memory'
+              #   maximum: # patchme (2048)
+              # - resourceType: 'nvidia-tesla-t4'
+              #   maximum: # patchme (16)
           databaseEncryption:
           - keyName: #patchme
             state: "ENCRYPTED"
@@ -672,14 +672,17 @@ spec:
       fromFieldPath: spec.gke.enableNAP
       toFieldPath: spec.forProvider.clusterAutoscaling[0].enabled
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.gke.maxClusterMemory
-      toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[0].maximum
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.gke.maxClusterCpu
-      toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[1].maximum
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.gke.maxClusterGpu
-      toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[2].maximum
+      fromFieldPath: spec.gke.resourceLimits
+      toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits
+    # - type: FromCompositeFieldPath
+    #   fromFieldPath: spec.gke.maxClusterMemory
+    #   toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[0].maximum
+    # - type: FromCompositeFieldPath
+    #   fromFieldPath: spec.gke.maxClusterCpu
+    #   toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[1].maximum
+    # - type: FromCompositeFieldPath
+    #   fromFieldPath: spec.gke.maxClusterGpu
+    #   toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[2].maximum
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.networkRef.name

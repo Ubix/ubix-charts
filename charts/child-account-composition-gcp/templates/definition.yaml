@@ -55,18 +55,30 @@ spec:
                     description: Whether enabled Node Autoprovisioning or not.
                     type: boolean
                     default: true
-                  maxClusterMemory:
-                    description: The maximum amount of memory in the cluster.
-                    type: integer
-                    default: 2048
-                  maxClusterCpu:
-                    description: The maximum amount of cpu in the cluster.
-                    type: integer
-                    default: 1024
-                  maxClusterGpu:
-                    description: The maximum amount of gpu in the cluster.
-                    type: integer
-                    default: 16
+                  resourceLimits:
+                    type: array
+                    default: null
+                    items:
+                      type: object
+                      properties:
+                        resourceType:
+                          description: ""
+                          type: string
+                        maximum:
+                          description: ""
+                          type: string
+                  # maxClusterMemory:
+                  #   description: The maximum amount of memory in the cluster.
+                  #   type: integer
+                  #   default: 2048
+                  # maxClusterCpu:
+                  #   description: The maximum amount of cpu in the cluster.
+                  #   type: integer
+                  #   default: 1024
+                  # maxClusterGpu:
+                  #   description: The maximum amount of gpu in the cluster.
+                  #   type: integer
+                  #   default: 16
             required:
             - parameters
           status:

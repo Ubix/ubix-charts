@@ -18,6 +18,7 @@ spec:
   gke:
     version: {{ quote .Values.spec.gke.version }}
     enableNAP: {{ .Values.spec.gke.enableNAP }}
-    maxClusterMemory: {{ .Values.spec.gke.maxClusterMemory }}
-    maxClusterCpu: {{ .Values.spec.gke.maxClusterCpu }}
-    maxClusterGpu: {{ .Values.spec.gke.maxClusterGpu }}
+{{- if .Values.spec.gke.resourceLimits }}
+    resourceLimits:
+{{ .Values.spec.gke.resourceLimits | toYaml | indent 4 }}
+{{ end }}
