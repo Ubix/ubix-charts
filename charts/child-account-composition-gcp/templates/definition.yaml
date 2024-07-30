@@ -57,7 +57,7 @@ spec:
                     default: true
                   resourceLimits:
                     type: array
-                    default: null
+                    default: []
                     items:
                       type: object
                       properties:
