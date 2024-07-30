@@ -13,11 +13,4 @@ spec:
     providerconfig: "root-gcp"
   gke:
     version: 1.27.8-gke.1067004
-    enableNAP: true
-    # resourceLimits:
-    # - resourceType: 'cpu'
-    #   maximum: 1024
-    # - resourceType: 'memory'
-    #   maximum: 2048
-    # - resourceType: 'nvidia-tesla-t4'
-    #   maximum: 16
+    enableNAP: false
