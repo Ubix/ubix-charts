@@ -7396,6 +7396,8 @@ spec:
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPCEndpointSubnetAssociation
+      spec:
+        deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -7425,6 +7427,8 @@ spec:
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPCEndpointSubnetAssociation
+      spec:
+        deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -7454,6 +7458,8 @@ spec:
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPCEndpointSubnetAssociation
+      spec:
+        deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -7483,6 +7489,8 @@ spec:
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroup
+      spec:
+        deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -7592,6 +7600,8 @@ spec:
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPCEndpointSecurityGroupAssociation
+      spec:
+        deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
@@ -7655,6 +7665,8 @@ spec:
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPCEndpointRouteTableAssociation
+      spec:
+        deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: status.privateRouteTableID
