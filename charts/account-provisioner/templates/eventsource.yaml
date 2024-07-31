@@ -23,7 +23,7 @@ spec:
         noWait: false
       queueDeclare:
         name: {{ .Values.eventSource.queue }}
-        durable: false
+        durable: true
         autoDelete: false
         exclusive: true
         noWait: false
