@@ -398,6 +398,7 @@ secretMounts: []
 # ```
 
 coordinator:
+  replicas: 0
   jvm:
     maxHeapSize: "8G"
     gcMethod:
