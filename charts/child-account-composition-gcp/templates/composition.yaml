@@ -562,7 +562,7 @@ spec:
 
   - name: GKE Cluster
     base:
-      apiVersion: container.gcp.upbound.io/v1beta1
+      apiVersion: container.gcp.upbound.io/v1beta2
       kind: Cluster
       spec:
         providerConfigRef:
