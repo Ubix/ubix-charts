@@ -651,7 +651,7 @@ spec:
               # - resourceType: 'nvidia-tesla-t4'
               #   maximum: # patchme (16)
           databaseEncryption:
-          - keyName: #patchme
+            keyName: #patchme
             state: "ENCRYPTED"
           ipAllocationPolicy:
             clusterSecondaryRangeName: #patchme
