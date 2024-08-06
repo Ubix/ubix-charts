@@ -5686,6 +5686,24 @@ entries:
   trino:
   - apiVersion: v2
     appVersion: "450"
+    created: "2024-08-06T10:00:41.258041402Z"
+    description: Fast distributed SQL query engine for big data analytics that helps
+      you explore your data universe
+    digest: 5a22c1e74ed9b98397fdfa510f81f374b16f00d557cc4275855dbff4f694c898
+    home: https://trino.io/
+    icon: https://trino.io/assets/trino.png
+    maintainers:
+    - name: Trino community
+    name: trino
+    sources:
+    - https://github.com/trinodb/charts
+    - https://github.com/trinodb/trino/tree/master/core/docker
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/trino-0.25.8/trino-0.25.8.tgz
+    version: 0.25.8
+  - apiVersion: v2
+    appVersion: "450"
     created: "2024-08-02T13:42:51.578504207Z"
     description: Fast distributed SQL query engine for big data analytics that helps
       you explore your data universe
@@ -6049,4 +6067,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-08-02T13:42:51.579271297Z"
+generated: "2024-08-06T10:00:41.259186457Z"
