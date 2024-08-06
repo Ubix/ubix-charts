@@ -657,7 +657,7 @@ spec:
           - clusterSecondaryRangeName: #patchme
             servicesSecondaryRangeName: #patchme
           workloadIdentityConfig:
-          - workloadPool: #patchme
+            workloadPool: #patchme
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
