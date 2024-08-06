@@ -572,7 +572,7 @@ spec:
         deletionPolicy: Orphan
         forProvider:
           addonsConfig:
-          - dnsCacheConfig:
+            dnsCacheConfig:
             - enabled: true
             gcePersistentDiskCsiDriverConfig:
             - enabled: true
@@ -601,11 +601,11 @@ spec:
           monitoringService: monitoring.googleapis.com/kubernetes
           loggingService: logging.googleapis.com/kubernetes
           releaseChannel:
-          - channel: STABLE
+            channel: STABLE
           verticalPodAutoscaling:
-          - enabled: true
+            enabled: true
           privateClusterConfig:
-          - enablePrivateNodes: true
+            enablePrivateNodes: true
             enablePrivateEndpoint: false
             masterIpv4CidrBlock: 192.168.0.0/28
           removeDefaultNodePool: true
@@ -615,13 +615,13 @@ spec:
           subnetworkRef:
             name: #patchme
           masterAuthorizedNetworksConfig:
-          - cidrBlocks:
+            cidrBlocks:
             - displayName: "ArgoCD AWS NAT IP address"
               cidrBlock: "{{ .Values.AWSNATIP }}/32"
             - displayName: "Ubix team access"
               cidrBlock: "0.0.0.0/0"
           clusterAutoscaling:
-            - enabled: true
+              enabled: true
               autoProvisioningDefaults:
                 - bootDiskKmsKey: #patchme
                   diskSize: 200
@@ -654,7 +654,7 @@ spec:
           - keyName: #patchme
             state: "ENCRYPTED"
           ipAllocationPolicy:
-          - clusterSecondaryRangeName: #patchme
+            clusterSecondaryRangeName: #patchme
             servicesSecondaryRangeName: #patchme
           workloadIdentityConfig:
             workloadPool: #patchme
@@ -670,10 +670,10 @@ spec:
       toFieldPath: spec.forProvider.project
     - type: FromCompositeFieldPath
       fromFieldPath: spec.gke.enableNAP
-      toFieldPath: spec.forProvider.clusterAutoscaling[0].enabled
+      toFieldPath: spec.forProvider.clusterAutoscaling.enabled
     - type: FromCompositeFieldPath
       fromFieldPath: spec.gke.resourceLimits
-      toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits
+      toFieldPath: spec.forProvider.clusterAutoscaling.resourceLimits
     # - type: FromCompositeFieldPath
     #   fromFieldPath: spec.gke.maxClusterMemory
     #   toFieldPath: spec.forProvider.clusterAutoscaling[0].resourceLimits[0].maximum
@@ -695,21 +695,21 @@ spec:
           fmt: '%s-private-subnet-1'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.ipAllocationPolicy[0].clusterSecondaryRangeName
+      toFieldPath: spec.forProvider.ipAllocationPolicy.clusterSecondaryRangeName
       transforms:
       - type: string
         string:
           fmt: '%s-gke-pods-range'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.ipAllocationPolicy[0].servicesSecondaryRangeName
+      toFieldPath: spec.forProvider.ipAllocationPolicy.servicesSecondaryRangeName
       transforms:
       - type: string
         string:
           fmt: '%s-gke-svc-range'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.workloadIdentityConfig[0].workloadPool
+      toFieldPath: spec.forProvider.workloadIdentityConfig.workloadPool
       transforms:
       - type: string
         string:
@@ -718,17 +718,17 @@ spec:
       fromFieldPath: status.gkeKmsKeyID
       policy:
         fromFieldPath: Required
-      toFieldPath: spec.forProvider.clusterAutoscaling[0].autoProvisioningDefaults[0].bootDiskKmsKey
+      toFieldPath: spec.forProvider.clusterAutoscaling.autoProvisioningDefaults[0].bootDiskKmsKey
     - type: FromCompositeFieldPath
       fromFieldPath: status.gkeKmsKeyID
       policy:
         fromFieldPath: Required
-      toFieldPath: spec.forProvider.databaseEncryption[0].keyName
+      toFieldPath: spec.forProvider.databaseEncryption.keyName
     - type: FromCompositeFieldPath
       fromFieldPath: status.gkeNodePoolSAEmail
       policy:
         fromFieldPath: Required
-      toFieldPath: spec.forProvider.clusterAutoscaling[0].autoProvisioningDefaults[0].serviceAccount
+      toFieldPath: spec.forProvider.clusterAutoscaling.autoProvisioningDefaults[0].serviceAccount
     - type: PatchSet
       patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
