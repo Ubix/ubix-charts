@@ -22,6 +22,7 @@ data:
     -XX:+{{ .Values.coordinator.jvm.gcMethod.type }}
     -XX:G1HeapRegionSize={{ .Values.coordinator.jvm.gcMethod.g1.heapRegionSize }}
     -XX:+ExplicitGCInvokesConcurrent
+    -XX:+ExitOnOutOfMemoryError
     -XX:+HeapDumpOnOutOfMemoryError
     -XX:-OmitStackTraceInFastThrow
     -XX:ReservedCodeCacheSize=512M
