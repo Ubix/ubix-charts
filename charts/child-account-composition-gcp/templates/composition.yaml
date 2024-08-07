@@ -738,7 +738,7 @@ spec:
       fromFieldPath: status.conditions[0].status
       toFieldPath: status.controlPlaneStatus
     - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.masterAuth[0].clusterCaCertificate
+      fromFieldPath: status.atProvider.masterAuth.clusterCaCertificate
       toFieldPath: status.clusterCertificateAuthorityData
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.endpoint
