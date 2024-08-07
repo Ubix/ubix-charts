@@ -7961,7 +7961,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: ecr-s3-gateway-layers-vpce-rt-assoc
+  - name: ecr-s3-gateway-layers-vpce-rt-assoc-1
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPCEndpointRouteTableAssociation
@@ -7969,7 +7969,55 @@ spec:
         deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
-      fromFieldPath: status.privateRouteTableID
+      fromFieldPath: status.privateRouteTableID1
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - string:
+          fmt: '%s-s3-gateway-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: ecr-s3-gateway-layers-vpce-rt-assoc-2
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointRouteTableAssociation
+      spec:
+        deletionPolicy: Orphan
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID2
+      toFieldPath: spec.forProvider.routeTableId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+      transforms:
+      - string:
+          fmt: '%s-s3-gateway-vpce'
+        type: string
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: ecr-s3-gateway-layers-vpce-rt-assoc-3
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPCEndpointRouteTableAssociation
+      spec:
+        deletionPolicy: Orphan
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.privateRouteTableID3
       toFieldPath: spec.forProvider.routeTableId
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
