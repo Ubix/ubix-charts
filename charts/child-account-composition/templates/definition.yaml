@@ -100,16 +100,40 @@ spec:
               publicRouteTableID:
                 description: the public route table id
                 type: string
-              privateRouteTableID:
+              privateRouteTableID1:
                 description: the private route table id
                 type: string
-              natGatewayIP:
+              privateRouteTableID2:
+                description: the private route table id
+                type: string
+              privateRouteTableID3:
+                description: the private route table id
+                type: string
+              natGatewayIP1:
                 description: Nat Gateway elastic ip
                 type: string
-              natGatewayEIPID:
+              natGatewayEIPID1:
                 description: Nat Gateway elastic ip id
                 type: string
-              natGatewayID:
+              natGatewayID1:
+                description: id of the nat gateway
+                type: string
+              natGatewayIP2:
+                description: Nat Gateway elastic ip
+                type: string
+              natGatewayEIPID2:
+                description: Nat Gateway elastic ip id
+                type: string
+              natGatewayID2:
+                description: id of the nat gateway
+                type: string
+              natGatewayIP3:
+                description: Nat Gateway elastic ip
+                type: string
+              natGatewayEIPID3:
+                description: Nat Gateway elastic ip id
+                type: string
+              natGatewayID3:
                 description: id of the nat gateway
                 type: string
               internetGatewayID:

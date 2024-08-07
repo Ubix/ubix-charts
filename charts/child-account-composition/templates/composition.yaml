@@ -1195,7 +1195,61 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.natGatewayEIPID
+      toFieldPath: status.natGatewayEIPID1
+
+  - name: nat-gateway-eip-2
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: EIP
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: #patchme
+          vpc: true
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-2'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayEIPID2
+
+  - name: nat-gateway-eip-3
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: EIP
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: #patchme
+          vpc: true
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-3'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayEIPID3
 
   - name: nat-gateway-1
     base:
@@ -1239,10 +1293,104 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.natGatewayID
+      toFieldPath: status.natGatewayID1
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.publicIp
-      toFieldPath: status.natGatewayIP
+      toFieldPath: status.natGatewayIP1
+
+  - name: nat-gateway-2
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: NATGateway
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          allocationIdRef:
+            name: #patchme
+          region: #patchme
+          subnetIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-2'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.allocationIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-2'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public-1b'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayID2
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.publicIp
+      toFieldPath: status.natGatewayIP2
+
+  - name: nat-gateway-3
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: NATGateway
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          allocationIdRef:
+            name: #patchme
+          region: #patchme
+          subnetIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-3'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.allocationIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-3'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.subnetIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-public-1a'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.natGatewayID3
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.publicIp
+      toFieldPath: status.natGatewayIP3
 
   - name: internet-gateway
     base:
@@ -1340,7 +1488,75 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
-      toFieldPath: status.privateRouteTableID
+      toFieldPath: status.privateRouteTableID1
+
+  - name: routetable-private-2
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTable
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          vpcIdRef:
+            name: #patchme
+          region: #patchme
+      providerConfigRef:
+        policy:
+          resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-2'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateRouteTableID2
+
+  - name: routetable-private-3
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTable
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          vpcIdRef:
+            name: #patchme
+          region: #patchme
+      providerConfigRef:
+        policy:
+          resolve: "Always"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-3'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.vpcIdRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.privateRouteTableID3
 
   - name: public-route
     base:
@@ -1421,6 +1637,90 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: private-route-2
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Route
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          routeTableIdRef:
+            name: #patchme
+          natGatewayIdRef:
+            name: #patchme
+          region: #patchme
+          destinationCidrBlock: 0.0.0.0/0
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-2'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-2'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.natGatewayIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-2'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: private-route-3
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Route
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          routeTableIdRef:
+            name: #patchme
+          natGatewayIdRef:
+            name: #patchme
+          region: #patchme
+          destinationCidrBlock: 0.0.0.0/0
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-3'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.routeTableIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-private-3'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.natGatewayIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nat-gateway-3'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: private-route-table-assossiation-1-1a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -1450,7 +1750,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-private-1'
+          fmt: '%s-private-3'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.subnetIdRef.name
@@ -1491,7 +1791,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-private-1'
+          fmt: '%s-private-2'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.subnetIdRef.name
