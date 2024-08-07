@@ -573,9 +573,9 @@ spec:
         forProvider:
           addonsConfig:
             dnsCacheConfig:
-            - enabled: true
+              enabled: true
             gcePersistentDiskCsiDriverConfig:
-            - enabled: true
+              enabled: true
           project: #patchme
           #enableAutopilot: true
           location: #patchme
@@ -623,18 +623,18 @@ spec:
           clusterAutoscaling:
               enabled: true
               autoProvisioningDefaults:
-                - bootDiskKmsKey: #patchme
+                  bootDiskKmsKey: #patchme
                   diskSize: 200
                   diskType: pd-standard
                   serviceAccount: #patchme
                   management:
-                  - autoRepair: true
+                    autoRepair: true
                     autoUpgrade: true
                   shieldedInstanceConfig:
-                  - enableIntegrityMonitoring: true
+                    enableIntegrityMonitoring: true
                     enableSecureBoot: true
                   upgradeSettings:
-                  - strategy: SURGE
+                    strategy: SURGE
                     maxSurge: 1
                     maxUnavailable: 0
                   oauthScopes:
@@ -718,7 +718,7 @@ spec:
       fromFieldPath: status.gkeKmsKeyID
       policy:
         fromFieldPath: Required
-      toFieldPath: spec.forProvider.clusterAutoscaling.autoProvisioningDefaults[0].bootDiskKmsKey
+      toFieldPath: spec.forProvider.clusterAutoscaling.autoProvisioningDefaults.bootDiskKmsKey
     - type: FromCompositeFieldPath
       fromFieldPath: status.gkeKmsKeyID
       policy:
@@ -728,7 +728,7 @@ spec:
       fromFieldPath: status.gkeNodePoolSAEmail
       policy:
         fromFieldPath: Required
-      toFieldPath: spec.forProvider.clusterAutoscaling.autoProvisioningDefaults[0].serviceAccount
+      toFieldPath: spec.forProvider.clusterAutoscaling.autoProvisioningDefaults.serviceAccount
     - type: PatchSet
       patchSetName: providerconfigref-patch
     - type: ToCompositeFieldPath
