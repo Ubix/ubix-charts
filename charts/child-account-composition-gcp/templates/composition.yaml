@@ -623,7 +623,7 @@ spec:
           clusterAutoscaling:
               enabled: true
               autoProvisioningDefaults:
-                  bootDiskKmsKey: #patchme
+                  # bootDiskKmsKey: #patchme
                   diskSize: 200
                   diskType: pd-standard
                   serviceAccount: #patchme
@@ -714,11 +714,11 @@ spec:
       - type: string
         string:
           fmt: '%s.svc.id.goog'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.gkeKmsKeyID
-      policy:
-        fromFieldPath: Required
-      toFieldPath: spec.forProvider.clusterAutoscaling.autoProvisioningDefaults.bootDiskKmsKey
+    # - type: FromCompositeFieldPath
+    #   fromFieldPath: status.gkeKmsKeyID
+    #   policy:
+    #     fromFieldPath: Required
+    #   toFieldPath: spec.forProvider.clusterAutoscaling.autoProvisioningDefaults.bootDiskKmsKey
     - type: FromCompositeFieldPath
       fromFieldPath: status.gkeKmsKeyID
       policy:
