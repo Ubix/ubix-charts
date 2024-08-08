@@ -1339,6 +1339,41 @@ spec:
       fromFieldPath: status.atProvider.email
       toFieldPath: status.gcsVeleroSAEmail
 
+  - name: gcs-llm-api-sa
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccount
+      metadata:
+        annotations:
+          crossplane.io/external-name: gcs-llm-api-sa
+        labels:
+          service-account: gcs-llm-api-sa
+      spec:
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          displayName: "gcs-llm-api-sa"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gcs-llm-api-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.email
+      toFieldPath: status.gcsllmApiSAEmail
+
   - name: load-balancer-controller-sa
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
@@ -3680,6 +3715,45 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: workload-identity-llm-api-iambinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ServiceAccountIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          member: #patchme
+          role: roles/iam.workloadIdentityUser
+          serviceAccountIdRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gke-workload-identity-llm-api-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.serviceAccountIdRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-llm-api-sa'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s.svc.id.goog[data-tooling/llm-api]'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
 
 # #####
 # # ArgoCD
@@ -3822,123 +3896,6 @@ spec:
         toFieldPath: spec.forProvider.records
         policy:
           fromFieldPath: Required
-
-# #####
-# # GCP Certificate Resources
-# #####
-
-  # - name: gcp-managedsslcertificates
-  #   base:
-  #     apiVersion: compute.gcp.upbound.io/v1beta1
-  #     kind: ManagedSSLCertificate
-  #     metadata:
-  #       name: #patchme
-  #     spec:
-  #       forProvider:
-  #         managed:
-  #           - domains:
-  #               - #patchme
-  #               - #patchme
-  #               - #patchme
-  #               - #patchme
-  #               - #patchme
-  #               - #patchme
-  #               - #patchme
-  #               - #patchme
-  #               - #patchme
-  #               - #patchme
-  #               - #patchme
-  #         project: #patchme
-  #   patches:
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[0]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'alloy.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[1]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'grafana.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[2]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'colossal-ai.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[3]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'data-service.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[4]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'pgadmin.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[5]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'chatubix.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[6]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'datalineage.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[7]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'dataspace.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[8]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'modelspace.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[9]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'productionspace.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.managed[0].domains[10]
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: 'solutionspace.%s.ubix.io'
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.project
-  #   - type: FromCompositeFieldPath
-  #     fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: '%s-managed-certificate'
-  #   - type: PatchSet
-  #     patchSetName: providerconfigref-patch
 
 # #####
 # # GCP LB Resources
@@ -4279,6 +4236,45 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: llm-api-cache-bucket
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          location: #patchme
+          publicAccessPrevention: "enforced"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-llm-api-cache"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectNumber
+      policy:
+        fromFieldPath: Required
+      transforms:
+      - type: string
+        string:
+          fmt: "llm-api-cache-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
 # #####
 # # Harbor Resources
 # #####
@@ -4497,6 +4493,43 @@ spec:
       - type: string
         string:
           fmt: 'serviceAccount:exec-service-python-sa@%s.iam.gserviceaccount.com'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+
+  - name: llm-api-rolebinding
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectIAMMember
+      spec:
+        deletionPolicy: Orphan
+        providerConfigRef:
+          name: #patchme
+          policy:
+            resolve: "Always"
+        forProvider:
+          project: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-llm-api-rolebinding'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:llm-api-sa@%s.iam.gserviceaccount.com'
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
