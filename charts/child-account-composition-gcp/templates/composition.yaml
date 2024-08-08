@@ -1339,15 +1339,15 @@ spec:
       fromFieldPath: status.atProvider.email
       toFieldPath: status.gcsVeleroSAEmail
 
-  - name: gcs-llm-api-sa
+  - name: llm-api-sa
     base:
       apiVersion: cloudplatform.gcp.upbound.io/v1beta1
       kind: ServiceAccount
       metadata:
         annotations:
-          crossplane.io/external-name: gcs-llm-api-sa
+          crossplane.io/external-name: llm-api-sa
         labels:
-          service-account: gcs-llm-api-sa
+          service-account: llm-api-sa
       spec:
         providerConfigRef:
           name: #patchme
@@ -1356,7 +1356,7 @@ spec:
         deletionPolicy: Orphan
         forProvider:
           project: #patchme
-          displayName: "gcs-llm-api-sa"
+          displayName: "llm-api-sa"
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -1364,7 +1364,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-gcs-llm-api-sa'
+          fmt: '%s-llm-api-sa'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.project
