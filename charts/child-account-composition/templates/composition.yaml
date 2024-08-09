@@ -2291,7 +2291,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-karpenter'
+          fmt: '%s-karpenter-1'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
