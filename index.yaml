@@ -253,6 +253,16 @@ entries:
   child-account-composition:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-08-09T10:52:08.316698738Z"
+    description: XRD Child account Chart
+    digest: 46465ceff3f94841d9841e4a69baaa0e2d83b5ae0bf59cbb05927b23dd944c9d
+    name: child-account-composition
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/child-account-composition-0.21.11/child-account-composition-0.21.11.tgz
+    version: 0.21.11
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-08-08T20:16:04.812126715Z"
     description: XRD Child account Chart
     digest: 1a4ff425053b9534218b8bd3e3c99eeeee5e58c28bcec98a416f29f8aef1d822
@@ -6225,4 +6235,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-08-09T02:04:22.965612997Z"
+generated: "2024-08-09T10:52:08.317754437Z"
