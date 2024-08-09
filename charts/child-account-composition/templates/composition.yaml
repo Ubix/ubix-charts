@@ -133,6 +133,7 @@ spec:
         forProvider:
           tags:
             karpenter.sh/discovery: #patchme
+            worker-security-group: default
           description: Security group for all nodes in the cluster
           name: #patchme
           region: #patchme
