@@ -900,6 +900,7 @@ spec:
           mapPublicIpOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
+            subnet-type: public
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -946,6 +947,7 @@ spec:
           mapPublicIpOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
+            subnet-type: public
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -992,6 +994,7 @@ spec:
           mapPublicIpOnLaunch: true
           tags:
             kubernetes.io/role/elb: "1"
+            subnet-type: public
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -1037,6 +1040,7 @@ spec:
             name: #patched
           tags:
             karpenter.sh/discovery: #patchme
+            subnet-type: private
             kubernetes.io/role/internal-elb: "1"
       providerConfigRef:
         policy:
@@ -1087,6 +1091,7 @@ spec:
           tags:
             karpenter.sh/discovery: #patchme
             kubernetes.io/role/internal-elb: "1"
+            subnet-type: private
       providerConfigRef:
         policy:
           resolve: "Always"
@@ -1136,6 +1141,7 @@ spec:
           tags:
             karpenter.sh/discovery: #patchme
             kubernetes.io/role/internal-elb: "1"
+            subnet-type: private
       providerConfigRef:
         policy:
           resolve: "Always"
