@@ -7074,21 +7074,21 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-llm-api-full-access'
+          fmt: '%s-llm-api-cache-full-access'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-llm-api'
+          fmt: '%s-llm-api-cache-full-access'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.policyArnRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-llm-api'
+          fmt: '%s-llm-api-cache-full-access'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
