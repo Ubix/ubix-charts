@@ -133,6 +133,7 @@ spec:
         forProvider:
           tags:
             karpenter.sh/discovery: #patchme
+            worker-security-group: default
           description: Security group for all nodes in the cluster
           name: #patchme
           region: #patchme
@@ -2260,6 +2261,37 @@ spec:
       - type: string
         string:
           fmt: '%s-karpenter'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-cluster'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-instance-profile-1
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: InstanceProfile
+      metadata:
+        annotations:
+          crossplane.io/external-name: karpenter
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          roleRef:
+            name: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-karpenter-1'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
