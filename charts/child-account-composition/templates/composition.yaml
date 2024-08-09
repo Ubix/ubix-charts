@@ -5374,13 +5374,13 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: llm-api-cache-readonly-policy
+  - name: llm-api-cache-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Policy
       metadata:
         annotations:
-          crossplane.io/external-name: llm-api-cache-read-only-policy
+          crossplane.io/external-name: llm-api-cache-policy
       spec:
         deletionPolicy: Orphan
         forProvider:
@@ -5392,7 +5392,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-llm-api-cache-full-access'
+          fmt: '%s-llm-api'
     - type: CombineFromComposite
       toFieldPath: spec.forProvider.policy
       combine:
@@ -7055,8 +7055,7 @@ spec:
       policy:
         fromFieldPath: Required
 
-
-  - name: llm-api-bucket-full-access-attachment
+  - name: iamattachment-llm-api-full-access
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
@@ -7074,21 +7073,21 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-llm-api-cache-full-access'
+          fmt: '%s-llm-api-full-access'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-llm-api-cache-full-access'
+          fmt: '%s-llm-api'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.policyArnRef.name
       transforms:
       - type: string
         string:
-          fmt: '%s-llm-api-cache-full-access'
+          fmt: '%s-llm-api'
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
