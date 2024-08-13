@@ -325,6 +325,9 @@ spec:
               certificateResourceRecordType:
                 description: Certificate that is being validated.
                 type: string
+              karpenterInterruptionQueueArn:
+                description: Karpenter Interruption Queue Arn
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
