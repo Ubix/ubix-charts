@@ -8972,6 +8972,26 @@ spec:
   #     fromFieldPath: status.id
   #     toFieldPath: spec.providerConfigRef.name
 
+  - name: spot-service-linked-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: ServiceLinkedRole
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          awsServiceName: spot.amazonaws.com
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-spot-servicelinkedrole'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: karpenter-interruption-queue
     base:
       apiVersion: sqs.aws.upbound.io/v1beta1
