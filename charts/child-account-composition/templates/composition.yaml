@@ -4599,6 +4599,7 @@ spec:
                             "ec2:DescribeInstanceTypeOfferings",
                             "ec2:DescribeImages",
                             "ec2:DescribeAvailabilityZones",
+                            "ec2:DescribeSpotPriceHistory",
                             "ec2:CreateTags",
                             "ec2:CreateLaunchTemplate",
                             "ec2:CreateFleet"
@@ -4889,7 +4890,7 @@ spec:
                 {
                   "Sid": "AllowInterruptionQueueActions",
                   "Effect": "Allow",
-                  "Resource": "arn:aws:sqs:%s:%s:%s",
+                  "Resource": "arn:aws:sqs:%s:%s:%s-karpenter-int-queue",
                   "Action": [
                     "sqs:DeleteMessage",
                     "sqs:GetQueueAttributes",
@@ -8936,6 +8937,304 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.certificateArn
       toFieldPath: spec.forProvider.certificateArn
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+
+## karpenter spot instances config
+
+  # - name: request-spot-quota
+  #   base:
+  #     apiVersion: servicequotas.aws.upbound.io/v1beta1
+  #     kind: ServiceQuota
+  #     spec:
+  #       deletionPolicy: Orphan
+  #       forProvider:
+  #         quotaCode: L-34B43A08
+  #         serviceCode: ec2
+  #         value: 512
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: '%s-spot-quota'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
+
+  - name: spot-service-linked-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: ServiceLinkedRole
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          awsServiceName: spot.amazonaws.com
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-spot-servicelinkedrole'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-interruption-queue
+    base:
+      apiVersion: sqs.aws.upbound.io/v1beta1
+      kind: Queue
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          name: # patchme
+          region: # patchme
+          policy: # patchme
+          messageRetentionSeconds: 300
+          sqsManagedSseEnabled: true
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-queue'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-queue'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.parameters.region
+          - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Statement": [
+                {
+                  "Sid": "example",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": ["events.amazonaws.com", "sqs.amazonaws.com"]
+                  },
+                  "Action": "sqs:SendMessage",
+                  "Resource": "arn:aws:sqs:%s:*:%s-karpenter-int-queue"
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.karpenterInterruptionQueueArn
+
+  - name: karpenter-interruption-queue-event-1
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: Rule
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: # patchme
+          eventPattern: |
+            {
+              "detail-type": [
+                "EC2 Spot Instance Interruption Warning"
+              ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-spot-int'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-interruption-queue-event-target-1
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: Target
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          arn: # patchme
+          region: # patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-spot-int-target'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.ruleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-spot-int'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterInterruptionQueueArn
+      toFieldPath: spec.forProvider.arn
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-interruption-queue-event-2
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: Rule
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: # patchme
+          eventPattern: |
+            {
+              "detail-type": [
+                "EC2 Instance Rebalance Recommendation"
+              ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-inst-rebalance'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-interruption-queue-event-target-2
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: Target
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          arn: # patchme
+          region: # patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-inst-rebalance-target'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.ruleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-inst-rebalance'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterInterruptionQueueArn
+      toFieldPath: spec.forProvider.arn
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-interruption-queue-event-3
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: Rule
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: # patchme
+          eventPattern: |
+            {
+              "detail-type": [
+                "EC2 Instance State-change Notification"
+              ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-inst-state-change'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-interruption-queue-event-target-3
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: Target
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          arn: # patchme
+          region: # patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-inst-state-change-target'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.ruleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-inst-state-change'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterInterruptionQueueArn
+      toFieldPath: spec.forProvider.arn
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
