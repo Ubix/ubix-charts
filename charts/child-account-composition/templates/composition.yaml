@@ -9053,6 +9053,77 @@ spec:
       fromFieldPath: status.atProvider.arn
       toFieldPath: status.karpenterInterruptionQueueArn
 
+  - name: karpenter-interruption-bus
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: Bus
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: # patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-interruption-bus
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: BusPolicy
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: # patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.parameters.region
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "0",
+                  "Effect": "Allow",
+                  "Principal": {"AWS":"arn:aws:iam::%s:root"},
+                  "Action": "events:PutEvents",
+                  "Resource": "arn:aws:events:%s:%s:event-bus/%s-karpenter-int-bus"
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: karpenter-interruption-queue-event-1
     base:
       apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
@@ -9063,8 +9134,11 @@ spec:
           region: # patchme
           eventPattern: |
             {
+              "source": [
+                "aws.health"
+              ],
               "detail-type": [
-                "EC2 Spot Instance Interruption Warning"
+                "AWS Health Event"
               ]
             }
     patches:
@@ -9075,6 +9149,13 @@ spec:
         - type: string
           string:
             fmt: '%s-karpenter-ec2-spot-int'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.eventBusName
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -9126,6 +9207,82 @@ spec:
           region: # patchme
           eventPattern: |
             {
+              "source": [
+                "aws.ec2"
+              ],
+              "detail-type": [
+                "EC2 Spot Instance Interruption Warning"
+              ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-spot-int'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.eventBusName
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-interruption-queue-event-target-2
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: Target
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          arn: # patchme
+          region: # patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-spot-int-target'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.ruleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-ec2-spot-int'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.karpenterInterruptionQueueArn
+      toFieldPath: spec.forProvider.arn
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: karpenter-interruption-queue-event-3
+    base:
+      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+      kind: Rule
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: # patchme
+          eventPattern: |
+            {
+              "source": [
+                "aws.ec2"
+              ],
               "detail-type": [
                 "EC2 Instance Rebalance Recommendation"
               ]
@@ -9139,13 +9296,20 @@ spec:
           string:
             fmt: '%s-karpenter-ec2-inst-rebalance'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.eventBusName
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: karpenter-interruption-queue-event-target-2
+  - name: karpenter-interruption-queue-event-target-3
     base:
       apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
       kind: Target
@@ -9179,7 +9343,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: karpenter-interruption-queue-event-3
+  - name: karpenter-interruption-queue-event-4
     base:
       apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
       kind: Rule
@@ -9189,6 +9353,9 @@ spec:
           region: # patchme
           eventPattern: |
             {
+              "source": [
+                "aws.ec2"
+              ],
               "detail-type": [
                 "EC2 Instance State-change Notification"
               ]
@@ -9202,13 +9369,20 @@ spec:
           string:
             fmt: '%s-karpenter-ec2-inst-state-change'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.eventBusName
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: karpenter-interruption-queue-event-target-3
+  - name: karpenter-interruption-queue-event-target-4
     base:
       apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
       kind: Target
