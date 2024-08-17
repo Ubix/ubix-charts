@@ -9076,54 +9076,6 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: karpenter-interruption-bus-policy
-    base:
-      apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
-      kind: BusPolicy
-      spec:
-        deletionPolicy: Orphan
-        forProvider:
-          region: # patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-karpenter-int-bus'
-    - type: CombineFromComposite
-      toFieldPath: spec.forProvider.policy
-      policy:
-        fromFieldPath: Required
-      combine:
-        variables:
-          - fromFieldPath: status.id
-          - fromFieldPath: spec.parameters.region
-          - fromFieldPath: status.id
-          - fromFieldPath: spec.id
-        strategy: string
-        string:
-          fmt: |
-            {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Sid": "0",
-                  "Effect": "Allow",
-                  "Principal": {"AWS":"arn:aws:iam::%s:root"},
-                  "Action": "events:PutEvents",
-                  "Resource": "arn:aws:events:%s:%s:event-bus/%s-karpenter-int-bus"
-                }
-              ]
-            }
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-
   - name: karpenter-interruption-queue-event-1
     base:
       apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
