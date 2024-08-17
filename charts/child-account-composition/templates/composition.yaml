@@ -9172,6 +9172,7 @@ spec:
         forProvider:
           arn: # patchme
           region: # patchme
+          targetId: SendToSQS
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -9254,6 +9255,7 @@ spec:
         forProvider:
           arn: # patchme
           region: # patchme
+          targetId: SendToSQS
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -9336,6 +9338,7 @@ spec:
         forProvider:
           arn: # patchme
           region: # patchme
+          targetId: SendToSQS
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -9418,6 +9421,7 @@ spec:
         forProvider:
           arn: # patchme
           region: # patchme
+          targetId: SendToSQS
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
