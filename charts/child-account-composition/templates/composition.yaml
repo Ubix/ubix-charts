@@ -9190,6 +9190,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.karpenterInterruptionQueueArn
       toFieldPath: spec.forProvider.arn
+      policy:
+        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -9263,6 +9265,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.karpenterInterruptionQueueArn
       toFieldPath: spec.forProvider.arn
+      policy:
+        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -9336,6 +9340,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.karpenterInterruptionQueueArn
       toFieldPath: spec.forProvider.arn
+      policy:
+        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -9409,6 +9415,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.karpenterInterruptionQueueArn
       toFieldPath: spec.forProvider.arn
+      policy:
+        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
