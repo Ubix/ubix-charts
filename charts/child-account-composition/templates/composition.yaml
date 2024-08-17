@@ -9188,6 +9188,13 @@ spec:
           string:
             fmt: '%s-karpenter-aws-health'
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.eventBusName
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
+    - type: FromCompositeFieldPath
       fromFieldPath: status.karpenterInterruptionQueueArn
       toFieldPath: spec.forProvider.arn
       policy:
@@ -9268,6 +9275,13 @@ spec:
       policy:
         fromFieldPath: Required
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.eventBusName
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
@@ -9337,6 +9351,13 @@ spec:
         - type: string
           string:
             fmt: '%s-karpenter-ec2-inst-rebalance'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.eventBusName
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
     - type: FromCompositeFieldPath
       fromFieldPath: status.karpenterInterruptionQueueArn
       toFieldPath: spec.forProvider.arn
@@ -9412,6 +9433,13 @@ spec:
         - type: string
           string:
             fmt: '%s-karpenter-ec2-inst-state-change'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.eventBusName
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-karpenter-int-bus'
     - type: FromCompositeFieldPath
       fromFieldPath: status.karpenterInterruptionQueueArn
       toFieldPath: spec.forProvider.arn
