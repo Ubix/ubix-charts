@@ -9148,7 +9148,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: '%s-karpenter-ec2-spot-int'
+            fmt: '%s-karpenter-aws-health'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.eventBusName
@@ -9179,14 +9179,14 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: '%s-karpenter-ec2-spot-int-target'
+            fmt: '%s-karpenter-aws-health-target'
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.ruleRef.name
       transforms:
         - type: string
           string:
-            fmt: '%s-karpenter-ec2-spot-int'
+            fmt: '%s-karpenter-aws-health'
     - type: FromCompositeFieldPath
       fromFieldPath: status.karpenterInterruptionQueueArn
       toFieldPath: spec.forProvider.arn
