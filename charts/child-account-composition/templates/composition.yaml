@@ -9076,7 +9076,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: karpenter-interruption-bus
+  - name: karpenter-interruption-bus-policy
     base:
       apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
       kind: BusPolicy
