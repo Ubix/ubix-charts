@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
-  name: {{ include "account-provisioner.fullname" . }}-renew-sso-client
+  name: {{ include "account-provisioner.fullname" . }}-{{ .Values.clusterWorkflowTemplate.metadata.name }}
 spec:
   serviceAccountName: {{ include "account-provisioner.fullname" . }}
-  entrypoint: {{ include "account-provisioner.fullname" . }}-renew-sso-client-workflow
+  entrypoint: {{ include "account-provisioner.fullname" . }}-{{ .Values.clusterWorkflowTemplate.entrypoint.name }}
   arguments:
     parameters:
       {{- range $key, $value := .Values.clusterWorkflowTemplate.parameters }}
@@ -13,7 +13,7 @@ spec:
       {{- end }}
 
   templates:
-    - name: {{ include "account-provisioner.fullname" . }}-renew-sso-client-workflow
+    - name: {{ include "account-provisioner.fullname" . }}-{{ .Values.clusterWorkflowTemplate.entrypoint.name }}
       container:
         image: {{ .Values.clusterWorkflowTemplate.image.repository }}:{{ .Values.clusterWorkflowTemplate.image.tag }}
         command: 
