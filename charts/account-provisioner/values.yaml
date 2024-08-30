@@ -20,6 +20,8 @@ clusterWorkflowTemplate:
     accounts: "[]"
     applications: "[]" 
   command:
+    - poetry
+    - run
     - python
     - -m
     - cmd.renew_sso_client_secrets
@@ -32,8 +34,11 @@ sensor:
     repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
     tag: account-provisioner-464
   args:
+    - poetry
+    - run
     - python
-    - main.py
+    - -m
+    - cmd.create_account
   brokerSecretName: rabbitmq-cluster-secret
   brokerSecretUserKey: username
   brokerSecretPasswordKey: password
