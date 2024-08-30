@@ -21,7 +21,8 @@ clusterWorkflowTemplate:
     applications: "[]" 
   command:
     - python
-    - cmd/renew_sso_client_secrets.py
+    - -m
+    - cmd.renew_sso_client_secrets
   image:
     repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
     tag: acount-provisioner-464
