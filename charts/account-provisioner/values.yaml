@@ -15,13 +15,30 @@ eventSource:
     usernameKey: BROKER_USER
     passwordKey: BROKER_PASSWORD
 
+clusterWorkflowTemplate:
+  metadata:
+    name: renew-sso-client
+  entrypoint:
+    name: renew-sso-client-workflow
+  parameters:
+    accounts: "[]"
+    applications: "[]" 
+  command:
+    - python
+    - -m
+    - cmd.renew_sso_client_secrets
+  image:
+    repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
+    tag: account-provisioner-464
+
 sensor:
   image:
     repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
     tag: account-provisioner-464
   args:
     - python
-    - main.py
+    - -m
+    - cmd.create_account
   brokerSecretName: rabbitmq-cluster-secret
   brokerSecretUserKey: username
   brokerSecretPasswordKey: password

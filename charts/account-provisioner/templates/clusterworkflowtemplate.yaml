@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: {{ include "account-provisioner.fullname" . }}-{{ .Values.clusterWorkflowTemplate.metadata.name }}
+spec:
+  serviceAccountName: {{ include "account-provisioner.fullname" . }}
+  entrypoint: {{ include "account-provisioner.fullname" . }}-{{ .Values.clusterWorkflowTemplate.entrypoint.name }}
+  arguments:
+    parameters:
+      {{- range $key, $value := .Values.clusterWorkflowTemplate.parameters }}
+      - name: {{ $key | quote }}
+        value: {{ $value | quote }}
+      {{- end }}
+
+  templates:
+    - name: {{ include "account-provisioner.fullname" . }}-{{ .Values.clusterWorkflowTemplate.entrypoint.name }}
+      container:
+        image: {{ .Values.clusterWorkflowTemplate.image.repository }}:{{ .Values.clusterWorkflowTemplate.image.tag }}
+        command: 
+          {{- range .Values.clusterWorkflowTemplate.command }}
+          - {{ . | quote }}
+          {{- end }}
+        env:
+          {{- range $key, $value := .Values.clusterWorkflowTemplate.parameters }}
+          {{- if $value }}
+          - name: {{ $key | upper }}
+            value: '{{`{{workflow.parameters.{{ $key }}}}`}}'
+          {{- end }}
+          {{- end }}
+        envFrom:
+          - secretRef:
+              name: {{ template "account-provisioner.fullname" . }}-envs
+          - configMapRef:
+              name: {{ template "account-provisioner.fullname" . }}-envs
+        volumeMounts:
+          - name: pem-file
+            mountPath: /usr/src/app/account-provisioner.pem
+            subPath: account-provisioner.pem
+      volumes:
+        - name: pem-file
+          secret:
+            secretName: {{ template "account-provisioner.fullname" . }}-pem
+            items:
+              - key: account-provisioner.pem
+                path: account-provisioner.pem
