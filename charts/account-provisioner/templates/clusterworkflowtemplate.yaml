@@ -24,7 +24,7 @@ spec:
           {{- range $key, $value := .Values.clusterWorkflowTemplate.parameters }}
           {{- if $value }}
           - name: {{ $key | upper }}
-            value: '{{`{{workflow.parameters.{{ $key }}}}`}}'
+            value: '{{`{{workflow.parameters.`}}{{ $key }}{{`}}`}}'
           {{- end }}
           {{- end }}
         envFrom:
