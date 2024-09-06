@@ -20,9 +20,7 @@ clusterWorkflowTemplate:
     name: renew-sso-client
   entrypoint:
     name: renew-sso-client-workflow
-  parameters:
-    accounts: "[]"
-    applications: "[]" 
+  parameters: {}
   command:
     - python
     - -m
