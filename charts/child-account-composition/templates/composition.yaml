@@ -2925,6 +2925,67 @@ spec:
         fromFieldPath: status.atProvider.id
         toFieldPath: status.execServicePythonRoleName
 
+  - name: solutionengine-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+      metadata:
+        annotations:
+          crossplane.io/external-name: solutionengine-role
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          assumeRolePolicy: ""
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-solutionengine"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+      - type: CombineFromComposite
+        toFieldPath: spec.forProvider.assumeRolePolicy
+        policy:
+          fromFieldPath: Required
+        combine:
+          variables:
+            - fromFieldPath: status.id
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+            - fromFieldPath: status.clusterOIDC
+          strategy: string
+          string:
+            fmt: |
+              {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                      "StringEquals": {
+                          "%s:sub": [
+                          "system:serviceaccount:services:solution-engine-sa"],
+                          "%s:aud": "sts.amazonaws.com"
+                      }
+                    }
+                  }
+                ]
+              }
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.id
+        toFieldPath: status.solutionEngineRoleName
+
   - name: colossal-ai-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -5365,6 +5426,47 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: resources-s3-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        annotations:
+          crossplane.io/external-name: resources-s3-policy
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policy: |
+            {
+                 "Version": "2012-10-17",
+                 "Statement": [
+                      {
+                          "Sid": "ReadWrites3Bucket",
+                          "Effect": "Allow",
+                          "Action": [
+                              "s3:PutObject",
+                              "s3:GetObject",
+                              "s3:ListBucket"
+                          ],
+                          "Resource": [
+                              "arn:aws:s3:::resources.ubix.com,
+                              "arn:aws:s3:::resources.ubix.com/*"
+                          ]
+                      }
+                 ]
+              }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-resources-s3-policy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: warehouse-readonly-policy
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
@@ -5777,6 +5879,40 @@ spec:
           fromFieldPath: Required
       - type: FromCompositeFieldPath
         fromFieldPath: status.execServicePythonRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: solutionengine-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policyArn: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-solutionengine-resources-s3"
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.policyArnRef.name
+        transforms:
+        - type: string
+          string:
+            fmt: '%s-resources-s3-policy'
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.solutionEngineRoleName
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
