@@ -247,6 +247,9 @@ spec:
               execServicePythonRoleName:
                 description: Role to give s3 access to the cluster
                 type: string
+              solutionEngineRoleName:
+                description: Role to give s3 access to the cluster
+                type: string
               executionArtifactsS3PolicyArn:
                 description: Policy to give s3 access to the cluster
                 type: string
