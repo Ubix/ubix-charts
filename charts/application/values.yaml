@@ -301,6 +301,7 @@ persistence:
 ##########################################################
 service:
   enabled: true
+  headless: false
   additionalLabels:
     # expose: "true"
 
