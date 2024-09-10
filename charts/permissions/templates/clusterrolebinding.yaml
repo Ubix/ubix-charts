@@ -1,0 +1,17 @@
+{{- range .Values.clusterRoleBindings }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: {{ .roleRef.kind }}
+  name: {{ .roleRef.name }}
+subjects:
+  {{- range .subjects }}
+  - kind: {{ .kind }}
+    name: {{ .name }}
+    apiGroup: {{ .apiGroup }}
+  {{- end}}
+---
+{{- end}}
