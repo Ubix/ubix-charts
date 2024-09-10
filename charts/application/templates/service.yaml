@@ -16,8 +16,14 @@ metadata:
   name: {{ template "application.name" . }}
   namespace: {{ template "application.namespace" $ }}
 spec:
-{{- if .Values.service.type }}  
+{{- if .Values.service.headless }}
+  clusterIP: None
+{{- else }}
+  {{- if .Values.service.type }}  
   type: "{{ .Values.service.type }}"
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
 {{- end }}
   selector:
 {{ include "application.labels.selector" . | indent 4 }}
