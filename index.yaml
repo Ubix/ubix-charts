@@ -5949,6 +5949,15 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/otel-collector-1.0.1/otel-collector-1.0.1.tgz
     version: 1.0.1
+  permission:
+  - apiVersion: v1
+    created: "2024-09-11T16:53:01.788922642Z"
+    description: Generic create RBAC
+    digest: 308452ffa4c7fa5bb53af50b5148f13dfde338493a6bce066d819ab88724d9f3
+    name: permission
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/permission-0.0.1/permission-0.0.1.tgz
+    version: 0.0.1
   postgres-operator-instance:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -6413,4 +6422,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-09-10T13:21:33.965103696Z"
+generated: "2024-09-11T16:53:01.789899898Z"
