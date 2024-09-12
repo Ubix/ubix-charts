@@ -1,4 +1,4 @@
 apiVersion: v1
-name: permission
+name: permissions
 description: Generic create RBAC
 version: 0.0.1
