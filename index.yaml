@@ -5958,6 +5958,15 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/permission-0.0.1/permission-0.0.1.tgz
     version: 0.0.1
+  permissions:
+  - apiVersion: v1
+    created: "2024-09-13T14:16:21.506556678Z"
+    description: Generic create RBAC
+    digest: ab83bc632ca6802cc275598a33101a64ff0d708512e6bf24d4f796aa8b2574f2
+    name: permissions
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/permissions-0.0.1/permissions-0.0.1.tgz
+    version: 0.0.1
   postgres-operator-instance:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -6422,4 +6431,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-09-11T16:53:01.789899898Z"
+generated: "2024-09-13T14:16:21.507443822Z"
