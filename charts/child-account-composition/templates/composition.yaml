@@ -8474,9 +8474,6 @@ spec:
           vpcEndpointType: Interface
           privateDnsEnabled: true
           serviceName: {{ .Values.telemetryVpcEndpointService }}
-          tags:
-            - key: Name
-              value: telemetry-vpce
         providerConfigRef:
           name: backoffice
     patches:
