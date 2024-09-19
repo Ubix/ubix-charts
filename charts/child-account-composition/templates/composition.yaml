@@ -8473,7 +8473,7 @@ spec:
         forProvider:
           vpcEndpointType: Interface
           privateDnsEnabled: true
-          serviceName: {{ Values.telemetryVpcEndpointService }}
+          serviceName: {{ .Values.telemetryVpcEndpointService }}
           tags:
             - key: Name
               value: telemetry-vpce
@@ -8505,7 +8505,7 @@ spec:
         deletionPolicy: Orphan
         forProvider:
           vpcEndPointServiceIdRef:
-            name: {{ Values.telemetryVpcEndpointService }}
+            name: {{ .Values.telemetryVpcEndpointService }}
         providerConfigRef:
           name: backoffice
     patches:
