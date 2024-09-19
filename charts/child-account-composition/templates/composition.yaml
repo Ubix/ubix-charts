@@ -8501,8 +8501,7 @@ spec:
       spec:
         deletionPolicy: Orphan
         forProvider:
-          vpcEndPointServiceIdRef:
-            name: {{ .Values.telemetryVpcEndpointService }}
+          vpcEndPointServiceId: {{ .Values.telemetryVpcEndpointServiceId }}
         providerConfigRef:
           name: backoffice
     patches:
@@ -8510,7 +8509,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
+      fromFieldPath: status.id
       toFieldPath: spec.forProvider.principalArn
       transforms:
       - string:

@@ -11,3 +11,4 @@ loki:
   user: "required"
   password: "required"
 telemetryVpcEndpointService: ""
+telemetryVpcEndpointServiceId: ""
