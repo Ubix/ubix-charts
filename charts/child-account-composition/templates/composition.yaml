@@ -8507,6 +8507,9 @@ spec:
           name: backoffice
     patches:
     - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: spec.forProvider.principalArn
       transforms:
