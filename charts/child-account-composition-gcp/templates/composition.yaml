@@ -166,6 +166,30 @@ spec:
     - type: PatchSet
       patchSetName: providerconfigref-patch
 
+  - name: Enable Cloud Storage API
+    base:
+      apiVersion: cloudplatform.gcp.upbound.io/v1beta1
+      kind: ProjectService
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          disableDependentServices: false
+          service: storage-component.googleapis.com # patchme
+    patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.project
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - string:
+              fmt: '%s-project-cloud-storage-service-api'
+            type: string
+      - type: PatchSet
+        patchSetName: providerconfigref-patch
+
 # ########
 # # VPC
 # ########
@@ -4861,3 +4885,94 @@ spec:
           convert:
             toType: object
             format: json
+#####
+# Bucket Resources
+#####
+  - name: llm-api-model-bucket
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          project: #patchme
+          location: #patchme
+          storageClass: STANDARD
+          versioning:
+          - enabled: true
+          uniformBucketLevelAccess: true
+          publicAccessPrevention: "enforced"
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-llm-api-model"
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.project
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectNumber
+      policy:
+        fromFieldPath: Required
+      transforms:
+        - type: string
+          string:
+            fmt: "llm-api-model-%s"
+      toFieldPath: metadata.annotations[crossplane.io/external-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.location
+    - type: PatchSet
+      patchSetName: providerconfigref-patch
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.executionArtifactsBucketName
+
+########
+# Bucket ACL
+########
+  - name: llm-api-model-gcs-rolebinding
+    base:
+      apiVersion: storage.gcp.upbound.io/v1beta1
+      kind: BucketIAMMember
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          bucketRef:
+            name: #patchme
+          member: #patchme
+          role: roles/storage.admin
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-llm-api-model'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.projectName
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.bucketRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-llm-api-model'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.gcsllmApiSAEmail
+      policy:
+        fromFieldPath: Required
+      toFieldPath: spec.forProvider.member
+      transforms:
+      - type: string
+        string:
+          fmt: 'serviceAccount:%s'
+    - type: PatchSet
+      patchSetName: providerconfigref-patch

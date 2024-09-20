@@ -231,6 +231,9 @@ spec:
               certificateDnsData:
                 description: CNAME Data given by DNS-Authorization
                 type: string
+              gcsllmApiSAEmail:
+                description: Email service account llm api model
+                type: string
     additionalPrinterColumns:
     - name: GCPProjectID
       type: string
