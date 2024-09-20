@@ -234,6 +234,9 @@ spec:
               gcsllmApiSAEmail:
                 description: Email service account llm api model
                 type: string
+              llmApiModelBucketName:
+                description: GCS Bucket for Cloudspace apps
+                type: string
     additionalPrinterColumns:
     - name: GCPProjectID
       type: string
