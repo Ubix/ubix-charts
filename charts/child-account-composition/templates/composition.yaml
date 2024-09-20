@@ -8511,6 +8511,8 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.forProvider.principalArn
+      policy:
+        fromFieldPath: Required
       transforms:
       - string:
           fmt: 'arn:aws:iam::%s:root'
