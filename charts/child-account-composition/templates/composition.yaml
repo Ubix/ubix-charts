@@ -8531,10 +8531,6 @@ spec:
       kind: VPCEndpointSubnetAssociation
       spec:
         deletionPolicy: Orphan
-        forProvider:
-          subnetIdRef:
-            policy:
-              resolution: Optional
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
