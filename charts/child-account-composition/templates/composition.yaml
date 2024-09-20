@@ -5449,7 +5449,7 @@ spec:
                               "s3:ListBucket"
                           ],
                           "Resource": [
-                              "arn:aws:s3:::resources.ubix.com,
+                              "arn:aws:s3:::resources.ubix.com",
                               "arn:aws:s3:::resources.ubix.com/*"
                           ]
                       }
