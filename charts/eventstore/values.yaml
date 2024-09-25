@@ -6,7 +6,7 @@
 image: eventstore/eventstore
 ##
 ## Event Store image tag
-imageTag: 20.10.0-buster-slim
+imageTag: 22.10.5-alpha-arm64v8
 ##
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
