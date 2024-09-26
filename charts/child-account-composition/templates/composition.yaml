@@ -8464,305 +8464,305 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: telemetry-vpc-endpoint
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: VPCEndpoint
-      spec:
-        deletionPolicy: Orphan
-        forProvider:
-          vpcEndpointType: Interface
-          privateDnsEnabled: true
-          serviceName: {{ .Values.telemetryVpcEndpointService }}
-        providerConfigRef:
-          name: backoffice
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcIdRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-telemetry-vpce'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: telemetry-vpc-endpoint
+  #   base:
+  #     apiVersion: ec2.aws.upbound.io/v1beta1
+  #     kind: VPCEndpoint
+  #     spec:
+  #       deletionPolicy: Orphan
+  #       forProvider:
+  #         vpcEndpointType: Interface
+  #         privateDnsEnabled: true
+  #         serviceName: {{ .Values.telemetryVpcEndpointService }}
+  #       providerConfigRef:
+  #         name: backoffice
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.vpcIdRef.name
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - string:
+  #         fmt: '%s-telemetry-vpce'
+  #       type: string
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
-  - name: telemetry-vpce-allowed-principal
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: VPCEndpointServiceAllowedPrincipal
-      spec:
-        deletionPolicy: Orphan
-        forProvider:
-          vpcEndpointServiceId: {{ .Values.telemetryVpcEndpointServiceId }}
-        providerConfigRef:
-          name: backoffice
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.forProvider.principalArn
-      policy:
-        fromFieldPath: Required
-      transforms:
-      - string:
-          fmt: 'arn:aws:iam::%s:root'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-telemetry-vpce-allowed-principal'
-        type: string
+  # - name: telemetry-vpce-allowed-principal
+  #   base:
+  #     apiVersion: ec2.aws.upbound.io/v1beta1
+  #     kind: VPCEndpointServiceAllowedPrincipal
+  #     spec:
+  #       deletionPolicy: Orphan
+  #       forProvider:
+  #         vpcEndpointServiceId: {{ .Values.telemetryVpcEndpointServiceId }}
+  #       providerConfigRef:
+  #         name: backoffice
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.forProvider.principalArn
+  #     policy:
+  #       fromFieldPath: Required
+  #     transforms:
+  #     - string:
+  #         fmt: 'arn:aws:iam::%s:root'
+  #       type: string
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - string:
+  #         fmt: '%s-telemetry-vpce-allowed-principal'
+  #       type: string
 
-  - name: telemetry-vpc-endpoint-subnet-association-1a
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: VPCEndpointSubnetAssociation
-      spec:
-        deletionPolicy: Orphan
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1aID
-      toFieldPath: spec.forProvider.subnetId
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-telemetry-vpce'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-telemetry-vpce-1a'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: telemetry-vpc-endpoint-subnet-association-1a
+  #   base:
+  #     apiVersion: ec2.aws.upbound.io/v1beta1
+  #     kind: VPCEndpointSubnetAssociation
+  #     spec:
+  #       deletionPolicy: Orphan
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.privateSubnet1aID
+  #     toFieldPath: spec.forProvider.subnetId
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-telemetry-vpce'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-telemetry-vpce-1a'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
-  - name: telemetry-vpc-endpoint-subnet-association-1b
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: VPCEndpointSubnetAssociation
-      spec:
-        deletionPolicy: Orphan
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1bID
-      toFieldPath: spec.forProvider.subnetId
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-telemetry-vpce'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-telemetry-vpce-1b'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: telemetry-vpc-endpoint-subnet-association-1b
+  #   base:
+  #     apiVersion: ec2.aws.upbound.io/v1beta1
+  #     kind: VPCEndpointSubnetAssociation
+  #     spec:
+  #       deletionPolicy: Orphan
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.privateSubnet1bID
+  #     toFieldPath: spec.forProvider.subnetId
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-telemetry-vpce'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-telemetry-vpce-1b'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
-  - name: telemetry-vpc-endpoint-subnet-association-1c
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: VPCEndpointSubnetAssociation
-      spec:
-        deletionPolicy: Orphan
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.privateSubnet1cID
-      toFieldPath: spec.forProvider.subnetId
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-telemetry-vpce'
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-telemetry-vpce-1c'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: telemetry-vpc-endpoint-subnet-association-1c
+  #   base:
+  #     apiVersion: ec2.aws.upbound.io/v1beta1
+  #     kind: VPCEndpointSubnetAssociation
+  #     spec:
+  #       deletionPolicy: Orphan
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.privateSubnet1cID
+  #     toFieldPath: spec.forProvider.subnetId
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-telemetry-vpce'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-telemetry-vpce-1c'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
-  - name: telemetry-vpce-security-group
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: SecurityGroup
-      spec:
-        deletionPolicy: Orphan
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-telemetry-vpce'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.name
-      transforms:
-      - string:
-          fmt: '%s-telemetry-vpce'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcIdRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: telemetry-vpce-security-group
+  #   base:
+  #     apiVersion: ec2.aws.upbound.io/v1beta1
+  #     kind: SecurityGroup
+  #     spec:
+  #       deletionPolicy: Orphan
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - string:
+  #         fmt: '%s-telemetry-vpce'
+  #       type: string
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.name
+  #     transforms:
+  #     - string:
+  #         fmt: '%s-telemetry-vpce'
+  #       type: string
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.vpcIdRef.name
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
-  - name: telemetry-vpce-security-group-rule-egress
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: SecurityGroupRule
-      spec:
-        deletionPolicy: Orphan
-        forProvider:
-          cidrBlocks:
-          - 0.0.0.0/0
-          description: Allow egress from telemetry vpce
-          ipv6CidrBlocks:
-          - ::/0
-          fromPort: 0
-          protocol: "-1"
-          toPort: 0
-          type: egress
-          region: #patchme
-          securityGroupIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-sg-rule-telemetry-vpce-egress'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.securityGroupIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-telemetry-vpce'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: telemetry-vpce-security-group-rule-egress
+  #   base:
+  #     apiVersion: ec2.aws.upbound.io/v1beta1
+  #     kind: SecurityGroupRule
+  #     spec:
+  #       deletionPolicy: Orphan
+  #       forProvider:
+  #         cidrBlocks:
+  #         - 0.0.0.0/0
+  #         description: Allow egress from telemetry vpce
+  #         ipv6CidrBlocks:
+  #         - ::/0
+  #         fromPort: 0
+  #         protocol: "-1"
+  #         toPort: 0
+  #         type: egress
+  #         region: #patchme
+  #         securityGroupIdRef:
+  #           name: #patchme
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - string:
+  #         fmt: '%s-sg-rule-telemetry-vpce-egress'
+  #       type: string
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.securityGroupIdRef.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-telemetry-vpce'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
-  - name: telemetry-vpce-security-group-rule-ingress
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: SecurityGroupRule
-      spec:
-        deletionPolicy: Orphan
-        forProvider:
-          cidrBlocks:
-          - 10.0.0.0/16
-          description: Allow ingress from Private Subnets to telemetry
-          fromPort: 8080
-          protocol: "TCP"
-          toPort: 8082
-          type: ingress
-          region: #patchme
-          securityGroupIdRef:
-            name: #patchme
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-sg-rule-telemetry-vpce-ingress'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.securityGroupIdRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-telemetry-vpce'
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
+  # - name: telemetry-vpce-security-group-rule-ingress
+  #   base:
+  #     apiVersion: ec2.aws.upbound.io/v1beta1
+  #     kind: SecurityGroupRule
+  #     spec:
+  #       deletionPolicy: Orphan
+  #       forProvider:
+  #         cidrBlocks:
+  #         - 10.0.0.0/16
+  #         description: Allow ingress from Private Subnets to telemetry
+  #         fromPort: 8080
+  #         protocol: "TCP"
+  #         toPort: 8082
+  #         type: ingress
+  #         region: #patchme
+  #         securityGroupIdRef:
+  #           name: #patchme
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - string:
+  #         fmt: '%s-sg-rule-telemetry-vpce-ingress'
+  #       type: string
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.securityGroupIdRef.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: '%s-telemetry-vpce'
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
 
-  - name: telemetry-vpc-endpoint-secgroup-association
-    base:
-      apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: VPCEndpointSecurityGroupAssociation
-      spec:
-        deletionPolicy: Orphan
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.parameters.region
-      toFieldPath: spec.forProvider.region
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.vpcEndpointIdRef.name
-      transforms:
-      - string:
-          fmt: '%s-telemetry-vpce'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - string:
-          fmt: '%s-vpce-security-group-association'
-        type: string
-    - type: FromCompositeFieldPath
-      fromFieldPath: status.id
-      toFieldPath: spec.providerConfigRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.securityGroupIdRef.name
-      transforms:
-        - type: string
-          string:
-            fmt: '%s-telemetry-vpce'
+  # - name: telemetry-vpc-endpoint-secgroup-association
+  #   base:
+  #     apiVersion: ec2.aws.upbound.io/v1beta1
+  #     kind: VPCEndpointSecurityGroupAssociation
+  #     spec:
+  #       deletionPolicy: Orphan
+  #   patches:
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.parameters.region
+  #     toFieldPath: spec.forProvider.region
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.vpcEndpointIdRef.name
+  #     transforms:
+  #     - string:
+  #         fmt: '%s-telemetry-vpce'
+  #       type: string
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - string:
+  #         fmt: '%s-vpce-security-group-association'
+  #       type: string
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: status.id
+  #     toFieldPath: spec.providerConfigRef.name
+  #   - type: FromCompositeFieldPath
+  #     fromFieldPath: spec.id
+  #     toFieldPath: spec.forProvider.securityGroupIdRef.name
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: '%s-telemetry-vpce'
 
   - name: cname-validation-record
     base:
