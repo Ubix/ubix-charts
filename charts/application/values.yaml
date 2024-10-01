@@ -168,10 +168,7 @@ statefulset:
     repository: repository/image-name
     tag: v1.0.0
     pullPolicy: IfNotPresent
-  dnsConfig:
-    # options:
-    # - name: ndots
-    #   value: '1'
+
   # Startup, Readiness and Liveness probes
   startupProbe: {}
     # failureThreshold: 30
