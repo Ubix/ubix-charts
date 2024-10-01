@@ -51,6 +51,209 @@ cronJob:
     #         cpu: 1
 
 ##########################################################
+# StatefulSet
+##########################################################
+statefulset:
+  enabled: false  # Set to true to enable StatefulSet
+  replicas: 3
+  updateStrategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   partition: 0
+  podManagementPolicy: OrderedReady
+
+  # Reload deployment if configMap/secret updates
+  reloadOnChange: true
+
+  # Select nodes to deploy which matches the following labels
+  nodeSelector:
+    # cloud.google.com/gke-nodepool: default-pool
+
+  # Init containers which runs before the app container
+  initContainers:
+#      init-contaner:
+#        image: busybox
+#        imagePullPolicy: IfNotPresent
+#        command: ['/bin/sh']
+
+  # Additional labels for Deployment
+  additionalLabels:
+    # key: value
+
+  # Additional label added on pod which is used in Service's Label Selector
+  podLabels:
+    # env: prod
+
+  # Annotations on deployments
+  annotations:
+
+  # Additional Pod Annotations added on pod created by this Deployment
+  additionalPodAnnotations:
+    # key: value
+
+  # Secrets used to pull image
+  imagePullSecrets: ""
+
+  # If want to mount Envs from configmap or secret
+  envFrom:
+#    production-cm:
+#      type: configmap
+#      nameSuffix: my-configmap
+#    logging-config:
+#      type: configmap
+#      nameSuffix: your-configmap
+#    postgres-config:
+#      type: secret
+#      nameSuffix: postgres
+
+  # Environment variables to be passed to the app container
+  env:
+#    ENVIRONMENT:
+#       value: "dev"
+#    FREQUENCY:
+#       valueFrom:
+#          configMapKeyRef:
+#             name: config
+#             key: frequency
+
+  # Volumes to be added to the pod
+  volumes:
+#     configmap-volume:
+#       configMap:
+#         name: '{{ template "application.name" . }}-configmap-nameSuffix'
+#     secret-volume:
+#       secret:
+#         secretName: secret-name
+#     persistent-volume-name:
+#       persistentVolumeClaim:
+#         claimName: claim-name
+
+  # Mount path for Volumes
+  volumeMounts:
+    # volume-name:
+    #    mountPath: path
+    #    subPath: szy
+
+    # volume-name-2:
+    #    mountPath: path-2
+
+  # Taint tolerations for nodes
+  tolerations:
+    # - key: "dedicated"
+    #   operator: "Equal"
+    #   value: "app"
+    #   effect: "NoSchedule"
+
+  # Pod affinity and pod anti-affinity allow you to specify rules about how pods should be placed relative to other pods.
+  affinity:
+  #  nodeAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      nodeSelectorTerms:
+  #      - matchExpressions:
+  #        - key: disktype
+  #          operator: In
+  #          values:
+  #          - ssd
+
+  topologySpreadConstraints:
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   whenUnsatisfiable: DoNotSchedule
+  #   labelSelector:
+  #     matchLabels:
+  #       app: app-name
+
+  # Image of the app container
+  image:
+    repository: repository/image-name
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+
+  # Startup, Readiness and Liveness probes
+  startupProbe: {}
+    # failureThreshold: 30
+    # periodSeconds: 10
+    # httpGet:
+    #   path: '/path'
+    #   port: 8080
+    # exec: {}
+
+  readinessProbe: {}
+    # failureThreshold: 3
+    # periodSeconds: 10
+    # successThreshold: 1
+    # timeoutSeconds: 1
+    # initialDelaySeconds: 10
+    # httpGet:
+    #   path: '/path'
+    #   port: 8080
+    # exec: {}
+
+  livenessProbe: {}
+    # failureThreshold: 3
+    # periodSeconds: 10
+    # successThreshold: 1
+    # timeoutSeconds: 1
+    # initialDelaySeconds: 10
+    # httpGet:
+    #   path: '/path'
+    #   port: 8080
+    # exec: {}
+
+  # Resources to be defined for pod
+  resources:
+    limits:
+      memory: 256Mi
+      cpu: 0.5
+      #  nvidia.com/gpu: "2"
+    requests:
+      memory: 128Mi
+      cpu: 0.1
+      # nvidia.com/gpu: "2"
+
+  # Add additional containers besides init and app containers
+  additionalContainers:
+  # - name: sidecar-contaner
+  #   image: busybox
+  #   imagePullPolicy: IfNotPresent
+  #   command: ['/bin/sh']
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  terminationGracePeriodSeconds: 30
+  # Security Context for the pod
+  securityContext:
+    # fsGroup: 2000
+
+  # Command for primary container
+  command: []
+
+  # Args for primary contaner
+  args: []
+
+  # List of ports for the primary container
+  ports:
+  #- containerPort: 8080
+  #  name: http
+  #  protocol: TCP
+  #- containerPort: 8778
+  #  name: jolokia
+  #  protocol: TCP
+  #- containerPort: 8443
+  #  name: https
+  #  protocol: TCP
+
+  volumeClaimTemplates: []
+  # - name: data
+  #   mountVolume: true  # Enable automatic mounting
+  #   mountPath: /data 
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     storageClassName: "gp3"
+  #     resources:
+  #       requests:
+  #         storage: 1Gi
+
+##########################################################
 # Deployment
 ##########################################################
 deployment:
