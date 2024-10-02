@@ -154,13 +154,27 @@ spec:
       securityContext:
         {{ toYaml .Values.statefulset.securityContext | indent 6 }}
       {{- end }}
+      {{- if or (.Values.statefulset.volumes) (.Values.statefulset.volumeClaimTemplates) }}
+      volumes:
+        {{- range $key, $value := .Values.statefulset.volumes  }}
+      - name: {{ $key  }}
+{{ include "application.tplvalues.render" ( dict "value" $value "context" $ ) | indent 8 }}
+        {{- end }}
+        {{- range .Values.statefulset.volumeClaimTemplates }}
+        {{- if .mountVolume }}
+      - name : "{{ template "application.name" $ }}-{{ .name }}"
+        persistentVolumeClaim:
+          claimName: "{{ template "application.name" $ }}-{{ .name }}"
+        {{- end }}
+        {{- end }}
+      {{- end }}
       restartPolicy: {{ .Values.statefulset.restartPolicy | default "Always" }}
       terminationGracePeriodSeconds: {{ .Values.statefulset.terminationGracePeriodSeconds | default 30 }}
   {{- if .Values.statefulset.volumeClaimTemplates }}
   volumeClaimTemplates:
     {{- range .Values.statefulset.volumeClaimTemplates }}
     - metadata:
-        name: {{ .name }}
+        name: "{{ template "application.name" $ }}-{{ .name }}"
       spec: {{ toYaml .spec | nindent 8 }}
     {{- end }}
   {{- end }}
