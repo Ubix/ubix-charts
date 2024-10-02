@@ -242,25 +242,25 @@ statefulset:
   #  name: https
   #  protocol: TCP
 
-  volumeClaimTemplates:
-  - name: data3
-    mountVolume: true  # Enable automatic mounting
-    mountPath: /data2
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "gp3"
-      resources:
-        requests:
-          storage: 1Gi
-  - name: data2
-    mountVolume: true  # Enable automatic mounting
-    mountPath: /data 
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "gp3"
-      resources:
-        requests:
-          storage: 1Gi
+  volumeClaimTemplates: []
+  # - name: data3
+  #   mountVolume: true  # Enable automatic mounting
+  #   mountPath: /data2
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     storageClassName: "gp3"
+  #     resources:
+  #       requests:
+  #         storage: 1Gi
+  # - name: data2
+  #   mountVolume: true  # Enable automatic mounting
+  #   mountPath: /data 
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     storageClassName: "gp3"
+  #     resources:
+  #       requests:
+  #         storage: 1Gi
 
 ##########################################################
 # Deployment
