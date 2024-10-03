@@ -14,9 +14,10 @@ spec:
 {{ $nodePoolSpecs.annotations | toYaml | indent 8 }}
     spec:
       nodeClassRef:
-        apiVersion: karpenter.k8s.aws/v1beta1
+        group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: {{ $nodePoolSpecs.nodeClass }}
+      expireAfter: {{ $nodePoolSpecs.disruption.expireAfter }} # 720h
       {{- if $nodePoolSpecs.taints }}
       taints:
       {{- range $taintKey, $taintSpec := $nodePoolSpecs.taints }}
@@ -47,7 +48,6 @@ spec:
     {{- if $nodePoolSpecs.disruption.consolidateAfter }}
     consolidateAfter: {{ $nodePoolSpecs.disruption.consolidateAfter }} # 30s
     {{- end }}
-    expireAfter: {{ $nodePoolSpecs.disruption.expireAfter }} # 720h
     {{- if $nodePoolSpecs.disruption.budgets }}
     budgets:
     {{- range $budget := $nodePoolSpecs.disruption.budgets }}
