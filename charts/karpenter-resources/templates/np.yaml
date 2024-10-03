@@ -17,7 +17,7 @@ spec:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: {{ $nodePoolSpecs.nodeClass }}
-      expireAfter: {{ $nodePoolSpecs.disruption.expireAfter }} # 720h
+      expireAfter: {{ $nodePoolSpecs.expireAfter }} # 720h
       {{- if $nodePoolSpecs.taints }}
       taints:
       {{- range $taintKey, $taintSpec := $nodePoolSpecs.taints }}
