@@ -62,11 +62,7 @@ spec:
     {{- end }}
   {{- end }}
   limits:
-    {{- if $nodePoolSpecs.limits.cpu }}
     cpu: {{ quote $nodePoolSpecs.limits.cpu }}
-    {{- end }}
-    {{- if $nodePoolSpecs.limits.memory }}
     memory: {{ quote $nodePoolSpecs.limits.memory }}
-    {{- end }}
   weight: {{ default 1 $nodePoolSpecs.weight }}
 {{- end }}
