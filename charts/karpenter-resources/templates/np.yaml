@@ -62,7 +62,6 @@ spec:
     {{- end }}
   {{- end }}
   limits:
-    cpu: {{ quote $nodePoolSpecs.limits.cpu }}
-    memory: {{ quote $nodePoolSpecs.limits.memory }}
+{{ $nodePoolSpecs.limits | toYaml | indent 4 }}
   weight: {{ default 1 $nodePoolSpecs.weight }}
 {{- end }}
