@@ -19,6 +19,8 @@ spec:
   instanceProfile: "{{ $nodeClassSpecs.instanceProfile }}"
   tags:
 {{ $nodeClassSpecs.tags | toYaml | indent 4}}
+  metadataOptions:
+    httpEndpoint: enabled
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
