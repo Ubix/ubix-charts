@@ -21,7 +21,7 @@ spec:
 {{ $nodeClassSpecs.tags | toYaml | indent 4}}
   metadataOptions:
     httpEndpoint: enabled
-    HttpPutResponseHopLimit: 64
+    httpPutResponseHopLimit: 64
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
