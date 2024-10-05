@@ -5653,6 +5653,14 @@ entries:
     version: 0.1.0
   karpenter-resources:
   - apiVersion: v1
+    created: "2024-10-05T05:08:44.502822301Z"
+    description: Generic Karpenter Resources helm chart
+    digest: c1a40a3dcd33c47ccfb594fad2e6a71b7500ed2dfb3690899c82a3d7eb7985cc
+    name: karpenter-resources
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/karpenter-resources-1.0.27/karpenter-resources-1.0.27.tgz
+    version: 1.0.27
+  - apiVersion: v1
     created: "2024-10-05T05:06:05.337028507Z"
     description: Generic Karpenter Resources helm chart
     digest: fd1231ccc7186f3425603fab5081612aa167f6b611dd0c7e4d95e3e9e765f65f
@@ -6719,4 +6727,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-10-05T05:06:05.337943427Z"
+generated: "2024-10-05T05:08:44.503853387Z"
