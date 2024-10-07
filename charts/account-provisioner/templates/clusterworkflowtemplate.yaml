@@ -1,27 +1,29 @@
+{{- range $index, $workflowTemplate := .Values.clusterWorkflowTemplates }}
+---
 apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
-  name: {{ include "account-provisioner.fullname" . }}-{{ .Values.clusterWorkflowTemplate.metadata.name }}
+  name: {{ include "account-provisioner.fullname" $ }}-{{ $workflowTemplate.metadata.name }}
 spec:
-  serviceAccountName: {{ include "account-provisioner.fullname" . }}
-  entrypoint: {{ include "account-provisioner.fullname" . }}-{{ .Values.clusterWorkflowTemplate.entrypoint.name }}
+  serviceAccountName: {{ include "account-provisioner.fullname" $ }}
+  entrypoint: {{ include "account-provisioner.fullname" $ }}-{{ $workflowTemplate.entrypoint.name }}
   arguments:
     parameters:
-      {{- range $key, $value := .Values.clusterWorkflowTemplate.parameters }}
+      {{- range $key, $value := $workflowTemplate.parameters }}
       - name: {{ $key | quote }}
         value: {{ $value | quote }}
       {{- end }}
 
   templates:
-    - name: {{ include "account-provisioner.fullname" . }}-{{ .Values.clusterWorkflowTemplate.entrypoint.name }}
+    - name: {{ include "account-provisioner.fullname" $ }}-{{ $workflowTemplate.entrypoint.name }}
       container:
-        image: {{ .Values.clusterWorkflowTemplate.image.repository }}:{{ .Values.clusterWorkflowTemplate.image.tag }}
-        command: 
-          {{- range .Values.clusterWorkflowTemplate.command }}
+        image: {{ $workflowTemplate.image.repository }}:{{ $workflowTemplate.image.tag }}
+        args: 
+          {{- range $workflowTemplate.args }}
           - {{ . | quote }}
           {{- end }}
         env:
-          {{- range $key, $value := .Values.clusterWorkflowTemplate.parameters }}
+          {{- range $key, $value := $workflowTemplate.parameters }}
           {{- if $value }}
           - name: {{ $key | upper }}
             value: '{{`{{workflow.parameters.`}}{{ $key }}{{`}}`}}'
@@ -29,9 +31,9 @@ spec:
           {{- end }}
         envFrom:
           - secretRef:
-              name: {{ template "account-provisioner.fullname" . }}-envs
+              name: {{ template "account-provisioner.fullname" $ }}-envs
           - configMapRef:
-              name: {{ template "account-provisioner.fullname" . }}-envs
+              name: {{ template "account-provisioner.fullname" $ }}-envs
         volumeMounts:
           - name: pem-file
             mountPath: /usr/src/app/account-provisioner.pem
@@ -39,7 +41,8 @@ spec:
       volumes:
         - name: pem-file
           secret:
-            secretName: {{ template "account-provisioner.fullname" . }}-pem
+            secretName: {{ template "account-provisioner.fullname" $ }}-pem
             items:
               - key: account-provisioner.pem
                 path: account-provisioner.pem
+{{- end }}

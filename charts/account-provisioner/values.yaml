@@ -15,19 +15,32 @@ eventSource:
     usernameKey: BROKER_USER
     passwordKey: BROKER_PASSWORD
 
-clusterWorkflowTemplate:
-  metadata:
-    name: renew-sso-client
-  entrypoint:
-    name: renew-sso-client-workflow
-  parameters: {}
-  command:
-    - python
-    - -m
-    - cmd.renew_sso_client_secrets
-  image:
-    repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
-    tag: account-provisioner-464
+clusterWorkflowTemplates:
+  - metadata:
+      name: renew-cloudspace-sso-client
+    entrypoint:
+      name: renew-cloudspace-sso-client-workflow
+    parameters: {}
+    args:
+      - python
+      - -m
+      - cmd.renew_cloudspace_sso_client_secrets
+    image:
+      repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
+      tag: account-provisioner-464
+
+  - metadata:
+      name: renew-backoffice-sso-client
+    entrypoint:
+      name: renew-backoffice-sso-client-workflow
+    parameters: {}
+    args:
+      - python
+      - -m
+      - cmd.renew_backoffice_sso_client_secrets
+    image:
+      repository: 882490700787.dkr.ecr.us-east-1.amazonaws.com/account-provisioner
+      tag: account-provisioner-464
 
 sensor:
   image:
