@@ -5,7 +5,7 @@ kind: EC2NodeClass
 metadata:
   name: {{ $nodeClassName }}
 spec:
-  # amiFamily: {{ default "AL2" $nodeClassSpecs.amiFamily }}
+  amiFamily: {{ default "AL2" $nodeClassSpecs.amiFamily }}
   {{- if $nodeClassSpecs.amiSelector }}
   amiSelectorTerms:
 {{ toYaml $nodeClassSpecs.amiSelector | indent 4 }}
@@ -19,6 +19,9 @@ spec:
   instanceProfile: "{{ $nodeClassSpecs.instanceProfile }}"
   tags:
 {{ $nodeClassSpecs.tags | toYaml | indent 4}}
+  metadataOptions:
+    httpEndpoint: enabled
+    httpPutResponseHopLimit: 64
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:

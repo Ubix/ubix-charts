@@ -50,23 +50,9 @@ spec:
     {{- end }}
     {{- if $nodePoolSpecs.disruption.budgets }}
     budgets:
-    {{- range $budget := $nodePoolSpecs.disruption.budgets }}
-    - nodes: {{ $budget.nodes }}
-      {{- if $budget.schedule }}
-      schedule: {{ $budget.schedule }}
-      {{- end }}
-      {{- if $budget.duration }}
-      duration: {{ $budget.duration }}
-      {{- end }}
-    {{- end }}
-    {{- end }}
+{{ $nodePoolSpecs.disruption.budgets | toYaml | indent 4 }}
   {{- end }}
   limits:
-    {{- if $nodePoolSpecs.limits.cpu }}
-    cpu: {{ quote $nodePoolSpecs.limits.cpu }}
-    {{- end }}
-    {{- if $nodePoolSpecs.limits.memory }}
-    memory: {{ quote $nodePoolSpecs.limits.memory }}
-    {{- end }}
+{{ $nodePoolSpecs.limits | toYaml | indent 4 }}
   weight: {{ default 1 $nodePoolSpecs.weight }}
 {{- end }}
