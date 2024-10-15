@@ -52,6 +52,7 @@ spec:
     budgets:
 {{ $nodePoolSpecs.disruption.budgets | toYaml | indent 4 }}
   {{- end }}
+  {{- end }}
   limits:
 {{ $nodePoolSpecs.limits | toYaml | indent 4 }}
   weight: {{ default 1 $nodePoolSpecs.weight }}
