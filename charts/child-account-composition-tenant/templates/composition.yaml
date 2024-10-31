@@ -1,0 +1,317 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: childaccounttenant
+  labels:
+      provider: upbound-provider-family-aws
+      name: childaccounttenant
+spec:
+  compositeTypeRef:
+    apiVersion: tenant.resources/v1alpha1
+    kind: ChildAccountTenant
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+      type: FromCompositeFieldPath
+  resources:
+  - name: child-account
+    base:
+      apiVersion: organizations.aws.upbound.io/v1beta1
+      kind: Account
+      spec:
+        forProvider:
+          closeOnDeletion: true
+          email: awsaccountadmin+crossplane.customername@ubixlabs.com
+          name: crossplanecreated
+          parentId: {{ .Values.parentId }}
+          region: #patchme
+        providerConfigRef:
+          name: root
+        deletionPolicy: Delete
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-tenant'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.email
+      toFieldPath: spec.forProvider.email
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.name
+      toFieldPath: spec.forProvider.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.parentId
+      toFieldPath: spec.forProvider.parentId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.id
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.status
+      toFieldPath: status.accountStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.arn
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.atProvider.status
+      matchString: ACTIVE
+    connectionDetails:
+      - fromConnectionSecretKey: kubeconfig
+
+#this resource is key to deploy everything inside the newly created account
+  - name: provider-config
+    base:
+      apiVersion: aws.upbound.io/v1beta1
+      kind: ProviderConfig
+      metadata:
+        #name: crossplane-test-pconfig
+        labels:
+          provider: upbound-provider-family-aws
+          name: childaccount
+      spec:
+        #assumeRoleARN: "arn:aws:iam::798374069605:role/OrganizationAccountAccessRole"
+        credentials:
+          source: IRSA
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.assumeRoleChain[0].roleARN
+      transforms:
+        - type: string
+          string:
+            fmt: "arn:aws:iam::%s:role/OrganizationAccountAccessRole"
+    readinessChecks:
+    - type: None
+
+  - name: experimental-data-bucket
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: #patchme
+    patches:
+    - type: CombineFromComposite
+      toFieldPath: metadata.name
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-%s-ingestion"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.experimentalDataBucket
+
+  - name: warehouse-bucket
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: Bucket
+      metadata:
+        annotations:
+          crossplane.io/external-name: #patchme
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: #patchme
+    patches:
+    - type: CombineFromComposite
+      toFieldPath: metadata.name
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-%s-warehouse"
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.warehouseBucket
+
+  - name: bedrock-role
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Role
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock'
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.assumeRolePolicy
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: status.id
+          - fromFieldPath: status.clusterOIDC
+          - fromFieldPath: status.clusterOIDC
+          - fromFieldPath: status.clusterOIDC
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                        "%s:sub": [
+                        "system:serviceaccount:addons:harbor"],
+                        "%s:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: bedrock-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "BedrockAll",
+                        "Effect": "Allow",
+                        "Action": [
+                            "bedrock:*"
+                        ],
+                        "Resource": "*"
+                    },
+                    {
+                        "Sid": "DescribeKey",
+                        "Effect": "Allow",
+                        "Action": [
+                            "kms:DescribeKey"
+                        ],
+                        "Resource": "arn:*:kms:*:::*"
+                    },
+                    {
+                        "Sid": "APIsWithAllResourceAccess",
+                        "Effect": "Allow",
+                        "Action": [
+                            "iam:ListRoles",
+                            "ec2:DescribeVpcs",
+                            "ec2:DescribeSubnets",
+                            "ec2:DescribeSecurityGroups"
+                        ],
+                        "Resource": "*"
+                    },
+                    {
+                        "Sid": "PassRoleToBedrock",
+                        "Effect": "Allow",
+                        "Action": [
+                            "iam:PassRole"
+                        ],
+                        "Resource": "arn:aws:iam::*:role/*AmazonBedrock*",
+                        "Condition": {
+                            "StringEquals": {
+                                "iam:PassedToService": [
+                                    "bedrock.amazonaws.com"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock-policy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: bedrock-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock-policy'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock-policy-attachment'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
