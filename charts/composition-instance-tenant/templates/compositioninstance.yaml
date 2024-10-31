@@ -1,0 +1,18 @@
+apiVersion: cloudspace.resources/v1alpha1
+kind: ChildAccountTenantClaim
+metadata:
+  name: {{ .Values.metadata.name }}
+  labels:
+    provider: upbound-provider-family-aws
+    name: childaccounttenant
+spec:
+  id: {{ .Values.spec.id }}
+  compositionSelector:
+    matchLabels:
+      provider: upbound-provider-family-aws
+      name: childaccounttenant
+  parameters:
+    email: awsaccountadmin+{{ .Values.spec.parameters.name }}@ubixlabs.com
+    name: {{ .Values.spec.parameters.name }}
+    parentId: {{ .Values.spec.parameters.parentId }}
+    region: {{ .Values.spec.parameters.region }}

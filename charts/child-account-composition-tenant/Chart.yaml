@@ -1,0 +1,6 @@
+apiVersion: v2
+name: child-account-composition-tenant
+description: XRD Child account Tenant Chart
+type: application
+version: 0.0.1
+appVersion: "1.0.0"
