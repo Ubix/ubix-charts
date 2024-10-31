@@ -167,6 +167,27 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicy: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": "arn:aws:iam::*:role/chatubix-api-role"
+                  },
+                  "Action": "sts:AssumeRole",
+                  "Condition": {
+                    "StringEquals": {
+                      "aws:PrincipalOrgID": "o-xen85rya21"
+                    }
+                  }
+                }
+              ]
+            }
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
@@ -175,39 +196,6 @@ spec:
         - type: string
           string:
             fmt: '%s-bedrock'
-    - type: CombineFromComposite
-      toFieldPath: spec.forProvider.assumeRolePolicy
-      policy:
-        fromFieldPath: Required
-      combine:
-        variables:
-          - fromFieldPath: status.id
-          - fromFieldPath: status.clusterOIDC
-          - fromFieldPath: status.clusterOIDC
-          - fromFieldPath: status.clusterOIDC
-        strategy: string
-        string:
-          fmt: |
-            {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Sid": "",
-                  "Effect": "Allow",
-                  "Principal": {
-                    "Federated": "arn:aws:iam::%s:oidc-provider/%s"
-                  },
-                  "Action": "sts:AssumeRoleWithWebIdentity",
-                  "Condition": {
-                    "StringEquals": {
-                        "%s:sub": [
-                        "system:serviceaccount:addons:harbor"],
-                        "%s:aud": "sts.amazonaws.com"
-                    }
-                  }
-                }
-              ]
-            }
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
