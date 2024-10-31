@@ -4894,6 +4894,17 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/child-account-composition-gcp-0.1.0/child-account-composition-gcp-0.1.0.tgz
     version: 0.1.0
+  child-account-composition-tenant:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-10-31T22:09:22.742374325Z"
+    description: XRD Child account Tenant Chart
+    digest: fe60b9718ed64e07b7950eb0a1815a8d6d7f8d64e5a1e7d00d47f4dc02641403
+    name: child-account-composition-tenant
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/child-account-composition-tenant-0.0.1/child-account-composition-tenant-0.0.1.tgz
+    version: 0.0.1
   cloudspace:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -5087,6 +5098,17 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/composition-instance-gcp-0.1.5/composition-instance-gcp-0.1.5.tgz
     version: 0.1.5
+  composition-instance-tenant:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-10-31T22:09:22.867343836Z"
+    description: Child account CRD helm chart
+    digest: dcd2d55ea21e94c108707f1523acd832955a098356b556815ae4367027e69375
+    name: composition-instance-tenant
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/composition-instance-tenant-0.0.1/composition-instance-tenant-0.0.1.tgz
+    version: 0.0.1
   custom-dashboards:
   - apiVersion: v2
     appVersion: 1.0.0
@@ -6773,4 +6795,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-10-17T17:19:47.656785786Z"
+generated: "2024-10-31T22:09:22.868368632Z"
