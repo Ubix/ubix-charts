@@ -254,7 +254,7 @@ statefulset:
   #         storage: 1Gi
   # - name: data2
   #   mountVolume: true  # Enable automatic mounting
-  #   mountPath: /data 
+  #   mountPath: /data
   #   spec:
   #     accessModes: [ "ReadWriteOnce" ]
   #     storageClassName: "gp3"
@@ -322,7 +322,7 @@ deployment:
     #   timeFormat: world
 
   # Replicas to be created
-  replicas:
+  replicas: 0
 
   # Secrets used to pull image
   imagePullSecrets: ""
