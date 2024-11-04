@@ -1,14 +1,14 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: childaccounttenant
+  name: childaccount-tenant
   labels:
       provider: upbound-provider-family-aws
-      name: childaccounttenant
+      name: childaccount-tenant
 spec:
   compositeTypeRef:
     apiVersion: tenant.resources/v1alpha1
-    kind: ChildAccountTenant
+    kind: ChildAccount
   writeConnectionSecretsToNamespace: crossplane-system
   patchSets:
   - name: metadata

@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: childaccounttenants.tenant.resources
+  name: childaccounts.tenant.resources
 spec:
   connectionSecretKeys:
   - kubeconfig
@@ -9,11 +9,11 @@ spec:
     name: account-aws
   group: tenant.resources
   names:
-    kind: ChildAccountTenant
-    plural: childaccounttenants
+    kind: ChildAccount
+    plural: childaccounts
   claimNames:
-    kind: ChildAccountTenantClaim
-    plural: childaccounttenantclaims
+    kind: ChildAccountClaim
+    plural: childaccountclaims
   versions:
   - name: v1alpha1
     served: true
