@@ -1,5 +1,5 @@
 apiVersion: tenant.resources/v1alpha1
-kind: ChildAccountClaimClaim
+kind: ChildAccountClaim
 metadata:
   name: {{ .Values.metadata.name }}
   labels:
