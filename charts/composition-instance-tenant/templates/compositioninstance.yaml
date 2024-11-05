@@ -1,5 +1,5 @@
-apiVersion: cloudspace.resources/v1alpha1
-kind: ChildAccountTenantClaim
+apiVersion: tenant.resources/v1alpha1
+kind: ChildAccountClaimClaim
 metadata:
   name: {{ .Values.metadata.name }}
   labels:
