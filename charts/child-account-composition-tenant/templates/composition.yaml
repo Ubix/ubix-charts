@@ -100,6 +100,8 @@ spec:
     readinessChecks:
     - type: None
 
+#### Tenant Storage
+
   - name: experimental-data-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
@@ -129,6 +131,79 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.experimentalDataBucket
+
+  - name: experimental-data-bucket-policy
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPolicy
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: #patchme
+    patches:
+    - type: CombineFromComposite
+      toFieldPath: metadata.name
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-%s-ingestion-bp"
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "ÄWS": [
+                        "arn:aws:iam::*:role/spark",
+                        "arn:aws:iam::*:role/trino"
+                      ]
+                    },
+                    "Action": ["s3:*",],
+                    "Resource": [ "arn:aws:s3:::%s-%s-ingestion", "arn:aws:s3:::%s-%s-ingestion/*"],
+                    "Condition": {
+                      "StringEquals": {
+                        "aws:PrincipalOrgID": "o-xen85rya21"
+                      }
+                    }
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: CombineFromComposite
+      toFieldPath: status.forProvider.bucketRef.name
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-%s-ingestion"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
 
   - name: warehouse-bucket
     base:
@@ -162,6 +237,80 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.id
       toFieldPath: status.warehouseBucket
+
+  - name: warehouse-bucket-policy
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketPolicy
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          region: #patchme
+    patches:
+    - type: CombineFromComposite
+      toFieldPath: metadata.name
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-%s-warehouse-bp"
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.policy
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: |
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                    "Sid": "",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "ÄWS": [
+                        "arn:aws:iam::*:role/spark",
+                        "arn:aws:iam::*:role/trino"
+                      ]
+                    },
+                    "Action": ["s3:*",],
+                    "Resource": [ "arn:aws:s3:::%s-%s-warehouse", "arn:aws:s3:::%s-%s-warehouse/*"],
+                    "Condition": {
+                      "StringEquals": {
+                        "aws:PrincipalOrgID": "o-xen85rya21"
+                      }
+                    }
+                }
+              ]
+            }
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: CombineFromComposite
+      toFieldPath: status.forProvider.bucketRef.name
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-%s-warehouse"
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+#### Bedrock Access
 
   - name: bedrock-role
     base:
