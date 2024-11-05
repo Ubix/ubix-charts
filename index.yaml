@@ -5149,6 +5149,16 @@ entries:
   composition-instance-tenant:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2024-11-05T23:17:01.733414925Z"
+    description: Child account CRD helm chart
+    digest: be862d3f6aaae9b3a0496a08e0091a388ef3d4601bb873577ce7905458e67721
+    name: composition-instance-tenant
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/composition-instance-tenant-0.0.4/composition-instance-tenant-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2024-11-05T23:13:11.852791882Z"
     description: Child account CRD helm chart
     digest: a4c33679fb1e0f9f5765098fc3e27bb77b7f338f3ce21b48300a5d3998247dc9
@@ -6863,4 +6873,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-11-05T23:13:11.853733355Z"
+generated: "2024-11-05T23:17:01.734343721Z"
