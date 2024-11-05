@@ -10,7 +10,7 @@ spec:
   compositionSelector:
     matchLabels:
       provider: upbound-provider-family-aws
-      name: childaccounttenant
+      name: childaccount-tenant
   parameters:
     email: awsaccountadmin+{{ .Values.spec.parameters.name }}@ubixlabs.com
     name: {{ .Values.spec.parameters.name }}
