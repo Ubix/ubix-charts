@@ -339,8 +339,8 @@ spec:
                   "Principal": {
                     "AWS": [
                       "arn:aws:iam::627404141311:role/chatubix-api-role",
-                      "arn:aws:iam::077512705297:role/chatubix-api-role",
-                      "arn:aws:iam::696258290967:role/chatubix-api-role"
+                      "arn:aws:iam::077512705297:role/colossal-ai-role",
+                      "arn:aws:iam::696258290967:role/colossal-ai-role"
                     ]
                   },
                   "Action": "sts:AssumeRole",
