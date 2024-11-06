@@ -198,7 +198,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: CombineFromComposite
-      toFieldPath: status.forProvider.bucketRef.name
+      toFieldPath: spec.forProvider.bucketRef.name
       policy:
         fromFieldPath: Required
       combine:
@@ -308,7 +308,7 @@ spec:
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
     - type: CombineFromComposite
-      toFieldPath: status.forProvider.bucketRef.name
+      toFieldPath: spec.forProvider.bucketRef.name
       policy:
         fromFieldPath: Required
       combine:
@@ -339,7 +339,7 @@ spec:
                   "Principal": {
                     "AWS": [
                       "arn:aws:iam::627404141311:role/chatubix-api-role",
-                      "arn:aws:iam::077512705297:role/chatubix-api-role"
+                      "arn:aws:iam::077512705297:role/chatubix-api-role",
                       "arn:aws:iam::696258290967:role/chatubix-api-role"
                     ]
                   },
