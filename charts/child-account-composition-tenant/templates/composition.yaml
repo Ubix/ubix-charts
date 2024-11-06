@@ -169,28 +169,28 @@ spec:
               "Version": "2012-10-17",
               "Statement": [
                 {
-                    "Sid": "",
-                    "Effect": "Allow",
-                    "Principal": {
-                      "AWS": [
-                        "arn:aws:iam::627404141311:role/data-service-role",
-                        "arn:aws:iam::627404141311:role/dataflow-role"
-                        "arn:aws:iam::627404141311:role/dataspace-backend-role",
-                        "arn:aws:iam::077512705297:role/data-service-role",
-                        "arn:aws:iam::077512705297:role/dataflow-role"
-                        "arn:aws:iam::077512705297:role/dataspace-backend-role",
-                        "arn:aws:iam::696258290967:role/data-service-role",
-                        "arn:aws:iam::696258290967:role/dataflow-role"
-                        "arn:aws:iam::696258290967:role/dataspace-backend-role",
-                      ]
-                    },
-                    "Action": ["s3:*"],
-                    "Resource": [ "arn:aws:s3:::%s-%s-ingestion", "arn:aws:s3:::%s-%s-ingestion/*"],
-                    "Condition": {
-                      "StringEquals": {
-                        "aws:PrincipalOrgID": "o-xen85rya21"
-                      }
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:iam::627404141311:role/data-service-role",
+                      "arn:aws:iam::627404141311:role/dataflow-role",
+                      "arn:aws:iam::627404141311:role/dataspace-backend-role",
+                      "arn:aws:iam::077512705297:role/data-service-role",
+                      "arn:aws:iam::077512705297:role/dataflow-role",
+                      "arn:aws:iam::077512705297:role/dataspace-backend-role",
+                      "arn:aws:iam::696258290967:role/data-service-role",
+                      "arn:aws:iam::696258290967:role/dataflow-role",
+                      "arn:aws:iam::696258290967:role/dataspace-backend-role"
+                    ]
+                  },
+                  "Action": ["s3:*"],
+                  "Resource": ["arn:aws:s3:::%s-%s-ingestion", "arn:aws:s3:::%s-%s-ingestion/*"],
+                  "Condition": {
+                    "StringEquals": {
+                      "aws:PrincipalOrgID": "o-xen85rya21"
                     }
+                  }
                 }
               ]
             }
@@ -282,25 +282,25 @@ spec:
               "Version": "2012-10-17",
               "Statement": [
                 {
-                    "Sid": "",
-                    "Effect": "Allow",
-                    "Principal": {
-                      "AWS": [
-                        "arn:aws:iam::627404141311:role/spark",
-                        "arn:aws:iam::627404141311:role/trino",
-                        "arn:aws:iam::077512705297:role/spark",
-                        "arn:aws:iam::077512705297:role/trino",
-                        "arn:aws:iam::696258290967:role/spark",
-                        "arn:aws:iam::696258290967:role/trino"
-                      ]
-                    },
-                    "Action": ["s3:*"],
-                    "Resource": [ "arn:aws:s3:::%s-%s-warehouse", "arn:aws:s3:::%s-%s-warehouse/*"],
-                    "Condition": {
-                      "StringEquals": {
-                        "aws:PrincipalOrgID": "o-xen85rya21"
-                      }
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:iam::627404141311:role/spark",
+                      "arn:aws:iam::627404141311:role/trino",
+                      "arn:aws:iam::077512705297:role/spark",
+                      "arn:aws:iam::077512705297:role/trino",
+                      "arn:aws:iam::696258290967:role/spark",
+                      "arn:aws:iam::696258290967:role/trino"
+                    ]
+                  },
+                  "Action": ["s3:*"],
+                  "Resource": ["arn:aws:s3:::%s-%s-warehouse", "arn:aws:s3:::%s-%s-warehouse/*"],
+                  "Condition": {
+                    "StringEquals": {
+                      "aws:PrincipalOrgID": "o-xen85rya21"
                     }
+                  }
                 }
               ]
             }
