@@ -172,12 +172,19 @@ spec:
                     "Sid": "",
                     "Effect": "Allow",
                     "Principal": {
-                      "ÄWS": [
-                        "arn:aws:iam::*:role/spark",
-                        "arn:aws:iam::*:role/trino"
+                      "AWS": [
+                        "arn:aws:iam::627404141311:role/data-service-role",
+                        "arn:aws:iam::627404141311:role/dataflow-role"
+                        "arn:aws:iam::627404141311:role/dataspace-backend-role",
+                        "arn:aws:iam::077512705297:role/data-service-role",
+                        "arn:aws:iam::077512705297:role/dataflow-role"
+                        "arn:aws:iam::077512705297:role/dataspace-backend-role",
+                        "arn:aws:iam::696258290967:role/data-service-role",
+                        "arn:aws:iam::696258290967:role/dataflow-role"
+                        "arn:aws:iam::696258290967:role/dataspace-backend-role",
                       ]
                     },
-                    "Action": ["s3:*",],
+                    "Action": ["s3:*"],
                     "Resource": [ "arn:aws:s3:::%s-%s-ingestion", "arn:aws:s3:::%s-%s-ingestion/*"],
                     "Condition": {
                       "StringEquals": {
@@ -278,12 +285,16 @@ spec:
                     "Sid": "",
                     "Effect": "Allow",
                     "Principal": {
-                      "ÄWS": [
-                        "arn:aws:iam::*:role/spark",
-                        "arn:aws:iam::*:role/trino"
+                      "AWS": [
+                        "arn:aws:iam::627404141311:role/spark",
+                        "arn:aws:iam::627404141311:role/trino",
+                        "arn:aws:iam::077512705297:role/spark",
+                        "arn:aws:iam::077512705297:role/trino",
+                        "arn:aws:iam::696258290967:role/spark",
+                        "arn:aws:iam::696258290967:role/trino"
                       ]
                     },
-                    "Action": ["s3:*",],
+                    "Action": ["s3:*"],
                     "Resource": [ "arn:aws:s3:::%s-%s-warehouse", "arn:aws:s3:::%s-%s-warehouse/*"],
                     "Condition": {
                       "StringEquals": {
@@ -326,7 +337,11 @@ spec:
                   "Sid": "",
                   "Effect": "Allow",
                   "Principal": {
-                    "AWS": "arn:aws:iam::*:role/chatubix-api-role"
+                    "AWS": [
+                      "arn:aws:iam::627404141311:role/chatubix-api-role",
+                      "arn:aws:iam::077512705297:role/chatubix-api-role"
+                      "arn:aws:iam::696258290967:role/chatubix-api-role"
+                    ]
                   },
                   "Action": "sts:AssumeRole",
                   "Condition": {
