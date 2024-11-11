@@ -2428,6 +2428,36 @@ spec:
         fromFieldPath: status.atProvider.id
         toFieldPath: status.airbyteAdminRoleName
 
+  - name: airbyte-warehouse-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-airbyte'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-warehouse'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-airbyte-warehouse-policy-attachment'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: mlflow-role
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
