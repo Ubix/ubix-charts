@@ -3045,7 +3045,7 @@ spec:
               }
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.chatUbixRoleName
+        toFieldPath: status.chatUbixApiRoleName
 
   - name: organization-role
     base:
