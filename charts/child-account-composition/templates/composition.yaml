@@ -3045,7 +3045,7 @@ spec:
               }
       - type: ToCompositeFieldPath
         fromFieldPath: status.atProvider.id
-        toFieldPath: status.colossalAiRoleName
+        toFieldPath: status.chatUbixRoleName
 
   - name: organization-role
     base:
@@ -5564,6 +5564,76 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: bedrock-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        annotations:
+          crossplane.io/external-name: bedrock-policy
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "BedrockAll",
+                        "Effect": "Allow",
+                        "Action": [
+                            "bedrock:*"
+                        ],
+                        "Resource": "*"
+                    },
+                    {
+                        "Sid": "DescribeKey",
+                        "Effect": "Allow",
+                        "Action": [
+                            "kms:DescribeKey"
+                        ],
+                        "Resource": "arn:*:kms:*:::*"
+                    },
+                    {
+                        "Sid": "APIsWithAllResourceAccess",
+                        "Effect": "Allow",
+                        "Action": [
+                            "iam:ListRoles",
+                            "ec2:DescribeVpcs",
+                            "ec2:DescribeSubnets",
+                            "ec2:DescribeSecurityGroups"
+                        ],
+                        "Resource": "*"
+                    },
+                    {
+                        "Sid": "PassRoleToBedrock",
+                        "Effect": "Allow",
+                        "Action": [
+                            "iam:PassRole"
+                        ],
+                        "Resource": "arn:aws:iam::*:role/*AmazonBedrock*",
+                        "Condition": {
+                            "StringEquals": {
+                                "iam:PassedToService": [
+                                    "bedrock.amazonaws.com"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 # ########
 # # IAM Policy Attachments
 # ########
@@ -7269,6 +7339,146 @@ spec:
       toFieldPath: spec.providerConfigRef.name
       policy:
         fromFieldPath: Required
+
+  - name: api-service-bedrock-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policyArnRef:
+            name: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-api-service-bedrock"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.apiServiceRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-bedrock'
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: chatubix-api-bedrock-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policyArnRef:
+            name: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-chatubix-api-bedrock"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.chatUbixApiRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-bedrock'
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: exec-service-python-bedrock-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policyArnRef:
+            name: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-exec-service-python-bedrock"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.execServicePythonRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-bedrock'
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
+
+  - name: dataflow-bedrock-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policyArnRef:
+            name: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-dataflow-bedrock"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.dataFlowRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.policyArnRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-bedrock'
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
 
 #####
 # ArgoCD
