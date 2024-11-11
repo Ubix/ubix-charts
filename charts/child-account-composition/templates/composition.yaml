@@ -5368,7 +5368,7 @@ spec:
                           ],
                           "Resource": [
                               "arn:aws:s3:::warehouse-%s",
-                              "arn:aws:s3:::warehouse-%s/*"
+                              "arn:aws:s3:::warehouse-%s/*",
                               "arn:aws:s3:::*-*-warehouse",
                               "arn:aws:s3:::*-*-warehouse/*"
                           ]
