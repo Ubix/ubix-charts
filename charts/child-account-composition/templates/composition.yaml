@@ -7362,13 +7362,13 @@ spec:
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.policyArnRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-bedrock'
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.policyArnRef.name
+        transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock'
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -7397,13 +7397,13 @@ spec:
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.policyArnRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-bedrock'
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.policyArnRef.name
+        transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock'
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -7432,13 +7432,13 @@ spec:
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.policyArnRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-bedrock'
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.policyArnRef.name
+        transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock'
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
@@ -7467,13 +7467,13 @@ spec:
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.policyArnRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-bedrock'
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.policyArnRef.name
+        transforms:
+        - type: string
+          string:
+            fmt: '%s-bedrock'
       - type: FromCompositeFieldPath
         fromFieldPath: status.id
         toFieldPath: spec.providerConfigRef.name
