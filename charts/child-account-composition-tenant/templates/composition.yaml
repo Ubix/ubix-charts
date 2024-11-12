@@ -288,10 +288,19 @@ spec:
                     "AWS": [
                       "arn:aws:iam::627404141311:role/spark",
                       "arn:aws:iam::627404141311:role/trino",
+                      "arn:aws:iam::627404141311:role/metastore",
+                      "arn:aws:iam::627404141311:role/data-service-role",
+                      "arn:aws:iam::627404141311:role/dataflow-role",
                       "arn:aws:iam::077512705297:role/spark",
                       "arn:aws:iam::077512705297:role/trino",
+                      "arn:aws:iam::077512705297:role/metastore",
+                      "arn:aws:iam::077512705297:role/data-service-role",
+                      "arn:aws:iam::077512705297:role/dataflow-role",
                       "arn:aws:iam::696258290967:role/spark",
-                      "arn:aws:iam::696258290967:role/trino"
+                      "arn:aws:iam::696258290967:role/trino",
+                      "arn:aws:iam::696258290967:role/metastore",
+                      "arn:aws:iam::696258290967:role/data-service-role",
+                      "arn:aws:iam::696258290967:role/dataflow-role"
                     ]
                   },
                   "Action": ["s3:*"],
@@ -321,6 +330,7 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
 #### Bedrock Access
 
   - name: bedrock-role
@@ -363,6 +373,9 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.arn
+      toFieldPath: status.bedrockRole
 
   - name: bedrock-policy
     base:
