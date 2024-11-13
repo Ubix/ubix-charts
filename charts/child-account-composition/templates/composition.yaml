@@ -5188,7 +5188,6 @@ spec:
         variables:
         - fromFieldPath: status.id
         - fromFieldPath: status.id
-        - fromFieldPath: status.id
         strategy: string
         string:
           fmt: |
@@ -5201,7 +5200,8 @@ spec:
                   ],
                   "Effect": "Allow",
                   "Resource": [
-                    "arn:aws:s3:::ingestion-artifacts-%s/upload-data/*"
+                    "arn:aws:s3:::ingestion-artifacts-%s/upload-data/*",
+                    "arn:aws:s3:::*-*-ingestion/upload-data/*"
                   ],
                   "Sid": ""
                 },
@@ -5212,8 +5212,7 @@ spec:
                   "Effect": "Allow",
                   "Resource": [
                     "arn:aws:s3:::ingestion-artifacts-%s",
-                    "arn:aws:s3:::ingestion-artifacts-%s/*",
-                    "arn:aws:s3:::ingestion-artifacts-%s/upload-data/*"
+                    "arn:aws:s3:::*-*-ingestion"
                   ],
                   "Sid": ""
                 }
