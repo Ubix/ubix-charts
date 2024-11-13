@@ -176,12 +176,15 @@ spec:
                       "arn:aws:iam::627404141311:role/data-service-role",
                       "arn:aws:iam::627404141311:role/dataflow-role",
                       "arn:aws:iam::627404141311:role/dataspace-backend-role",
+                      "arn:aws:iam::627404141311:role/external-data-upload-role",
                       "arn:aws:iam::077512705297:role/data-service-role",
                       "arn:aws:iam::077512705297:role/dataflow-role",
                       "arn:aws:iam::077512705297:role/dataspace-backend-role",
+                      "arn:aws:iam::077512705297:role/external-data-upload-role",
                       "arn:aws:iam::696258290967:role/data-service-role",
                       "arn:aws:iam::696258290967:role/dataflow-role",
-                      "arn:aws:iam::696258290967:role/dataspace-backend-role"
+                      "arn:aws:iam::696258290967:role/dataspace-backend-role",
+                      "arn:aws:iam::696258290967:role/external-data-upload-role"
                     ]
                   },
                   "Action": ["s3:*"],
