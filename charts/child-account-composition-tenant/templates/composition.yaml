@@ -215,6 +215,56 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: ingestion-cors-config
+    base:
+      apiVersion: s3.aws.upbound.io/v1beta1
+      kind: BucketCorsConfiguration
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          bucketRef:
+            name: #patchme
+          corsRule:
+            - allowedHeaders:
+                - "*"
+              allowedMethods:
+                - PUT
+              allowedOrigins:
+                - https://dataspace.*.ubix.io
+          region: #patchme
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-ingestion-bucket-cors'
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.bucketRef.name
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+          - fromFieldPath: spec.id
+          - fromFieldPath: status.id
+        strategy: string
+        string:
+          fmt: "%s-%s-ingestion"
+    # - type: FromCompositeFieldPath
+    #   fromFieldPath: spec.id
+    #   toFieldPath: spec.forProvider.corsRule[0].allowedOrigins[0]
+    #   transforms:
+    #     - type: string
+    #       string:
+    #         fmt: 'https://dataspace.%s.ubix.io'
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
   - name: warehouse-bucket
     base:
       apiVersion: s3.aws.upbound.io/v1beta1
