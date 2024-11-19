@@ -5669,6 +5669,44 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
+  - name: chatubix-sts-bedrock-policy
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: Policy
+      metadata:
+        annotations:
+          crossplane.io/external-name: bedrock-policy
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policy: |
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Sid": "Statement1",
+                        "Effect": "Allow",
+                        "Action": [
+                            "sts:AssumeRole"
+                        ],
+                        "Resource": [
+                            "arn:aws:iam::*:role/*-bedrock"
+                        ]
+                    }
+                ]
+            }
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-sts-bedrock'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
 # ########
 # # IAM Policy Attachments
 # ########
@@ -7374,6 +7412,41 @@ spec:
       toFieldPath: spec.providerConfigRef.name
       policy:
         fromFieldPath: Required
+
+  - name: chatubix-sts-bedrock-policy-attachment
+    base:
+      apiVersion: iam.aws.upbound.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        deletionPolicy: Orphan
+        forProvider:
+          policyArnRef:
+            name: #patchme
+          role: #patchme
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+        transforms:
+          - type: string
+            string:
+              fmt: "%s-sts-bedrock"
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.chatUbixApiRoleName
+        toFieldPath: spec.forProvider.role
+        policy:
+          fromFieldPath: Required
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.policyArnRef.name
+        transforms:
+        - type: string
+          string:
+            fmt: '%s-sts-bedrock'
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.id
+        toFieldPath: spec.providerConfigRef.name
+        policy:
+          fromFieldPath: Required
 
   - name: api-service-bedrock-policy-attachment
     base:
