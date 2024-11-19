@@ -230,7 +230,7 @@ spec:
               allowedMethods:
                 - PUT
               allowedOrigins:
-                - https://dataspace.*.ubix.io
+                - https://dataspace.{{ .Values.parentAccount }}.ubix.io
           region: #patchme
     patches:
     - type: FromCompositeFieldPath
