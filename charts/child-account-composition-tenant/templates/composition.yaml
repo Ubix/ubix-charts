@@ -345,6 +345,7 @@ spec:
                       "arn:aws:iam::627404141311:role/data-service-role",
                       "arn:aws:iam::627404141311:role/dataflow-role",
                       "arn:aws:iam::627404141311:role/airbyte-admin",
+                      "arn:aws:iam::627404141311:role/exec-service-python-role",
                       "arn:aws:iam::077512705297:role/spark",
                       "arn:aws:iam::077512705297:role/trino",
                       "arn:aws:iam::077512705297:role/metastore",
