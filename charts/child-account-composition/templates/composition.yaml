@@ -5283,7 +5283,9 @@ spec:
                         ],
                         "Resource": [
                           "arn:aws:s3:::ingestion-artifacts-%s/*",
-                          "arn:aws:s3:::ingestion-artifacts-%s"
+                          "arn:aws:s3:::ingestion-artifacts-%s",
+                          "arn:aws:s3:::*-*-ingestion/*",
+                          "arn:aws:s3:::*-*-ingestion"
                         ]
                       },
                       {
