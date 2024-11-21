@@ -337,7 +337,7 @@ spec:
                       "arn:aws:iam::{{ .Values.parentAccountId }}:role/data-service-role",
                       "arn:aws:iam::{{ .Values.parentAccountId }}:role/dataflow-role",
                       "arn:aws:iam::{{ .Values.parentAccountId }}:role/airbyte-admin",
-                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/exec-service-python-role",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/exec-service-python-role"
                     ]
                   },
                   "Action": ["s3:*"],
