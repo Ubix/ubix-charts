@@ -1,4 +1,5 @@
 backofficeArgocdRoleArn: arn:aws:iam::882490700787:role/argocd-server
 zoneId: "Z2FIL4FICDFU9O" # Add Parent Zone ID
 parentId: "ou-8jat-sv0412tm" # Add Parent OU ID
-parentAccount: master-dev-1
+parentAccount: master-dev-1 # Parent Account for MultiTenant
+parentAccountId: "627404141311" # Parent AccountID for MultiTenant

@@ -173,18 +173,10 @@ spec:
                   "Effect": "Allow",
                   "Principal": {
                     "AWS": [
-                      "arn:aws:iam::627404141311:role/data-service-role",
-                      "arn:aws:iam::627404141311:role/dataflow-role",
-                      "arn:aws:iam::627404141311:role/dataspace-backend-role",
-                      "arn:aws:iam::627404141311:role/external-data-upload-role",
-                      "arn:aws:iam::077512705297:role/data-service-role",
-                      "arn:aws:iam::077512705297:role/dataflow-role",
-                      "arn:aws:iam::077512705297:role/dataspace-backend-role",
-                      "arn:aws:iam::077512705297:role/external-data-upload-role",
-                      "arn:aws:iam::696258290967:role/data-service-role",
-                      "arn:aws:iam::696258290967:role/dataflow-role",
-                      "arn:aws:iam::696258290967:role/dataspace-backend-role",
-                      "arn:aws:iam::696258290967:role/external-data-upload-role"
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/data-service-role",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/dataflow-role",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/dataspace-backend-role",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/external-data-upload-role",
                     ]
                   },
                   "Action": ["s3:*"],
@@ -339,25 +331,13 @@ spec:
                   "Effect": "Allow",
                   "Principal": {
                     "AWS": [
-                      "arn:aws:iam::627404141311:role/spark",
-                      "arn:aws:iam::627404141311:role/trino",
-                      "arn:aws:iam::627404141311:role/metastore",
-                      "arn:aws:iam::627404141311:role/data-service-role",
-                      "arn:aws:iam::627404141311:role/dataflow-role",
-                      "arn:aws:iam::627404141311:role/airbyte-admin",
-                      "arn:aws:iam::627404141311:role/exec-service-python-role",
-                      "arn:aws:iam::077512705297:role/spark",
-                      "arn:aws:iam::077512705297:role/trino",
-                      "arn:aws:iam::077512705297:role/metastore",
-                      "arn:aws:iam::077512705297:role/data-service-role",
-                      "arn:aws:iam::077512705297:role/dataflow-role",
-                      "arn:aws:iam::077512705297:role/airbyte-admin",
-                      "arn:aws:iam::696258290967:role/spark",
-                      "arn:aws:iam::696258290967:role/trino",
-                      "arn:aws:iam::696258290967:role/metastore",
-                      "arn:aws:iam::696258290967:role/data-service-role",
-                      "arn:aws:iam::696258290967:role/dataflow-role",
-                      "arn:aws:iam::696258290967:role/airbyte-admin"
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/spark",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/trino",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/metastore",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/data-service-role",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/dataflow-role",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/airbyte-admin",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/exec-service-python-role",
                     ]
                   },
                   "Action": ["s3:*"],
@@ -405,9 +385,7 @@ spec:
                   "Effect": "Allow",
                   "Principal": {
                     "AWS": [
-                      "arn:aws:iam::627404141311:role/chatubix-api-role",
-                      "arn:aws:iam::077512705297:role/colossal-ai-role",
-                      "arn:aws:iam::696258290967:role/colossal-ai-role"
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/chatubix-api-role"
                     ]
                   },
                   "Action": "sts:AssumeRole",
