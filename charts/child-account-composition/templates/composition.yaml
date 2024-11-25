@@ -2417,7 +2417,7 @@ spec:
                     "Action": "sts:AssumeRoleWithWebIdentity",
                     "Condition": {
                       "StringEquals": {
-                          "%s:sub": ["system:serviceaccount:airbyte:airbyte-admin"],
+                          "%s:sub": ["system:serviceaccount:airbyte:airbyte-admin", "system:serviceaccount:data-tooling:airbyte-admin"],
                           "%s:aud": "sts.amazonaws.com"
                       }
                     }
