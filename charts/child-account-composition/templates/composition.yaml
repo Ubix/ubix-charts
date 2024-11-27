@@ -5863,7 +5863,7 @@ spec:
         policy:
           fromFieldPath: Required
       - type: FromCompositeFieldPath
-        fromFieldPath: status.dataServiceRoleName
+        fromFieldPath: status.airbyteAdminRoleName
         toFieldPath: spec.forProvider.role
         policy:
           fromFieldPath: Required
