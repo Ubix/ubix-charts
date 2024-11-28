@@ -85,7 +85,7 @@ spec:
             periodSeconds: 15
           readinessProbe:
             httpGet:
-              path: /subscriptions
+              path: /stats
               port: {{ .Values.extHttpPort }}
             initialDelaySeconds: 15
             timeoutSeconds: 5
