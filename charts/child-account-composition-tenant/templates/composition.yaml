@@ -176,7 +176,8 @@ spec:
                       "arn:aws:iam::{{ .Values.parentAccountId }}:role/data-service-role",
                       "arn:aws:iam::{{ .Values.parentAccountId }}:role/dataflow-role",
                       "arn:aws:iam::{{ .Values.parentAccountId }}:role/dataspace-backend-role",
-                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/external-data-upload-role"
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/external-data-upload-role",
+                      "arn:aws:iam::{{ .Values.parentAccountId }}:role/airbyte-admin"
                     ]
                   },
                   "Action": ["s3:*"],
