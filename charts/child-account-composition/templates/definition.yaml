@@ -331,6 +331,9 @@ spec:
               karpenterInterruptionQueueArn:
                 description: Karpenter Interruption Queue Arn
                 type: string
+              accountProvisionerMultiTenantRole:
+                description: Karpenter Interruption Queue Arn
+                type: string
     additionalPrinterColumns:
     - name: AWSAccountID
       type: string
