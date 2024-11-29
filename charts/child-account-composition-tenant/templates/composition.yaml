@@ -516,3 +516,47 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
+  - name: setup-job-customer-dripper-workspace
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        providerConfigRef:
+          name: {{ .Values.parentAccountId }}
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Job
+            metadata:
+              namespace: data-tooling
+            spec:
+              completions: 1
+              backoffLimit: 5
+              ttlSecondsAfterFinished: 100
+              template:
+                spec:
+                  containers:
+                  - name: create-dripper-wks
+                    image: nginx
+                    command: ["curl", "-H", "Content-Type: application/json", "-X", "POST", "-d", "'{}'", "http://dripper-manager-api.data-tooling:8080/ingestions/workspaces"]
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.forProvider.manifest.metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-dripper-workspace-creation'
+    - type: CombineFromComposite
+      toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].command[6]
+      policy:
+        fromFieldPath: Required
+      combine:
+        variables:
+        - fromFieldPath: spec.id
+        - fromFieldPath: status.id
+        - fromFieldPath: status.warehouseBucket
+        strategy: string
+        string:
+          fmt: '{"tenant": "%s-%s-warehouse", "bucket": "%s"}'
