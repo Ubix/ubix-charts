@@ -11,3 +11,4 @@ spec:
     name: #customer account name, will also be injected in the aws root account email
     parentId: ou-8jat-sv0412tm
     region: us-east-1
+    customerId: hadfjkahsdfkjasdhf

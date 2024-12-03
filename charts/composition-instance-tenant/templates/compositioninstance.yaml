@@ -16,3 +16,4 @@ spec:
     name: {{ .Values.spec.parameters.name }}
     parentId: {{ .Values.spec.parameters.parentId }}
     region: {{ .Values.spec.parameters.region }}
+    customerId: {{ .Values.spec.parameters.customerId }}
