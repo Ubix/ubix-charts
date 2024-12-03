@@ -10205,7 +10205,7 @@ spec:
       spec:
         deletionPolicy: Orphan
         writeConnectionSecretToRef:
-          namespace: crossplane
+          namespace: crossplane-system
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterName
@@ -10235,7 +10235,7 @@ spec:
         credentials:
           source: Secret
           secretRef:
-            namespace: crossplane
+            namespace: crossplane-system
             key: kubeconfig
     patches:
     - type: FromCompositeFieldPath
