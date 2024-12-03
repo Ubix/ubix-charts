@@ -554,9 +554,8 @@ spec:
         fromFieldPath: Required
       combine:
         variables:
-        - fromFieldPath: spec.id
-        - fromFieldPath: status.id
+        - fromFieldPath: spec.parameters.customerId
         - fromFieldPath: status.warehouseBucket
         strategy: string
         string:
-          fmt: '{"tenant": "%s", "bucket": "%s-%s-warehouse"}'
+          fmt: '{"tenant": "%s", "bucket": "%s"}'
