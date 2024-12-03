@@ -10227,7 +10227,7 @@ spec:
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
 
-  - name: eks-cluster-auth
+  - name: eks-cluster-auth-provider-config
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: ProviderConfig
