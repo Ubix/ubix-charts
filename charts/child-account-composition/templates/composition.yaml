@@ -10195,3 +10195,60 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
       toFieldPath: spec.providerConfigRef.name
+
+## Multi Tenant resources
+
+  - name: eks-cluster-auth
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: ClusterAuth
+      spec:
+        deletionPolicy: Orphan
+        writeConnectionSecretToRef:
+          namespace: crossplane
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: metadata.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: spec.forProvider.clusterName
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.parameters.region
+      toFieldPath: spec.forProvider.region
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-cluster-credentials'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.id
+      toFieldPath: spec.providerConfigRef.name
+
+  - name: eks-cluster-auth
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: Secret
+          secretRef:
+            namespace: crossplane
+            key: kubeconfig
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-cluster-credentials'
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.clusterName
+      toFieldPath: credentials.secretRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: '%s-cluster-credentials'
