@@ -45,6 +45,9 @@ spec:
                     description: Region is the region you'd like your resource to be created in.
                     type: string
                     default: us-east-1
+                  customerId:
+                    description: Customer Identificaiton in Ubix
+                    type: string
                 required:
                 - name
                 - email
