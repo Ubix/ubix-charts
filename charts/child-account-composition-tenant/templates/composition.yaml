@@ -523,7 +523,7 @@ spec:
       kind: Object
       spec:
         providerConfigRef:
-          name: {{ .Values.parentAccountId }}
+          name: "{{ .Values.parentAccountId }}"
         forProvider:
           manifest:
             apiVersion: v1
