@@ -10243,7 +10243,7 @@ spec:
             key: kubeconfig
     patches:
     - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterName
+      fromFieldPath: status.id
       toFieldPath: metadata.name
       policy:
         fromFieldPath: Required
@@ -10252,7 +10252,7 @@ spec:
           string:
             fmt: '%s-cluster-credentials'
     - type: FromCompositeFieldPath
-      fromFieldPath: status.clusterName
+      fromFieldPath: status.id
       toFieldPath: spec.credentials.secretRef.name
       policy:
         fromFieldPath: Required
