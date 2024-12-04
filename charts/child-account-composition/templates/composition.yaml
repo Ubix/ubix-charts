@@ -10210,9 +10210,13 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterName
       toFieldPath: metadata.name
+      policy:
+        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterName
       toFieldPath: spec.forProvider.clusterName
+      policy:
+        fromFieldPath: Required
     - type: FromCompositeFieldPath
       fromFieldPath: spec.parameters.region
       toFieldPath: spec.forProvider.region
@@ -10241,13 +10245,17 @@ spec:
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterName
       toFieldPath: metadata.name
+      policy:
+        fromFieldPath: Required
       transforms:
         - type: string
           string:
             fmt: '%s-cluster-credentials'
     - type: FromCompositeFieldPath
       fromFieldPath: status.clusterName
-      toFieldPath: credentials.secretRef.name
+      toFieldPath: spec.credentials.secretRef.name
+      policy:
+        fromFieldPath: Required
       transforms:
         - type: string
           string:
