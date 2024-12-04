@@ -523,7 +523,7 @@ spec:
       kind: Object
       spec:
         providerConfigRef:
-          name: "{{ .Values.parentAccount }}-cluster-credentials"
+          name: "{{ .Values.parentAccountId }}-cluster-credentials"
         forProvider:
           manifest:
             apiVersion: v1
