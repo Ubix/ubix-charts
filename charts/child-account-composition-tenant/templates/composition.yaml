@@ -536,6 +536,8 @@ spec:
               ttlSecondsAfterFinished: 100
               template:
                 spec:
+                  restartPolicy: Never
+                  backoffLimit: 4
                   containers:
                   - name: create-dripper-wks
                     image: nginx
