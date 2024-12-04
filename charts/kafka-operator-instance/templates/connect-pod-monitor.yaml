@@ -1,0 +1,16 @@
+{{- if .Values.connect.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ .Values.connect.name }}-connect-pod-monitor
+spec:
+  selector:
+    matchLabels:
+      strimzi.io/name: {{ .Values.connect.name }}-{{ .Release.Name }}
+      strimzi.io/kind: KafkaConnect
+  podMetricsEndpoints:
+    - port: tcp-prometheus
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}

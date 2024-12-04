@@ -1,10 +1,12 @@
-# cluster:
-#   name: cluster-name
+cluster:
+  name: cluster-name
 #   # example: https://github.com/strimzi/strimzi-kafka-operator/blob/0.41.0/examples/kafka/kafka-jbod.yaml
 #   # docs: https://strimzi.io/docs/operators/latest/overview#configuration-points-broker_str
 #   # schema: https://strimzi.io/docs/operators/latest/configuring#type-KafkaClusterSpec-reference
+#   nodePoolSpec: {}
 #   spec: {}
-# connect:
+connect:
+  enabled: false
 #   name: connect-cluster-name
 #   # example: https://github.com/strimzi/strimzi-kafka-operator/blob/0.41.0/examples/connect/kafka-connect.yaml
 #   # doc: https://strimzi.io/docs/operators/latest/overview#configuration-points-connect_str

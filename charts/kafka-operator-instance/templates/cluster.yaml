@@ -1,0 +1,11 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: {{ .Values.cluster.name }}
+  # TODO: enable choice between kraft or not in the future?
+  annotations:
+    strimzi.io/node-pools: enabled
+    strimzi.io/kraft: enabled
+  # TODO: add field by field later to hard code metrics config map
+spec:
+  {{- toYaml .Values.cluster.spec | nindent 2 }}

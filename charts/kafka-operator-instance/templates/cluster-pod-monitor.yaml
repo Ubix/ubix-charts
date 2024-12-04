@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ .Values.cluster.name }}-pod-monitor
+spec:
+  selector:
+    matchLabels:
+      strimzi.io/name: {{ .Values.cluster.name }}-{{ .Release.Name }}
+      strimzi.io/kind: Kafka
+  podMetricsEndpoints:
+    - port: tcp-prometheus
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
