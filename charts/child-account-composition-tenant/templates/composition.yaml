@@ -526,7 +526,7 @@ spec:
           name: "{{ .Values.parentAccountId }}-cluster-credentials"
         forProvider:
           manifest:
-            apiVersion: v1
+            apiVersion: batch/v1
             kind: Job
             metadata:
               namespace: data-tooling
