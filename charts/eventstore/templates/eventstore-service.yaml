@@ -20,7 +20,7 @@ spec:
       targetPort: {{ .Values.extTcpPort }}
     - name: int-tcp-port
       protocol: TCP
-      port: {{ .Values.extTcpPort }}
+      port: {{ .Values.intTcpPort }}
       targetPort: {{ .Values.intTcpPort }}
     - name: http-port
       protocol: TCP
