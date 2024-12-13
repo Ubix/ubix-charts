@@ -22,4 +22,8 @@ spec:
       protocol: TCP
       port: {{ .Values.extHttpPort }}
       targetPort: {{ .Values.extHttpPort }}
+    - name: http-port
+      protocol: TCP
+      port: {{ .Values.httpPort }}
+      targetPort: {{ .Values.httpPort }}
   clusterIP: None

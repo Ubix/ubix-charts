@@ -74,19 +74,19 @@ spec:
           ports:
             - containerPort: {{ .Values.intTcpPort }}
             - containerPort: {{ .Values.extTcpPort }}
-            - containerPort: {{ .Values.intHttpPort }}
+            - containerPort: {{ .Values.httpPort }}
             - containerPort: {{ .Values.extHttpPort }}
           livenessProbe:
             httpGet:
               path: /stats
-              port: {{ .Values.extHttpPort }}
+              port: {{ .Values.httpPort }}
             initialDelaySeconds: 15
             timeoutSeconds: 5
             periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /stats
-              port: {{ .Values.extHttpPort }}
+              port: {{ .Values.httpPort }}
             initialDelaySeconds: 15
             timeoutSeconds: 5
             periodSeconds: 15
