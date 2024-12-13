@@ -111,7 +111,7 @@ spec:
         namespace: {{ .Release.Namespace | quote }}
         labels:
           app.kubernetes.io/name: {{ include "eventstore.name" . }}
-          helm.sh/chart: {{ include "eventstore.chart" . }}
+          helm.sh/chart: eventstore-0.2.10
           app.kubernetes.io/instance: {{ .Release.Name }}
           app.kubernetes.io/managed-by: {{ .Release.Service }}
       {{- with .Values.persistence.annotations }}
