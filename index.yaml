@@ -5986,6 +5986,29 @@ entries:
   eventstore:
   - apiVersion: v1
     appVersion: 4.1.1-hotfix1
+    created: "2024-12-13T11:52:58.828433983Z"
+    description: A Helm chart for Kubernetes EventStore.
+    digest: 9fe4c7ae1e1186ec042972fce70b6702279e0651b8d17d42c487d5ffa716041b
+    home: https://eventstore.org/
+    icon: https://eventstore.org/images/ouro-full.svg
+    keywords:
+    - eventstore
+    maintainers:
+    - email: ameier38@gmail.com
+      name: ameier38
+    - email: jhinds2010@gmail.com
+      name: jhinds
+    - email: riccardo@dinuzzo.it
+      name: riccardone
+    name: eventstore
+    sources:
+    - https://github.com/EventStore/eventstore-docker
+    - https://github.com/EventStore/EventStore
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/eventstore-0.2.15/eventstore-0.2.15.tgz
+    version: 0.2.15
+  - apiVersion: v1
+    appVersion: 4.1.1-hotfix1
     created: "2024-12-13T10:24:15.140481475Z"
     description: A Helm chart for Kubernetes EventStore.
     digest: 458fb7f24560e48766807a61267f5d255ffa41b97cef456c1777f45d7ba976da
@@ -7463,4 +7486,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-13T10:24:15.141528631Z"
+generated: "2024-12-13T11:52:58.82934961Z"
