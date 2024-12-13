@@ -75,7 +75,6 @@ spec:
             - containerPort: {{ .Values.intTcpPort }}
             - containerPort: {{ .Values.extTcpPort }}
             - containerPort: {{ .Values.httpPort }}
-            - containerPort: {{ .Values.extHttpPort }}
           livenessProbe:
             httpGet:
               path: /stats

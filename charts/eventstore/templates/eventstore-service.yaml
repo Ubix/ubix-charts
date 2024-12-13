@@ -18,10 +18,10 @@ spec:
       protocol: TCP
       port: {{ .Values.extTcpPort }}
       targetPort: {{ .Values.extTcpPort }}
-    - name: ext-http-port
+    - name: int-tcp-port
       protocol: TCP
-      port: {{ .Values.extHttpPort }}
-      targetPort: {{ .Values.extHttpPort }}
+      port: {{ .Values.extTcpPort }}
+      targetPort: {{ .Values.intTcpPort }}
     - name: http-port
       protocol: TCP
       port: {{ .Values.httpPort }}

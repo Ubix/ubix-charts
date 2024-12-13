@@ -76,7 +76,7 @@ extIp: 0.0.0.0
 ##
 ## New Configuration Values (22.10 <)
 # HTTP Port
-httpPort: 2112
+httpPort: 2113
 
 ## Internal HTTP port.
 # intHttpPort: 2112
@@ -90,7 +90,7 @@ httpPort: 2112
 intTcpPort: 1112
 ##
 # External TCP port.
-# extTcpPort: 1113
+extTcpPort: 1113
 ##
 ## The amount of drift, in ms, between clocks on nodes allowed before gossip is rejected.
 gossipAllowedDiffMs: 600000
