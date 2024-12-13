@@ -12,12 +12,16 @@ metadata:
 data:
   ## Internal TCP port.
   EVENTSTORE_INT_TCP_PORT: {{ quote .Values.intTcpPort }}
-  ## External TCP port.
+  ## Node Port
+  # EVENTSTORE_NODE_PORT: {{ quote .Values.nodePort }}
+    ## HTTP Port
+  EVENTSTORE_HTTP_PORT: {{ quote .Values.httpPort }}
+  # External TCP port.
   EVENTSTORE_EXT_TCP_PORT: {{ quote .Values.extTcpPort }}
   ## Internal HTTP port.
-  EVENTSTORE_INT_HTTP_PORT: {{ quote .Values.intHttpPort }}
+  # EVENTSTORE_INT_HTTP_PORT: {{ quote .Values.intHttpPort }}
   ## External HTTP port.
-  EVENTSTORE_EXT_HTTP_PORT: {{ quote .Values.extHttpPort }}
+  # EVENTSTORE_EXT_HTTP_PORT: {{ quote .Values.extHttpPort }}
   ## The number of nodes in the cluster. 
   EVENTSTORE_CLUSTER_SIZE: {{ quote .Values.clusterSize }}
   ## DNS name from which other nodes can be discovered. 
@@ -27,12 +31,12 @@ data:
   ## The amount of drift, in ms, between clocks on nodes allowed before gossip is rejected.
   EVENTSTORE_GOSSIP_ALLOWED_DIFFERENCE_MS: {{ quote .Values.gossipAllowedDiffMs }}
   ## Whether or not to add interface prefixes.
-  EVENTSTORE_ADD_INTERFACE_PREFIXES: "False"
+  # EVENTSTORE_ADD_INTERFACE_PREFIXES: "False"
   EVENTSTORE_DISCOVER_VIA_DNS: "true"
   ## The prefixes that the internal HTTP server should respond to. 
-  EVENTSTORE_INT_HTTP_PREFIXES: "http://*:{{ .Values.intHttpPort }}/"
+  # EVENTSTORE_INT_HTTP_PREFIXES: "http://*:{{ .Values.intHttpPort }}/"
   ## The prefixes that the external HTTP server should respond to. 
-  EVENTSTORE_EXT_HTTP_PREFIXES: "http://*:{{ .Values.extHttpPort }}/"
+  # EVENTSTORE_EXT_HTTP_PREFIXES: "http://*:{{ .Values.extHttpPort }}/"
   # Note: changing `Values.eventStoreConfig` won't change the configmap 
   # checksum and so won't make the pods restart
   {{- range $setting, $option := .Values.eventStoreConfig }}

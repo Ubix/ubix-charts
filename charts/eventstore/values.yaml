@@ -12,6 +12,7 @@ imageTag: 22.10.5-alpha-arm64v8
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 imagePullPolicy: IfNotPresent
+updateStrategy: RollingUpdate
 ##
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -73,17 +74,23 @@ podDisruptionBudget:
 ## External IP Address. Remove or set to `null` to disable connections from outside the cluster.
 extIp: 0.0.0.0
 ##
+## New Configuration Values (22.10 <)
+# HTTP Port
+httpPort: 2112
+
 ## Internal HTTP port.
-intHttpPort: 2112
+# intHttpPort: 2112
 ##
+
+
 ## External HTTP port.
-extHttpPort: 2113
+# extHttpPort: 2113
 ##
 ## Internal TCP port.
 intTcpPort: 1112
 ##
-## External TCP port.
-extTcpPort: 1113
+# External TCP port.
+# extTcpPort: 1113
 ##
 ## The amount of drift, in ms, between clocks on nodes allowed before gossip is rejected.
 gossipAllowedDiffMs: 600000
@@ -95,8 +102,8 @@ eventStoreConfig:
   EVENTSTORE_CLUSTER_SIZE: 1
   EVENTSTORE_RUN_PROJECTIONS: "All"
   EVENTSTORE_START_STANDARD_PROJECTIONS: true
-  EVENTSTORE_EXT_TCP_PORT: 1113
-  EVENTSTORE_EXT_HTTP_PORT: 2113
+  # EVENTSTORE_EXT_TCP_PORT: 1113
+  # EVENTSTORE_EXT_HTTP_PORT: 2113
   EVENTSTORE_INSECURE: true
   EVENTSTORE_ENABLE_EXTERNAL_TCP: true
   EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP: true
