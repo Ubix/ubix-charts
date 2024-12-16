@@ -6,7 +6,7 @@
 image: eventstore/eventstore
 ##
 ## Event Store image tag
-imageTag: 22.10.5-alpha-arm64v8
+imageTag: 23.10.3-alpha-arm64v8
 ##
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -72,11 +72,11 @@ podDisruptionBudget:
   # maxUnavailable: 1
 ##
 ## External IP Address. Remove or set to `null` to disable connections from outside the cluster.
-extIp: 0.0.0.0
+nodeIp: 0.0.0.0
 ##
 ## New Configuration Values (22.10 <)
 # HTTP Port
-httpPort: 2113
+nodePort: 2113
 
 ## Internal HTTP port.
 # intHttpPort: 2112
@@ -87,10 +87,10 @@ httpPort: 2113
 # extHttpPort: 2113
 ##
 ## Internal TCP port.
-intTcpPort: 1112
+replicationPort: 1112
 ##
 # External TCP port.
-extTcpPort: 1113
+nodeTcpPort: 1113
 ##
 ## The amount of drift, in ms, between clocks on nodes allowed before gossip is rejected.
 gossipAllowedDiffMs: 600000
@@ -107,6 +107,8 @@ eventStoreConfig:
   EVENTSTORE_INSECURE: true
   EVENTSTORE_ENABLE_EXTERNAL_TCP: true
   EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP: true
+  EVENTSTORE_ALLOW_ANONYMOUS_STREAM_ACCESS: true
+  EVENTSTORE_ALLOW_ANONYMOUS_ENDPOINT_ACCESS: true
 
 ##
 ## Schedule a scavenging CronJob
