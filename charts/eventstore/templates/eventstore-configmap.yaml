@@ -11,13 +11,13 @@ metadata:
     app.kubernetes.io/component: database
 data:
   ## Internal TCP port.
-  EVENTSTORE_INT_TCP_PORT: {{ quote .Values.intTcpPort }}
+  EVENTSTORE_REPLICATION_PORT: {{ quote .Values.replicationPort }}
   ## Node Port
   # EVENTSTORE_NODE_PORT: {{ quote .Values.nodePort }}
     ## HTTP Port
-  EVENTSTORE_HTTP_PORT: {{ quote .Values.httpPort }}
+  EVENTSTORE_NODE_PORT: {{ quote .Values.nodePort }}
   # External TCP port.
-  EVENTSTORE_EXT_TCP_PORT: {{ quote .Values.extTcpPort }}
+  EVENTSTORE_NODE_TCP_PORT: {{ quote .Values.nodeTcpPort }}
   ## Internal HTTP port.
   # EVENTSTORE_INT_HTTP_PORT: {{ quote .Values.intHttpPort }}
   ## External HTTP port.

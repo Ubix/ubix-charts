@@ -53,39 +53,39 @@ spec:
             - configMapRef:
                 name: {{ include "eventstore.fullname" . }}-env
           env: 
-            - name: EVENTSTORE_INT_IP
+            - name: EVENTSTORE_REPLICATION_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: EVENTSTORE_EXT_IP
-            {{- if .Values.extIp }}
-              value: {{ .Values.extIp }}
+            - name: EVENTSTORE_NODE_IP
+            {{- if .Values.nodeIp }}
+              value: {{ .Values.nodeIp }}
             {{- else }}
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
             {{- end }}
-          {{- if and .Values.extIp (gt .Values.clusterSize 1.0) }}
-            - name: EVENTSTORE_EXT_HOST_ADVERTISE_AS
+          {{- if and .Values.nodeIp (gt .Values.clusterSize 1.0) }}
+            - name: EVENTSTORE_NODE_HOST_ADVERTISE_AS
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
           {{- end }}
           ports:
-            - containerPort: {{ .Values.intTcpPort }}
-            - containerPort: {{ .Values.extTcpPort }}
-            - containerPort: {{ .Values.httpPort }}
+            - containerPort: {{ .Values.nodePort }}
+            - containerPort: {{ .Values.nodeTcpPort }}
+            - containerPort: {{ .Values.replicationPort }}
           livenessProbe:
             httpGet:
               path: /stats
-              port: {{ .Values.httpPort }}
+              port: {{ .Values.nodePort }}
             initialDelaySeconds: 15
             timeoutSeconds: 5
             periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /stats
-              port: {{ .Values.httpPort }}
+              port: {{ .Values.nodePort }}
             initialDelaySeconds: 15
             timeoutSeconds: 5
             periodSeconds: 15

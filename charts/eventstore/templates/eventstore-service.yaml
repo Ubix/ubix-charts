@@ -16,14 +16,14 @@ spec:
   ports:
     - name: ext-tcp-port
       protocol: TCP
-      port: {{ .Values.extTcpPort }}
-      targetPort: {{ .Values.extTcpPort }}
+      port: {{ .Values.nodeTcpPort }}
+      targetPort: {{ .Values.nodeTcpPort }}
     - name: int-tcp-port
       protocol: TCP
-      port: {{ .Values.intTcpPort }}
-      targetPort: {{ .Values.intTcpPort }}
+      port: {{ .Values.replicationPort }}
+      targetPort: {{ .Values.replicationPort }}
     - name: http-port
       protocol: TCP
-      port: {{ .Values.httpPort }}
-      targetPort: {{ .Values.httpPort }}
+      port: {{ .Values.nodePort }}
+      targetPort: {{ .Values.nodePort }}
   clusterIP: None
