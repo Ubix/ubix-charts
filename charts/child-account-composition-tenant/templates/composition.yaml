@@ -376,6 +376,7 @@ spec:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: Role
       spec:
+        deletionPolicy: Orphan
         forProvider:
           assumeRolePolicy: |
             {
@@ -491,6 +492,8 @@ spec:
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
       kind: RolePolicyAttachment
+      spec:
+        deletionPolicy: Orphan
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: spec.id
