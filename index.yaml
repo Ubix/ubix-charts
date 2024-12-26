@@ -3,6 +3,16 @@ entries:
   account-provisioner:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-12-26T20:31:21.2793532Z"
+    description: A Helm chart for Kubernetes
+    digest: 31742870b1db6552ab52981e0c3949f4da9d2836e982e6f7119c783232774e42
+    name: account-provisioner
+    type: application
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/account-provisioner-0.1.94/account-provisioner-0.1.94.tgz
+    version: 0.1.94
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-10-14T07:57:12.679422453Z"
     description: A Helm chart for Kubernetes
     digest: 21d660602ce5f5f9ec7dbf237be22ed4b2fe69f22c9fea2ac443d8de7eb9548d
@@ -7570,4 +7580,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-26T20:14:28.920329044Z"
+generated: "2024-12-26T20:31:21.280417741Z"
