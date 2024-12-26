@@ -27,6 +27,8 @@ spec:
         autoDelete: false
         exclusive: false
         noWait: false
+        arguments: |-
+          x-queue-type: quorum
       queueBind:
         noWait: false
       consume:
