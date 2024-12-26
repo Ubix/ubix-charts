@@ -10241,9 +10241,6 @@ spec:
           secretRef:
             namespace: crossplane-system
             key: kubeconfig
-      status:
-        conditions:
-          status: True
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
@@ -10263,3 +10260,5 @@ spec:
         - type: string
           string:
             fmt: '%s-cluster-credentials'
+    readinessChecks:
+    - type: None
