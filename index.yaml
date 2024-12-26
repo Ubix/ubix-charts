@@ -7121,6 +7121,14 @@ entries:
     version: 0.1.0
   rabbitmq:
   - apiVersion: v1
+    created: "2024-12-26T20:14:28.919312234Z"
+    description: Generic RabbitMQ helm chart
+    digest: 4c0c8c638e3f79d3b8345b51d158aaabe332bb1d98e3f7ef4b2fec3ca5e018dd
+    name: rabbitmq
+    urls:
+    - https://github.com/Ubix/ubix-charts/releases/download/rabbitmq-0.0.6/rabbitmq-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v1
     created: "2024-07-03T16:03:04.120658683Z"
     description: Generic RabbitMQ helm chart
     digest: 758dbba89ed1c140e3eda5f7624dc5a7ceffff26210281c1a7f0d2a5c7903417
@@ -7562,4 +7570,4 @@ entries:
     urls:
     - https://github.com/Ubix/ubix-charts/releases/download/velero-pvc-backup-scheduler-0.1.0/velero-pvc-backup-scheduler-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-26T17:40:50.796801311Z"
+generated: "2024-12-26T20:14:28.920329044Z"
