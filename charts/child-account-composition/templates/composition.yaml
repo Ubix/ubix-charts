@@ -10241,6 +10241,9 @@ spec:
           secretRef:
             namespace: crossplane-system
             key: kubeconfig
+      status:
+        conditions:
+          status: True
     patches:
     - type: FromCompositeFieldPath
       fromFieldPath: status.id
