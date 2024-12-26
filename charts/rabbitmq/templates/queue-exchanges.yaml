@@ -6,6 +6,7 @@ metadata:
   name: {{ $clusterName }}-{{ $queueName }}
 spec:
   name: {{ $queueName }}
+  type: {{ $queueSpec.type }}
   autoDelete: {{ $queueSpec.autoDelete }}
   durable: {{ $queueSpec.durable }}
   rabbitmqClusterReference:
