@@ -25,6 +25,7 @@ spec:
               spec:
                 serviceAccountName:  {{ include "account-provisioner.fullname" . }}
                 entrypoint: {{ include "account-provisioner.fullname" $ }}-status
+                # Delete workflow pods after pod completion (including error/failures)
                 podGc:
                   strategy: OnPodCompletion
                   deleteDelayDuration: 30s
