@@ -25,6 +25,9 @@ spec:
               spec:
                 serviceAccountName:  {{ include "account-provisioner.fullname" . }}
                 entrypoint: {{ include "account-provisioner.fullname" $ }}-status
+                podGc:
+                  strategy: OnPodCompletion
+                  deleteDelayDuration: 30s
                 arguments:
                   parameters:
                     - name: message
