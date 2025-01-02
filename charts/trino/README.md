@@ -1,6 +1,6 @@
 # trino
 
-![Version: 0.25.0](https://img.shields.io/badge/Version-0.25.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 450](https://img.shields.io/badge/AppVersion-450-informational?style=flat-square)
+![Version: 1.35.0](https://img.shields.io/badge/Version-1.35.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 467](https://img.shields.io/badge/AppVersion-467-informational?style=flat-square)
 
 Fast distributed SQL query engine for big data analytics that helps you explore your data universe
 
@@ -39,14 +39,20 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
 
   When true, only the content in `repository` is used as image reference
 * `image.pullPolicy` - string, default: `"IfNotPresent"`
-* `imagePullSecrets[0].name` - string, default: `"registry-credentials"`
+* `imagePullSecrets` - list, default: `[]`  
+
+  An optional list of references to secrets in the same namespace to use for pulling images.
+  Example:
+  ```yaml
+  imagePullSecrets:
+    - name: registry-credentials
+  ```
 * `server.workers` - int, default: `2`
 * `server.node.environment` - string, default: `"production"`
 * `server.node.dataDir` - string, default: `"/data/trino"`
 * `server.node.pluginDir` - string, default: `"/usr/lib/trino/plugin"`
 * `server.log.trino.level` - string, default: `"INFO"`
 * `server.config.path` - string, default: `"/etc/trino"`
-* `server.config.http.port` - int, default: `8080`
 * `server.config.https.enabled` - bool, default: `false`
 * `server.config.https.port` - int, default: `8443`
 * `server.config.https.keystore.path` - string, default: `""`
@@ -54,13 +60,32 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
 
   Trino supports multiple [authentication types](https://trino.io/docs/current/security/authentication-types.html): PASSWORD, CERTIFICATE, OAUTH2, JWT, KERBEROS.
 * `server.config.query.maxMemory` - string, default: `"4GB"`
-* `server.exchangeManager.name` - string, default: `"filesystem"`
-* `server.exchangeManager.baseDir` - string, default: `"/tmp/trino-local-file-system-exchange-manager"`
+* `server.exchangeManager` - object, default: `{}`  
+
+  Mandatory [exchange manager configuration](https://trino.io/docs/current/admin/fault-tolerant-execution.html#id1). Used to set the name and location(s) of the spooling storage destination. To enable fault-tolerant execution, set the `retry-policy` property in `additionalConfigProperties`. Additional exchange manager configurations can be added to `additionalExchangeManagerProperties`.
+  Example:
+  ```yaml
+  server:
+    exchangeManager:
+      name: "filesystem"
+      baseDir: "/tmp/trino-local-file-system-exchange-manager"
+  additionalConfigProperties:
+    - retry-policy=TASK
+  additionalExchangeManagerProperties:
+    - exchange.sink-buffer-pool-min-size=10
+    - exchange.sink-buffers-per-partition=2
+    - exchange.source-concurrent-readers=4
+  ```
 * `server.workerExtraConfig` - string, default: `""`
 * `server.coordinatorExtraConfig` - string, default: `""`
 * `server.autoscaling.enabled` - bool, default: `false`
 * `server.autoscaling.maxReplicas` - int, default: `5`
-* `server.autoscaling.targetCPUUtilizationPercentage` - int, default: `50`
+* `server.autoscaling.targetCPUUtilizationPercentage` - int, default: `50`  
+
+  Target average CPU utilization, represented as a percentage of requested CPU. To disable scaling based on CPU, set to an empty string.
+* `server.autoscaling.targetMemoryUtilizationPercentage` - int, default: `80`  
+
+  Target average memory utilization, represented as a percentage of requested memory. To disable scaling based on memory, set to an empty string.
 * `server.autoscaling.behavior` - object, default: `{}`  
 
   Configuration for scaling up and down.
@@ -86,7 +111,17 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
 * `accessControl` - object, default: `{}`  
 
   [System access control](https://trino.io/docs/current/security/built-in-system-access-control.html) configuration.
-  Example:
+  Set the type property to either:
+  * `configmap`, and provide the rule file contents in `rules`,
+  * `properties`, and provide configuration properties in `properties`.
+  Properties example:
+  ```yaml
+  type: properties
+  properties: |
+      access-control.name=custom-access-control
+      access-control.custom_key=custom_value
+  ```
+  Config map example:
   ```yaml
    type: configmap
    refreshPeriod: 60s
@@ -140,9 +175,23 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
   ```
 * `resourceGroups` - object, default: `{}`  
 
-  Resource groups file is mounted to /etc/trino/resource-groups/resource-groups.json
-  Example:
+  [Resource groups control](https://trino.io/docs/current/admin/resource-groups.html)
+  Set the type property to either:
+  * `configmap`, and provide the Resource groups file contents in `resourceGroupsConfig`,
+  * `properties`, and provide configuration properties in `properties`.
+  Properties example:
   ```yaml
+   type: properties
+   properties: |
+     resource-groups.configuration-manager=db
+     resource-groups.config-db-url=jdbc:postgresql://trino-postgresql.postgresql.svc.cluster.local:3306/resource_groups
+     resource-groups.config-db-user=username
+     resource-groups.config-db-password=password
+  ```
+  Config map example:
+  ```yaml
+   type: configmap
+   # Resource groups file is mounted to /etc/trino/resource-groups/resource-groups.json
    resourceGroupsConfig: |-
        {
          "rootGroups": [
@@ -222,7 +271,16 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
   ```yaml
    - io.airlift=DEBUG
   ```
-* `additionalExchangeManagerProperties` - list, default: `[]`
+* `additionalExchangeManagerProperties` - list, default: `[]`  
+
+  [Exchange manager properties](https://trino.io/docs/current/admin/fault-tolerant-execution.html#exchange-manager).
+  Example:
+  ```yaml
+   - exchange.s3.region=object-store-region
+   - exchange.s3.endpoint=your-object-store-endpoint
+   - exchange.s3.aws-access-key=your-access-key
+   - exchange.s3.aws-secret-key=your-secret-key
+  ```
 * `eventListenerProperties` - list, default: `[]`  
 
   [Event listener](https://trino.io/docs/current/develop/event-listener.html#event-listener) properties. To configure multiple event listeners, add them in `coordinator.additionalConfigFiles` and `worker.additionalConfigFiles`, and set the `event-listener.config-files` property in `additionalConfigProperties` to their locations.
@@ -232,9 +290,9 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
    - custom-property1=custom-value1
    - custom-property2=custom-value2
   ```
-* `additionalCatalogs` - object, default: `{}`  
+* `catalogs` - object, default: `{"tpcds":"connector.name=tpcds\ntpcds.splits-per-node=4\n","tpch":"connector.name=tpch\ntpch.splits-per-node=4\n"}`  
 
-  Configure additional [catalogs](https://trino.io/docs/current/installation/deployment.html#catalog-properties). The TPCH and TPCDS catalogs are always enabled by default, with 4 splits per node.
+  Configure [catalogs](https://trino.io/docs/current/installation/deployment.html#catalog-properties).
   Example:
   ```yaml
    objectstore: |
@@ -246,6 +304,9 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
      connector.name=memory
      memory.max-data-per-node=128MB
   ```
+* `additionalCatalogs` - object, default: `{}`  
+
+  Deprecated, use `catalogs` instead. Configure additional [catalogs](https://trino.io/docs/current/installation/deployment.html#catalog-properties).
 * `env` - list, default: `[]`  
 
   additional environment variables added to every pod, specified as a list with explicit values
@@ -256,7 +317,7 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
   ```
 * `envFrom` - list, default: `[]`  
 
-  additional environment variables added to every pod, specified as a list of either ConfigMap or Secret references
+  additional environment variables added to every pod, specified as a list of either `ConfigMap` or `Secret` references
   Example:
   ```yaml
     - secretRef:
@@ -293,8 +354,9 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
        imagePullPolicy: IfNotPresent
        command: ['sleep', '1']
   ```
-* `securityContext.runAsUser` - int, default: `1000`
-* `securityContext.runAsGroup` - int, default: `1000`
+* `securityContext` - object, default: `{"runAsGroup":1000,"runAsUser":1000}`  
+
+  [Pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) configuration. To remove the default, set it to null (or `~`).
 * `containerSecurityContext` - object, default: `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]}}`  
 
   [Container security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container) configuration.
@@ -303,12 +365,15 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
   Control whether a process can gain more privileges than its parent process.
 * `containerSecurityContext.capabilities.drop` - list, default: `["ALL"]`  
 
-  A list of the Linux kernel capabilities that are dropped from every container. Valid values are listed at https://man7.org/linux/man-pages/man7/capabilities.7.html Ensure to remove the "CAP_" prefix which the kernel attaches to the names of permissions.
+  A list of the Linux kernel capabilities that are dropped from every container. Valid values are listed in [the capabilities manual page](https://man7.org/linux/man-pages/man7/capabilities.7.html). Ensure # to remove the "CAP_" prefix which the kernel attaches to the names of permissions.
 * `shareProcessNamespace.coordinator` - bool, default: `false`
 * `shareProcessNamespace.worker` - bool, default: `false`
 * `service.annotations` - object, default: `{}`
 * `service.type` - string, default: `"ClusterIP"`
 * `service.port` - int, default: `8080`
+* `service.nodePort` - string, default: `""`  
+
+  The port the service listens on the host, for the `NodePort` type. If not set, Kubernetes will [allocate a port automatically](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport-custom-port).
 * `auth` - object, default: `{}`  
 
   Available authentication methods.
@@ -324,6 +389,10 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
   ```yaml
    refreshPeriod: 5s
    groups: "group_name:user_1,user_2,user_3"
+  ```
+  Set the name of a secret containing this file in the group.db key
+  ```yaml
+   groupAuthSecret: "trino-group-authentication"
   ```
 * `serviceAccount.create` - bool, default: `false`  
 
@@ -352,6 +421,16 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
      secretName: sample-secret
      path: /secrets/sample.json
   ```
+* `coordinator.deployment.annotations` - object, default: `{}`
+* `coordinator.deployment.progressDeadlineSeconds` - int, default: `600`  
+
+  The maximum time in seconds for a deployment to make progress before it is considered failed. The deployment controller continues to process failed deployments and a condition with a ProgressDeadlineExceeded reason is surfaced in the deployment status.
+* `coordinator.deployment.revisionHistoryLimit` - int, default: `10`  
+
+  The number of old ReplicaSets to retain to allow rollback.
+* `coordinator.deployment.strategy` - object, default: `{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":"25%"},"type":"RollingUpdate"}`  
+
+  The deployment strategy to use to replace existing pods with new ones.
 * `coordinator.jvm.maxHeapSize` - string, default: `"8G"`
 * `coordinator.jvm.gcMethod.type` - string, default: `"UseG1GC"`
 * `coordinator.jvm.gcMethod.g1.heapRegionSize` - string, default: `"32M"`
@@ -367,6 +446,7 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
      servicePort: 8443
      name: https
      port: 8443
+     nodePort: 30443
      protocol: TCP
   ```
 * `coordinator.resources` - object, default: `{}`  
@@ -418,11 +498,11 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
 * `coordinator.affinity` - object, default: `{}`
 * `coordinator.additionalConfigFiles` - object, default: `{}`  
 
-  Additional config files placed in the default configuration directory.
+  Additional config files placed in the default configuration directory. Supports templating the files' contents with `tpl`.
   Example:
   ```yaml
   secret.txt: |
-    secret-value
+    secret-value={{- .Values.someValue }}
   ```
 * `coordinator.additionalVolumes` - list, default: `[]`  
 
@@ -454,9 +534,21 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
 
   Allows mounting additional Trino configuration files from Kubernetes secrets on the coordinator node.
   Example:
+  ```yaml
    - name: sample-secret
      secretName: sample-secret
      path: /secrets/sample.json
+  ```
+* `worker.deployment.annotations` - object, default: `{}`
+* `worker.deployment.progressDeadlineSeconds` - int, default: `600`  
+
+  The maximum time in seconds for a deployment to make progress before it is considered failed. The deployment controller continues to process failed deployments and a condition with a ProgressDeadlineExceeded reason is surfaced in the deployment status.
+* `worker.deployment.revisionHistoryLimit` - int, default: `10`  
+
+  The number of old ReplicaSets to retain to allow rollback.
+* `worker.deployment.strategy` - object, default: `{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":"25%"},"type":"RollingUpdate"}`  
+
+  The deployment strategy to use to replace existing pods with new ones.
 * `worker.jvm.maxHeapSize` - string, default: `"8G"`
 * `worker.jvm.gcMethod.type` - string, default: `"UseG1GC"`
 * `worker.jvm.gcMethod.g1.heapRegionSize` - string, default: `"32M"`
@@ -510,12 +602,21 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
   ```
 * `worker.lifecycle` - object, default: `{}`  
 
-  To enable [graceful shutdown](https://trino.io/docs/current/admin/graceful-shutdown.html), define a lifecycle preStop like bellow, Set the `terminationGracePeriodSeconds` to a value greater than or equal to the configured `shutdown.grace-period`. Configure `shutdown.grace-period` in `additionalConfigProperties` as `shutdown.grace-period=2m` (default is 2 minutes). Also configure `accessControl` because the `default` system access control does not allow graceful shutdowns.
+  Worker container [lifecycle events](https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/)  Setting `worker.lifecycle` conflicts with `worker.gracefulShutdown`.
   Example:
   ```yaml
    preStop:
      exec:
-       command: ["/bin/sh", "-c", "curl -v -X PUT -d '\"SHUTTING_DOWN\"' -H \"Content-type: application/json\" http://localhost:8081/v1/info/state"]
+       command: ["/bin/sh", "-c", "sleep 120"]
+  ```
+* `worker.gracefulShutdown` - object, default: `{"enabled":false,"gracePeriodSeconds":120}`  
+
+  Configure [graceful shutdown](https://trino.io/docs/current/admin/graceful-shutdown.html) in order to ensure that workers terminate without affecting running queries, given a sufficient grace period. When enabled, the value of `worker.terminationGracePeriodSeconds` must be at least two times greater than the configured `gracePeriodSeconds`. Enabling `worker.gracefulShutdown` conflicts with `worker.lifecycle`. When a custom `worker.lifecycle` configuration needs to be used, graceful shutdown must be configured manually.
+  Example:
+  ```yaml
+   gracefulShutdown:
+     enabled: true
+     gracePeriodSeconds: 120
   ```
 * `worker.terminationGracePeriodSeconds` - int, default: `30`
 * `worker.nodeSelector` - object, default: `{}`
@@ -523,11 +624,11 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
 * `worker.affinity` - object, default: `{}`
 * `worker.additionalConfigFiles` - object, default: `{}`  
 
-  Additional config files placed in the default configuration directory.
+  Additional config files placed in the default configuration directory. Supports templating the files' contents with `tpl`.
   Example:
   ```yaml
   secret.txt: |
-    secret-value
+    secret-value={{- .Values.someValue }}
   ```
 * `worker.additionalVolumes` - list, default: `[]`  
 
@@ -613,15 +714,16 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
 * `jmx.exporter.enabled` - bool, default: `false`  
 
   Set to true to export JMX Metrics via HTTP for [Prometheus](https://github.com/prometheus/jmx_exporter) consumption
-* `jmx.exporter.image` - string, default: `"bitnami/jmx-exporter:latest"`
+* `jmx.exporter.image` - string, default: `"bitnami/jmx-exporter:1.0.1"`
 * `jmx.exporter.pullPolicy` - string, default: `"Always"`
 * `jmx.exporter.port` - int, default: `5556`
-* `jmx.exporter.configProperties` - list, default: `[]`  
+* `jmx.exporter.configProperties` - string, default: `""`  
 
-  JMX Config Properties is mounted to /etc/jmx-exporter/jmx-exporter-config.yaml
+  The string value is templated using `tpl`. The JMX config properties file is mounted to `/etc/jmx-exporter/jmx-exporter-config.yaml`.
   Example:
   ```yaml
    configProperties: |-
+      hostPort: localhost:{{- .Values.jmx.registryPort }}
       startDelaySeconds: 0
       ssl: false
       lowercaseOutputName: false
@@ -640,15 +742,74 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
           value: '$2'
           help: 'ThreadCount (java.lang<type=Threading><>ThreadCount)'
           type: UNTYPED
+  ```
+* `jmx.exporter.securityContext` - object, default: `{}`
+* `jmx.exporter.resources` - object, default: `{}`  
+
+  It is recommended not to specify default resources and to leave this as a conscious choice for the user. This also increases chances charts run on environments with little resources, such as Minikube. If you do want to specify resources, use the following example, and adjust it as necessary.
+  Example:
+  ```yaml
+   limits:
+     cpu: 100m
+     memory: 128Mi
+   requests:
+     cpu: 100m
+     memory: 128Mi
+  ```
+* `jmx.coordinator` - object, default: `{}`  
+
+  Override JMX configurations for the Trino coordinator.
+  Example
+  ```yaml
+  coordinator:
+    enabled: true
+    exporter:
+      enabled: true
+      configProperties: |-
+        hostPort: localhost:{{- .Values.jmx.registryPort }}
+        startDelaySeconds: 0
+        ssl: false
+  ```
+* `jmx.worker` - object, default: `{}`  
+
+  Override JMX configurations for the Trino workers.
+  Example
+  ```yaml
+  worker:
+    enabled: true
+    exporter:
+      enabled: true
+  ```
 * `serviceMonitor.enabled` - bool, default: `false`  
 
   Set to true to create resources for the [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator).
+* `serviceMonitor.apiVersion` - string, default: `"monitoring.coreos.com/v1"`
 * `serviceMonitor.labels` - object, default: `{"prometheus":"kube-prometheus"}`  
 
   Labels for serviceMonitor, so that Prometheus can select it
 * `serviceMonitor.interval` - string, default: `"30s"`  
 
   The serviceMonitor web endpoint interval
+* `serviceMonitor.coordinator` - object, default: `{}`  
+
+  Override ServiceMonitor configurations for the Trino coordinator.
+  Example
+  ```yaml
+  coordinator:
+    enabled: true
+    labels:
+      prometheus: my-prometheus
+  ```
+* `serviceMonitor.worker` - object, default: `{}`  
+
+  Override ServiceMonitor configurations for the Trino workers.
+  Example
+  ```yaml
+  worker:
+    enabled: true
+    labels:
+      prometheus: my-prometheus
+  ```
 * `commonLabels` - object, default: `{}`  
 
   Labels that get applied to every resource's metadata
@@ -665,7 +826,59 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
        - path: /
          pathType: ImplementationSpecific
   ```
-* `ingress.tls` - list, default: `[]`
+* `ingress.tls` - list, default: `[]`  
+
+  Ingress [TLS](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) configuration.
+  Example:
+  ```yaml
+   - secretName: chart-example-tls
+     hosts:
+       - chart-example.local
+  ```
+* `networkPolicy.enabled` - bool, default: `false`  
+
+  Set to true to enable Trino pod protection with a [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/). By default, the NetworkPolicy will only allow Trino pods to communicate with each other.
+  > [!NOTE]
+  > - NetworkPolicies cannot block the ingress traffic coming directly
+  > from the Kubernetes node on which the Pod is running,
+  > and are thus incompatible with services of type `NodePort`.
+  > - When using NetworkPolicies together with JMX metrics export,
+  > additional ingress rules might be required to allow metric scraping.
+* `networkPolicy.ingress` - list, default: `[]`  
+
+  Additional ingress rules to apply to the Trino pods.
+  Example:
+  ```yaml
+   - from:
+       - ipBlock:
+           cidr: 172.17.0.0/16
+           except:
+             - 172.17.1.0/24
+       - namespaceSelector:
+           matchLabels:
+             kubernetes.io/metadata.name: prometheus
+       - podSelector:
+           matchLabels:
+             role: backend-app
+     ports:
+       - protocol: TCP
+         port: 8080
+       - protocol: TCP
+         port: 5556
+  ```
+* `networkPolicy.egress` - list, default: `[]`  
+
+  Egress rules to apply to the Trino pods.
+  Example:
+  ```yaml
+   - to:
+       - podSelector:
+           matchLabels:
+             role: log-ingestor
+     ports:
+       - protocol: TCP
+         port: 9999
+  ```
 
 ----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.13.1](https://github.com/norwoodj/helm-docs/releases/v1.13.1)
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
